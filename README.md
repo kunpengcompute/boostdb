@@ -1,12 +1,19 @@
 # boostdb
 
-BoostKit数据库解决方案主页仓
+鲲鹏BoostKit数据库套件BoostDB旨在基于鲲鹏提供数据库加速能力，聚焦应用加速、基础加速、系统加速全栈优化提升鲲鹏数据库性能，提供极致的数据库解决方案。当前为BoostKit数据库解决方案主页仓，应用仓如下表所示。
+
+| 仓库  | 仓库说明 |  仓库地址 |
+|--|--|--|
+| MySQL仓  |  包含Kunpeng MySQL，提供包含NEON指令集向量化处理、非对齐内存访问优化、InnoDB、binlog等优化patch，以及基于GCC For openEuler的反馈编译优化版本。 | https://gitcode.com/boostkit/mysql |
+| Redis仓 | 包含Kunpeng Redis，即鲲鹏参与开源社区的Redis，做了网络异步化优化，提升Redis吞吐量。 | https://gitcode.com/boostkit/Redis  |
+| Milvus仓  | 包含Kunpeng Milvus，提供包含Milvus向量指令和预取处理、Milvus KBest、Milvus KScaNN等优化patch。 | https://gitcode.com/boostkit/milvus  |
 
 ## MySQL
 
 [BoostKit数据库解决方案mysql仓](https://gitcode.com/boostkit/mysql)，包含Kunpeng MySQL，提供包含NEON指令集向量化处理、非对齐内存访问优化、InnoDB、binlog等优化patch，以及基于GCC For openEuler的反馈编译优化版本。
 
 ### 1.1  版本说明
+
 当前包含Percona-Server-5.7.44.53构建库、Percona-Server-8.0.43-34构建库。
 
 ### 1.2  特性说明
@@ -28,6 +35,7 @@ GCC for openEuler编译器是面向鲲鹏和openEuler生态的优选高性能编
 [BoostKit数据库解决方案Redis仓](https://gitcode.com/boostkit/Redis)，包含Kunpeng Redis，即鲲鹏参与开源社区的Redis，做了网络异步化优化，提升Redis吞吐量。
 
 ### 2.1 版本说明
+
 当前特性适用于Redis 6.0.20和Redis 7.0.15。
 
 ### 2.2 特性说明
@@ -37,13 +45,23 @@ GCC for openEuler编译器是面向鲲鹏和openEuler生态的优选高性能编
 KRAIO（Kunpeng Redis Asynchronous I/O）是鲲鹏自研的批量异步IO算法，Redis网络异步化通过将Redis中网络IO操作交由KRAIO异步批量执行，减少系统调用和上下文切换，实现Redis业务无阻塞执行，从而提高Redis吞吐量。通过sqpoll模式，KRAIO启用一个内核线程，自动处理网络IO事件，实现无需系统调用完成IO操作。
 
 ## Milvus
-[BoostKit数据库解决方案Milvus仓](https://gitcode.com/boostkit/milvus)，包含Kunpeng Milvus，提供包含Milvus向量指令和预取处理、Milvus KBest、Milvus KScaNN等优化patch。
+
+[BoostKit数据库解决方案milvus仓](https://gitcode.com/boostkit/milvus)，包含Kunpeng Milvus，提供包含Milvus向量指令和预取处理、Milvus KBest、Milvus KScaNN等优化patch。
+
 ### 3.1 版本说明
+
 当前包含Milvus 2.4.5。
+
 ### 3.2 特性说明
+
 #### 3.2.1 Milvus向量指令优化
+
 该特性使用sve指令集和软硬件预取实现，减小了距离函数计算的开销。
+
 #### 3.2.2 Milvus KBest优化
+
 该特性通过Milvus预留接口，对接鲲鹏自研召回算法KBest，发挥鲲鹏优势，使查询性能(QPS)在高召回率(0.99)的前提下，获得30%以上的提升。
+
 #### 3.2.3 Milvus KScaNN优化
+
 该特性通过Milvus预留接口，通过对接鲲鹏自研召回算法KScaNN，发挥鲲鹏优势，使查询性能(QPS)在高召回率(0.95以上)的前提下，获得30%以上的提升。
