@@ -161,7 +161,7 @@ KOVAE以插件形式提供第二执行引擎特性的优点如下：
 
 **相关概念<a name="section184141303214"></a>**
 
-KAE（Kunpeng Accelerator Engine）是基于鲲鹏920处理器提供的硬件加速解决方案，包含了KAE加解密和KAEzip。KAEzip是KAE的压缩模块，使用鲲鹏硬加速模块实现deflate算法，结合无损用户态驱动框架，提供高性能Gzip/zlib格式压缩接口。关于KAEzip的更多详细信息，请参见《[鲲鹏加速引擎 用户指南](https://www.hikunpeng.com/document/detail/zh/kunpengaccel/kae/usermanual/kunpengaccel_16_0002.html)》。
+KAE（Kunpeng Accelerator Engine）是基于鲲鹏920处理器提供的硬件加速解决方案，包含了KAE加解密和KAEzip。KAEzip是KAE的压缩模块，使用鲲鹏硬加速模块实现deflate算法，结合无损用户态驱动框架，提供高性能Gzip/zlib格式压缩接口。关于KAEzip的更多详细信息，请参见《[鲲鹏加速引擎 用户指南](https://www.hikunpeng.com/document/detail/zh/kunpengaccel/kae/kae/README.md)》。
 
 
 ### 已解决的问题<a name="ZH-CN_TOPIC_0000002550143835"></a>
@@ -188,7 +188,7 @@ KAE（Kunpeng Accelerator Engine）是基于鲲鹏920处理器提供的硬件加
 
 ### 获取文档的方法<a name="ZH-CN_TOPIC_0000002550183835"></a>
 
-您可以通过访问[开源仓](https://gitcode.com/boostkit/mysql)浏览和获取相关文档。
+您可以通过访问[开源仓](https://gitcode.com/boostkit/boostdb/tree/master/docs/zh)浏览和获取相关文档。
 
 
 

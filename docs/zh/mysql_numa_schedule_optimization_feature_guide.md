@@ -53,7 +53,7 @@
 |NUMA调度优化Patch|对应MySQL 8.0.20和8.0.25版本的Patch|[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|
 
 
-## 安装和使用特性<a name="ZH-CN_TOPIC_0000002550180081"></a>
+## 安装和使用特性<a id="ZH-CN_TOPIC_0000002550180081"></a>
 
 MySQL NUMA调度优化特性以Patch补丁文件形式提供，该补丁基于MySQL 8.0.20和MySQL 8.0.25版本开发，并在Gitee社区开源，使用该特性前，需要先将Patch应用到MySQL源码中，再编译和安装MySQL。
 
@@ -259,5 +259,5 @@ MySQL NUMA调度优化特性以Patch补丁文件形式提供，该补丁基于My
 
 |发布日期|修订记录|
 |--|--|
-|2023-07-25|第二次正式发布。<br>更新MySQL NUMA调度优化特性的“使用说明”章节中合入补丁操作步骤的命令。|
+|2023-07-25|第二次正式发布。<br>更新MySQL NUMA调度优化特性的[安装和使用特性](#ZH-CN_TOPIC_0000002550180081)章节中合入补丁操作步骤的命令。|
 |2021-06-30|第一次正式发布。|

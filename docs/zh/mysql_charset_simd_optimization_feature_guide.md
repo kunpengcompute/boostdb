@@ -46,8 +46,8 @@
 以Percona-Server 5.7.44-53为例介绍如何安装和使能字符集处理SIMD优化特性，具体操作步骤如下。
 
 1. 请参见《Percona移植指南》中的[配置编译环境](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/Percona/kunpengpercona_02_0014.html)章节安装依赖。
-2. 请参见[**表 2** 操作系统和软件要求](#操作系统和软件要求)下载Percona-Server 5.7.44-53对应的rpm包并存放至目标路径，例如"/home"。
-3. 执行如下命令安装rpm包。安装完成后，默认安装目录位于"/usr/local/mysql"。
+2. 请参见[**表 2** 操作系统和软件要求](#操作系统和软件要求)下载Percona-Server 5.7.44-53对应的rpm包并存放至目标路径，例如`/home`。
+3. 执行如下命令安装rpm包。安装完成后，默认安装目录位于`/usr/local/mysql`。
 
     ```
     cd /home
@@ -60,29 +60,29 @@
     >rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm --nodeps
     >```
 
-4. 在MySQL配置文件"/etc/my.cnf"中增加字符序配置。
-    1. 打开MySQL配置文件"/etc/my.cnf"。
+4. 在MySQL配置文件`/etc/my.cnf`中增加字符序配置。
+    1. 打开MySQL配置文件`/etc/my.cnf`。
 
         ```
         vi /etc/my.cnf
         ```
 
-    2. 按"i"进入编辑模式。
-        - 字符集为utf8时，在"[mysqld]"下增加以下配置。
+    2. 按`i`进入编辑模式。
+        - 字符集为utf8时，在`[mysqld]`下增加以下配置。
 
             ```
             character_set_server = utf8
             collation_server = utf8_general_ci
             ```
 
-        - 字符集为utf8mb4时，在"[mysqld]"下增加以下配置。
+        - 字符集为utf8mb4时，在`[mysqld]`下增加以下配置。
 
             ```
             character_set_server = utf8mb4
             collation_server = utf8mb4_general_ci
             ```
 
-    3. 按"Esc"键退出编辑模式，输入 **:wq!**，按"Enter"键保存并退出文件。
+    3. 按`Esc`键退出编辑模式，输入 **:wq!**，按`Enter`键保存并退出文件。
 
 5. 启动数据库。启动数据库的操作请参见《MySQL移植指南》的[运行MySQL](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_03_0013.html)章节。
 

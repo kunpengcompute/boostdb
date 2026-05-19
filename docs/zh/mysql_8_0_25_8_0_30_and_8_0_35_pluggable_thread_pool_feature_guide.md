@@ -129,7 +129,7 @@
 ## 安装说明<a name="ZH-CN_TOPIC_0000002550182889" id="安装说明"></a>
 
 - MySQL可插拔线程池特性以补丁文件形式提供，需在MySQL源码应用补丁后，编译安装MySQL。
-- 补丁针对MySQL 8.0.25、MySQL 8.0.30和MySQL 8.0.35开发。本特性与MySQL NUMA调度优化patch不冲突，但使用本线程池插件特性后会使[MySQL NUMA调度优化](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/appAccelFeatures/numastf/kunpengdbsmysqlnuma_20_0001.html)中的用户连接线程的调度优化失效。
+- 补丁针对MySQL 8.0.25、MySQL 8.0.30和MySQL 8.0.35开发。本特性与MySQL NUMA调度优化patch不冲突，但使用本线程池插件特性后会使[MySQL NUMA调度优化](https://www.hikunpeng.com/document/detail/zh/boostdb/mysql/basic_computation_opt/docs/zh/mysql_numa_schedule_optimization_feature_guide.md)中的用户连接线程的调度优化失效。
 - MySQL 8.0.25、MySQL 8.0.30和MySQL 8.0.35支持可插拔、动态加载线程池插件。
 - 线程池依赖要求编译环境已安装numactl库，安装numactl依赖包命令为**yum install -y numactl numactl-devel\***。若MySQL程序编译时未安装numactl依赖，将导致无numa库加载的MySQL程序在安装线程池的so文件时，提示“undefined symbol: numa\_xxxxx”的失败信息。
 - MySQL可插拔线程池特性要求CMake版本高于3.7。
@@ -310,12 +310,12 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
     >mysqld --defaults-file=/tmp/myconfig.txt
     >```
 
-|**参数名称**|**参数含义**|**配置建议**|
-|--|--|--|
-|thread_pool_size|该参数用于设置线程池中线程组的数量。|采用默认值时表示线程组数与CPU核数一致，也可根据实际场景（例如连接数超过CPU逻辑核数，性能瓶颈不在锁争用，且CPU压不满的场景）将线程组数设置为1～3倍CPU数或者最优并发数，以获取更佳性能。|
-|thread_pool_oversubscribe|该参数表示每个线程组的超额线程数。<br>thread_pool_oversubscribe取默认值时，表示每个CPU核心的超额线程数，默认值为3，是一个能够充分利用CPU资源的经验值，如果设置为小于3的值，可能导致更多的睡眠和唤醒。|当线程组中活跃工作线程数超过该参数时，认为活跃工作线程过多，需要限制活跃工作线程数，建议配置最优性能时的并发数/thread_pool_size的配置值。|
-|thread_pool_toobusy|该参数表示线程组是否过于忙碌的线程数阈值。|当线程组中活跃的工作线程数+锁或IO等待中的工作线程数＞该阈值加1时，认为线程组过于忙碌，不再处理低优先级的任务，等待当前执行的任务和高优先级队列中的任务被处理，直到线程组回到非忙碌的状态，建议与thread_pool_oversubscribe配置相同的值。|
-|thread_pool_dedicated_listener|该参数用于指定listener线程是否固定只负责epoll_wait等待网络事件。|建议设置为ON，在获取网络事件后，listener线程将所有网络事件任务放入优先队列或普通队列，然后继续进入epoll_wait等待网络事件，以获取更高效率的网络事件。|
+    |**参数名称**|**参数含义**|**配置建议**|
+    |--|--|--|
+    |thread_pool_size|该参数用于设置线程池中线程组的数量。|采用默认值时表示线程组数与CPU核数一致，也可根据实际场景（例如连接数超过CPU逻辑核数，性能瓶颈不在锁争用，且CPU压不满的场景）将线程组数设置为1～3倍CPU数或者最优并发数，以获取更佳性能。|
+    |thread_pool_oversubscribe|该参数表示每个线程组的超额线程数。<br>thread_pool_oversubscribe取默认值时，表示每个CPU核心的超额线程数，默认值为3，是一个能够充分利用CPU资源的经验值，如果设置为小于3的值，可能导致更多的睡眠和唤醒。|当线程组中活跃工作线程数超过该参数时，认为活跃工作线程过多，需要限制活跃工作线程数，建议配置最优性能时的并发数/thread_pool_size的配置值。|
+    |thread_pool_toobusy|该参数表示线程组是否过于忙碌的线程数阈值。|当线程组中活跃的工作线程数+锁或IO等待中的工作线程数＞该阈值加1时，认为线程组过于忙碌，不再处理低优先级的任务，等待当前执行的任务和高优先级队列中的任务被处理，直到线程组回到非忙碌的状态，建议与thread_pool_oversubscribe配置相同的值。|
+    |thread_pool_dedicated_listener|该参数用于指定listener线程是否固定只负责epoll_wait等待网络事件。|建议设置为ON，在获取网络事件后，listener线程将所有网络事件任务放入优先队列或普通队列，然后继续进入epoll_wait等待网络事件，以获取更高效率的网络事件。|
 
 
 3. 通过TPC-C测试可以得到使用MySQL线程池特性前后的性能提升效果，详细测试步骤请参见《[BenchMarkSQL 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengbenchmarksql_06_0001.html)》。
