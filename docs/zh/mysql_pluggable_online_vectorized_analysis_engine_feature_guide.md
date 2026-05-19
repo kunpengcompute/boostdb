@@ -19,7 +19,7 @@ KOVAE以插件形式提供第二执行引擎特性的优点如下：
 
 **相关概念<a name="section184141303214"></a>**
 
-KAE（Kunpeng Accelerator Engine）是基于鲲鹏920处理器提供的硬件加速解决方案，包含了KAE加解密和KAEzip。KAEzip是KAE的压缩模块，使用鲲鹏硬加速模块实现deflate算法，结合无损用户态驱动框架，提供高性能Gzip/zlib格式压缩接口。关于KAEzip的更多详细信息，请参见《[鲲鹏加速引擎 用户指南](https://www.hikunpeng.com/document/detail/zh/kunpengaccel/kae/usermanual/kunpengaccel_16_0002.html)》。
+KAE（Kunpeng Accelerator Engine）是基于鲲鹏920处理器提供的硬件加速解决方案，包含了KAE加解密和KAEzip。KAEzip是KAE的压缩模块，使用鲲鹏硬加速模块实现deflate算法，结合无损用户态驱动框架，提供高性能Gzip/zlib格式压缩接口。关于KAEzip的更多详细信息，请参见《[鲲鹏加速引擎 用户指南](https://www.hikunpeng.com/document/detail/zh/kunpengaccel/kae/kae/README.md)》。
 
 **兼容性<a name="section65704516331"></a>**
 
@@ -403,7 +403,7 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
 
 1. 安装KAEzip。
 
-    KAE源码包中包含了KAEzip模块，可以选择一键安装KAE的所有模块，或者选择单独安装KAEzip。详细操作步骤请参见《[鲲鹏加速引擎 用户指南](https://www.hikunpeng.com/document/detail/zh/kunpengaccel/kae/usermanual/kunpengaccel_16_0002.html)》，请严格按照该文档的操作指导，先完成安装前准备（准备安装环境和获取KAE的License），再安装KAEzip。
+    KAE源码包中包含了KAEzip模块，可以选择一键安装KAE的所有模块，或者选择单独安装KAEzip。详细操作步骤请参见《[鲲鹏加速引擎 用户指南](https://www.hikunpeng.com/document/detail/zh/kunpengaccel/kae/kae/README.md)》，请严格按照该文档的操作指导，先完成安装前准备（准备安装环境和获取KAE的License），再安装KAEzip。
 
 2. 创建软链接。
 
