@@ -159,7 +159,7 @@ MySQL undo\_spaces\_lock优化特性以Patch补丁文件形式提供，该补丁
     >    ```
 
 4. 合入补丁。
-    - 如果本特性不和[MySQL NUMA调度优化](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/appAccelFeatures/numastf/kunpengdbsmysqlnuma_20_0001.html)特性共同使用，则下载[undo\_spaces\_lock优化补丁文件](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)，解压后将0001-UNDO-SPACES-LOCK-OPT.patch补丁文件放到MySQL源码的根目录，执行以下命令生效补丁。
+    - 如果本特性不和[MySQL NUMA调度优化](https://www.hikunpeng.com/document/detail/zh/boostdb/mysql/basic_computation_opt/docs/zh/mysql_numa_schedule_optimization_feature_guide.md)特性共同使用，则下载[undo\_spaces\_lock优化补丁文件](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)，解压后将0001-UNDO-SPACES-LOCK-OPT.patch补丁文件放到MySQL源码的根目录，执行以下命令生效补丁。
 
         ```
         git am --quiet --whitespace=nowarn 0001-UNDO-SPACES-LOCK-OPT.patch
