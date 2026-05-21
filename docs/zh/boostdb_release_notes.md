@@ -3,7 +3,7 @@
 #### 产品版本信息
 | 产品名称      | 产品版本     |
 | --------- | -------- |
-| BoostVirt | 26.0.RC1 |
+| Boostdb | 26.0.RC1 |
 #### 软件版本配套说明
 |特性名称|软件类型|版本|
 |--|--|--|
@@ -41,4 +41,4 @@
 
 ### 获取文档的方法<a name="ZH-CN_TOPIC_0000002544372643"></a>
 
-您可以通过访问[开源仓](https://gitcode.com/boostkit/boostvirt/tree/master/docs/zh)浏览和获取相关文档。
+您可以通过访问[开源仓](https://gitcode.com/boostkit/boostdb/tree/master/docs/zh)浏览和获取相关文档。
