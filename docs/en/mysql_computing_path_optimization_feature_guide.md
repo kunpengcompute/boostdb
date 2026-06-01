@@ -1,4 +1,4 @@
-# MySQL Computing Path Optimization Feature Guide
+# MySQL Computing Path Optimization Feature Guide 
 
 ## Feature Description<a name="EN-US_TOPIC_0000002518697734"></a>
 

@@ -1,4 +1,4 @@
-# MySQL Parallel Query Tuning Feature Guide
+# MySQL Parallel Query Tuning Feature Guide 
 
 ## Introduction<a name="EN-US_TOPIC_0000002518704730"></a>
 

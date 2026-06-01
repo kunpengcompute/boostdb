@@ -1,4 +1,4 @@
-# MySQL LSE and rec_get_offsets Optimization Release Notes
+# MySQL LSE and rec_get_offsets Optimization Release Notes 
 
 ## Version Mapping<a name="EN-US_TOPIC_0000002544492471"></a>
 

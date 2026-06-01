@@ -1,4 +1,4 @@
-# MySQL LSE and rec_get_offsets Optimization Feature Guide
+# MySQL LSE and rec_get_offsets Optimization Feature Guide 
 
 ## Feature Description<a name="EN-US_TOPIC_0000002511086264"></a>
 

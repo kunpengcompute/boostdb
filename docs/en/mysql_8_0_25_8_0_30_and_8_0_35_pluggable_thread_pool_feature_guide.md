@@ -1,5 +1,5 @@
 # MySQL 8.0.25, 8.0.30, and 8.0.35 Pluggable Thread Pool Feature Guide
-## Feature Description<a name="EN-US_TOPIC_0000002518543136"></a>
+## Feature Description
 
 ### Overview<a name="EN-US_TOPIC_0000002550142873"></a>
 
