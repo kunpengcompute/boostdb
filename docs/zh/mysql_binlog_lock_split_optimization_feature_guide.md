@@ -29,8 +29,7 @@ MySQL的二进制日志（Binlog）是记录所有数据库数据变更操作（
 |项目|版本|获取地址|
 |--|--|--|
 |操作系统|openEuler 22.03 LTS SP4|[获取链接](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
-|Percona|Percona-Server 5.7.44-53|[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v4/BoostDB-Percona-5.7.44-53.aarch64.rpm)|
-|Percona|Percona-Server 8.0.43-34|[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v3/BoostDB-Percona-8.0.43-34.aarch64.rpm)|
+|Percona|<ul><li>Percona-Server 5.7.44-53</li><li>Percona-Server 8.0.43-34</li></ul>|<ul><li>[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v4/BoostDB-Percona-5.7.44-53.aarch64.rpm)</li><li>[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v3/BoostDB-Percona-8.0.43-34.aarch64.rpm)</li><ul>|
 
 ## 安装和使能特性<a name="ZH-CN_TOPIC_0000002550137589"></a>
 
