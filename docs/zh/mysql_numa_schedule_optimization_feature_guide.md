@@ -23,7 +23,6 @@
 **图 2** 运行流程<a id="运行流程"></a><br>
 ![](figures/zh_cn_image_000000_mysql_numa_flow.png "运行流程")
 
-
 ## 环境要求<a name="ZH-CN_TOPIC_0000002518540334"></a>
 
 建议关注[MySQL官网](https://www.mysql.com/)MySQL 8.0.20版本的CVE漏洞，按照要求及时进行漏洞修复。
@@ -52,16 +51,13 @@
 |MySQL源码|MySQL 8.0.20<br>MySQL 8.0.25|MySQL 8.0.20：[获取链接](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.20.tar.gz)<br>MySQL 8.0.25：[获取链接](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.gz)|
 |NUMA调度优化Patch|对应MySQL 8.0.20和8.0.25版本的Patch|[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|
 
-
 ## 安装和使用特性<a id="ZH-CN_TOPIC_0000002550180081"></a>
 
 MySQL NUMA调度优化特性以Patch补丁文件形式提供，该补丁基于MySQL 8.0.20和MySQL 8.0.25版本开发，并在Gitee社区开源，使用该特性前，需要先将Patch应用到MySQL源码中，再编译和安装MySQL。
 
 1. 参考[**表 2** 操作系统和软件要求](#操作系统和软件要求)下载MySQL源码，并上传至服务器“/home”目录。
 
-
 2. 参考[**表 2** 操作系统和软件要求](#操作系统和软件要求)下载MySQL NUMA调度优化特性Patch，并上传至MySQL源码的根目录。
-
 
 3. 可选：如果没有配置Yum源，请配置Yum源，详细信息请参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0013.html)》。
 4. 该特性实现依赖libnuma，以CentOS为例，编译MySQL前，需安装如下依赖。
@@ -91,13 +87,16 @@ MySQL NUMA调度优化特性以Patch补丁文件形式提供，该补丁基于My
 
     >![](public_sys-resources/icon_note.gif) **说明：**
     >- 一般情况下，系统自带git，若需要安装git，请先参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中配置Yum源相关内容，再执行如下命令安装git。
-     >  ```shell
-     >  yum install git
+>
+     > ```shell
+     > yum install git
      >  ```
+>
     >- 若未配置git的提交用户信息，git commit前需要先配置用户邮件及用户名称信息。
-    >  ```shell
-    >  git config user.email "123@example.com"
-    >  git config user.name "123"
+>
+    > ```shell
+    > git config user.email "123@example.com"
+    > git config user.name "123"
     >  ```
 
 7. 可选：如果没有安装dos2unix，请执行如下命令安装dos2unix。
@@ -152,10 +151,9 @@ MySQL NUMA调度优化特性以Patch补丁文件形式提供，该补丁基于My
          sched_affinity_purge_coordinator=31
          ```
 
-        
-
          >![](public_sys-resources/icon_note.gif) **说明：**
          > 数据库的配置文件默认路径为“/etc/my.cnf”。也可以通过以下命令行指定defaults-file选项，其中“/tmp/myconfig.txt”表示指定配置文件的路径。
+>
          > ```shell
          > mysqld --defaults-file=/tmp/myconfig.txt
          > ```
@@ -217,7 +215,6 @@ MySQL NUMA调度优化特性以Patch补丁文件形式提供，该补丁基于My
     **图 3** MySQL NUMA调度优化特性优化前后性能对比<a name="fig_mysql_numa_perf"></a><a id="MySQL_NUMA调度优化特性优化前后性能对比"></a><br>
     ![](figures/MySQL_NUMA调度优化特性优化前后性能对比.png "MySQL_NUMA调度优化特性优化前后性能对比")
 
-
 ## 代码实现<a name="ZH-CN_TOPIC_0000002518700244"></a>
 
 本特性主要新增类如[**表 7** 新增类的名称及其说明](#新增类的名称及其说明)所示。
@@ -229,7 +226,6 @@ MySQL NUMA调度优化特性以Patch补丁文件形式提供，该补丁基于My
 |Sched_affinity_manager|调度管理器接口。<br><br>- 方法register_thread用于线程启动时向调度管理器注册自身，之后其调度由后者管理。<br>- 方法unregister_thread用于线程销毁前向调度管理器注销自身。<br>- 方法rebalance_group用于CPU core(s)相关参数变更时，更新调度管理器内部状态，以及存量线程的调度状态。<br>- 方法update_numa_aware用于sched_affinity_numa_aware参数变更时，更新调度管理器内部状态，以及存量线程的调度状态。<br>- 方法take_group_snapshot用于返回调度管理器内部状态的快照，字符串形式，由用户查询。<br>- 方法get_total_node_number用于返回系统NUMA node总数。<br>- 方法get_cpu_number_per_node用于返回系统每个NUMA node中的core数量。<br>- 方法check_cpu_string用于检查用户传入的CPU core(s)参数的合法性。|
 |Sched_affinity_manager_numa|调度管理器的实现。|
 |Sched_affinity_manager_dummy|备份管理器的实现，所有接口的实现仅为返回符合调用者预期的值。<br><br>当Sched_affinity_manager_numa不可用时（如libnuma依赖不满足），启用Sched_affinity_manager_dummy。|
-
 
 ## 安全管理<a name="ZH-CN_TOPIC_0000002518540336"></a>
 
@@ -245,7 +241,6 @@ MySQL NUMA调度优化特性以Patch补丁文件形式提供，该补丁基于My
 - OpenSSL漏洞
 - 其他相关组件漏洞
 
-
 ## 缩略语<a name="ZH-CN_TOPIC_0000002518700246"></a>
 
 |缩略语|英文全称|中文全称|
@@ -253,7 +248,6 @@ MySQL NUMA调度优化特性以Patch补丁文件形式提供，该补丁基于My
 |NUMA|Non-Uniform Memory Access|非一致性内存访问|
 |OLTP|Online Transaction Processing|联机事务处理|
 |TPC-C|Transaction Processing Performance Council Benchmark C|事务处理性能委员会基准测试C|
-
 
 ## 修订记录<a name="ZH-CN_TOPIC_0000002518700240"></a>
 

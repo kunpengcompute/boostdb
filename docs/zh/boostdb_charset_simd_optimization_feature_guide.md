@@ -28,7 +28,6 @@
   - 在utf8/utf8mb4的general_ci路径上，通过`ctype-opt.cc`注入SVE优化，覆盖`my_strnxfrm_unicode`、`my_hash_sort_utf8mb3`、`my_hash_sort_utf8mb4`，以及 `my_numchars_mb`、`my_charpos_mb3`（utf8mb3）/`my_charpos_mb4`（utf8mb4）。
   - 在UCA路径上，`utf8mb3_unicode_ci`、`utf8mb4_unicode_ci`、`utf8mb4_0900_ai_ci`也有SVE优化，覆盖UCA比较、哈希和权重转换相关流程（如`my_simd_support_check_uca_any`、`my_simd_support_check_uca_900_primary`、`my_hash_sort_uca`、`my_strnxfrm_uca` / `my_strnxfrm_uca_900_tmpl`）。
 
-
 ## 环境要求<a name="ZH-CN_TOPIC_0000002518697732"></a>
 
 本文基于特定环境提供指导，在正式操作前请确保软硬件均满足要求。
@@ -55,49 +54,53 @@
 2. 在MySQL配置文件“/etc/my.cnf”中增加字符序配置。
     1. 打开MySQL配置文件“/etc/my.cnf”。
 
-        ```
+        ```shell
         vi /etc/my.cnf
         ```
 
     2. 按“i”进入编辑模式。字符集为utf8时，在“[mysqld]”下增加字符集和比较规则的配置，请根据使用场景选择以下几种的其中一种配置即可。 
 
-        ```
+        ```txt
         character_set_server = utf8
         collation_server = utf8_general_ci
         ```
 
-        ```
+        ```txt
         character_set_server = utf8
         collation_server = utf8_unicode_ci
         ```
 
     >![](public_sys-resources/icon_note.gif) **说明：**
     >在Percona-Server 8.0.43-34中则进行以下配置：
+>
+    > ```txt
+    > character_set_server = utf8mb3
+    > collation_server = utf8mb3_general_ci
     >    ```
-    >    character_set_server = utf8mb3
-    >    collation_server = utf8mb3_general_ci
-    >    ```
-    >    ```
-    >    character_set_server = utf8mb3
-    >    collation_server = utf8mb3_unicode_ci
+>
+    > ```txt
+    > character_set_server = utf8mb3
+    > collation_server = utf8mb3_unicode_ci
     >    ```
 
     3. 字符集为utf8mb4时，在“[mysqld]”下增加字符集和比较规则的配置，请根据使用场景选择以下几种的其中一种配置即可。
 
-        ```
+        ```txt
         character_set_server = utf8mb4
         collation_server = utf8mb4_general_ci
         ```
-        ```
+
+        ```txt
         character_set_server = utf8mb4
         collation_server = utf8mb4_unicode_ci
         ```
  
     >![](public_sys-resources/icon_note.gif) **说明：**
     >Percona-Server 8.0.43-34中除支持以上配置外，另外支持以下配置：
-    >    ```
-    >    character_set_server = utf8mb4
-    >    collation_server = utf8mb4_0900_ai_ci
+>
+    > ```txt
+    > character_set_server = utf8mb4
+    > collation_server = utf8mb4_0900_ai_ci
     >    ```
 
     4. 按“Esc”键退出编辑模式，输入 **:wq!**，按“Enter”键保存并退出文件。
@@ -106,7 +109,7 @@
 
 4. 以数据库sbtest中的表sbtest1为例说明如何查询数据库和表的字符集、字符序配置。
 
-    ```
+    ```sql
     show create database sbtest;
     SHOW VARIABLES LIKE 'collation_database';
     show create table sbtest1;
@@ -135,7 +138,7 @@
 
 ASLR（Address Space Layout Randomization，地址空间布局随机化）是一种针对缓冲区溢出的安全保护技术，通过对堆、栈、共享库映射等线性区布局的随机化，增加攻击者预测目的地址的难度，防止攻击者直接定位攻击代码位置，达到阻止溢出攻击的目的。
 
-```
+```shell
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 

@@ -1,10 +1,10 @@
 # MySQL 8.0.25, 8.0.30, and 8.0.35 Pluggable Thread Pool Feature Guide
+
 ## Feature Description
 
 ### Overview<a name="EN-US_TOPIC_0000002550142873"></a>
 
 The default MySQL connector allocates a thread to each connection. As the number of connections increases, context switching and the contention for hot locks may occupy many CPU resources, deteriorating service performance. Kunpeng BoostKit introduces the thread pool connector module to address this issue.
-
 
 ### Application Scenarios<a name="EN-US_TOPIC_0000002518543140"></a>
 
@@ -12,7 +12,6 @@ The default MySQL connector allocates a thread to each connection. As the number
 - Read-only short queries with a large number of connections
 
 This feature is implemented using a patch file. For details about how to use the patch file, see [Installation Description](#installation-description).
-
 
 ### Principles<a name="EN-US_TOPIC_0000002518543142"></a>
 
@@ -51,7 +50,6 @@ A thread pool supports the following functions:
 
 For details about the function configuration, see [Parameters](#parameters).
 
-
 #### Processing of a Priority Session<a name="EN-US_TOPIC_0000002550182883"></a>
 
 When there are a large number of connections and heavy load, transactions that obtain a lock can be processed first. The original processing logic is that after a readable event occurs on such connections, the connections are put into the priority queue by the thread group and wait to be processed by an idle worker thread. The logic is further optimized. Instead of returning the worker thread occupied by the session that has entered the priority queue to the thread pool, the session continues to exclusively occupy this worker thread and processes the service logic. This is similar to the one thread for one connection mode. In this way, the exclusively occupied worker thread is used to process nothing else but all subsequent statements of the priority connection unless the connection changes to a common one, for example, when the connection transaction ends and the lock is released. [**Figure 1**](#logic-of-a-priority-session-exclusively-occupying-a-worker-thread) illustrates the logic for determining whether a session connection is prioritized.
@@ -75,10 +73,6 @@ When there are a large number of connections and heavy load, transactions that o
 |⑧|The login verification fails, and the connection ends.|
 |⑨|The connection ends if an error occurs when the worker thread waits for or executes an SQL statement or if the session ends and exits.|
 
-
-
-
-
 ## Verified Environments<a name="EN-US_TOPIC_0000002518543132"></a>
 
 This document provides guidance based on the Kunpeng server and openEuler OS. The following describes the verified hardware and software environments.
@@ -94,7 +88,6 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
 |Server|Kunpeng server|
 |Processor|Kunpeng 920 series|
 |Drive|If a performance test needs to be performed, at least two drives are required: one system drive and one data drive. If no performance test needs to be performed, a data directory can be directly created on the system drive. Configure the number of drives based on actual requirements.|
-
 
 **OS and Software Versions<a name="section24945412"></a>**
 
@@ -124,7 +117,6 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
 |MySQL|8.0.30|[Link](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.30.tar.gz)|
 |MySQL|8.0.35|[Link](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.35.tar.gz)|
 
-
 ## Installation Description<a name="EN-US_TOPIC_0000002550182889" id="installation-description"></a>
 
 - The MySQL pluggable thread pool feature is provided in a patch. Apply the patch in the MySQL source code, and then compile and install the MySQL database.
@@ -139,7 +131,7 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
 
     For MySQL 8.0.25, run the following commands:
 
-    ```
+    ```shell
     cd /home
     tar -zxvf mysql-boost-8.0.25.tar.gz
     cd mysql-8.0.25
@@ -147,7 +139,7 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
 
     For MySQL 8.0.30, run the following commands:
 
-    ```
+    ```shell
     cd /home
     tar -zxvf mysql-boost-8.0.30.tar.gz
     cd mysql-8.0.30
@@ -155,7 +147,7 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
 
     For MySQL 8.0.35, run the following commands:
 
-    ```
+    ```shell
     cd /home
     tar -zxvf mysql-boost-8.0.35.tar.gz
     cd mysql-8.0.35
@@ -164,57 +156,66 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >You can also run the following commands to download the MySQL source code.
     >For MySQL 8.0.25:
-    >```
+>
+    >```shell
     >wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.25.tar.gz --no-check-certificate
     >tar -zxvf mysql-boost-8.0.25.tar.gz
     >```
+>
     >For MySQL 8.0.30:
-    >```
+>
+    >```shell
     >wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.30.tar.gz --no-check-certificate
     >tar -zxvf mysql-boost-8.0.30.tar.gz
     >```
+>
     >For MySQL 8.0.35:
-    >```
+>
+    >```shell
     >wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.35.tar.gz --no-check-certificate
     >tar -zxvf mysql-boost-8.0.35.tar.gz
     >```
 
 2. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```
+    ```shell
     git init
     git add -A
     git commit -m "Initial commit"
     ```
 
     >![](public_sys-resources/icon_note.gif) **NOTE:**
-    >-   Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
+    >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
+>
+    > ```shell
+    > yum install git
     >    ```
-    >    yum install git
-    >    ```
-    >-   If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
-    >    ```
-    >    git config user.email "123@example.com"
-    >    git config user.name "123"
+>
+    >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
+>
+    > ```shell
+    > git config user.email "123@example.com"
+    > git config user.name "123"
     >    ```
 
 3. Download the [MySQL thread pool feature patch](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.25/boostdb-patches/code-threadpool-for-MySQL-8.0.patch) and upload it to the root directory of the MySQL source code. This patch applies to MySQL 8.0.25, 8.0.30, and 8.0.35.
 
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >You can also run the following command to download the MySQL thread pool feature patch:
-    >```
+>
+    >```shell
     >wget https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.25/boostdb-patches/code-threadpool-for-MySQL-8.0.patch --no-check-certificate
     >```
 
 4. Check whether the content is modified.
 
-    ```
+    ```shell
     git status
     ```
 
     The following shows that a `code-threadpool-for-MySQL-8.0.patch` file is added.
 
-    ```
+    ```text
     [root@localhost mysql-8.0.25]# git status
     On branch master
     Untracked files:
@@ -226,14 +227,14 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
 
 5. Apply the patch file.
 
-    ```
+    ```shell
     git apply --check code-threadpool-for-MySQL-8.0.patch
     git apply --whitespace=nowarn code-threadpool-for-MySQL-8.0.patch
     ```
 
 6. After the patch file is successfully applied, you can check the new `thread_pool` directory and the new source code file in the `mysql-8.0.25`, `mysql-8.0.30`, or `mysql-8.0.35` directory.
 
-    ```
+    ```shell
     ll ./plugin/thread_pool/
     ```
 
@@ -243,7 +244,6 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
 
 7. Compile and install the MySQL source code. For details, see [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html).
 
-
 ## Usage Description<a name="EN-US_TOPIC_0000002550182887"></a>
 
 ### Configuration Description<a name="EN-US_TOPIC_0000002518703038"></a>
@@ -251,7 +251,6 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
 MySQL uses one thread per connection by default. To enable the thread pool feature, install the thread pool plugin. The plugin takes effect by either setting the configuration file or installation through MySQL commands. For details, see [Thread Pool Plugin Usage Example](#thread-pool-plugin-usage-example). After a thread pool is configured, you are advised to retain the default values of the parameters listed in [Parameters](#parameters) in OLTP scenarios. You can adjust the value of `thread_pool_size` to optimize the peak performance. For details, see [thread_pool_size](#thread_pool_size).
 
 MySQL parameters are also called system variables, which are used to set service functions and performance of MySQL. For details, see the official MySQL document [Server System Variables](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html).
-
 
 ### Parameters<a name="EN-US_TOPIC_0000002518703042" id="parameters"></a>
 
@@ -271,7 +270,7 @@ MySQL parameters are also called system variables, which are used to set service
         >![](public_sys-resources/icon_notice.gif) **NOTICE:**
         >The thread pool plugin installed using this method takes effect immediately.
 
-        ```
+        ```sql
         INSTALL PLUGIN thread_pool SONAME "thread_pool.so";
         INSTALL PLUGIN THREAD_POOL_GROUPS SONAME "thread_pool.so";
         INSTALL PLUGIN THREAD_POOL_QUEUES SONAME "thread_pool.so";
@@ -286,13 +285,13 @@ MySQL parameters are also called system variables, which are used to set service
         >![](public_sys-resources/icon_notice.gif) **NOTICE:**
         >After installing the thread pool plugin in this method, restart the database for the installation to take effect.
 
-        ```
+        ```text
         plugin-load-add=thread_pool.so
         ```
 
         After the installation is complete, you can run the following SQL statement to check whether the installation is successful:
 
-        ```
+        ```shell
         show plugins;
         ```
 
@@ -304,17 +303,17 @@ MySQL parameters are also called system variables, which are used to set service
 
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >The default path to the database configuration file is `/etc/my.cnf`. If you want to use a configuration file in another path, you can use the `--defaults-file` option to specify the configuration file, for example, `/tmp/myconfig.txt`.
-    >```
+>
+    >```shell
     >mysqld --defaults-file=/tmp/myconfig.txt
     >```
 
-|**Parameter**|**Description**|**Recommended Configuration**|
-|--|--|--|
-|thread_pool_size|Number of thread groups in the thread pool.|The default value indicates that the number of thread groups is the same as that of CPU cores. To achieve optimal performance, you can set the number of thread groups to one to three times that of CPUs or the optimal number of concurrent threads based on the actual scenario. For example, the number of connections exceeds the number of logical CPU cores, the performance bottleneck does not lie in lock contention, and the CPU pressure is not full.|
-|thread_pool_oversubscribe|Oversubscribing number of threads in each thread group.<br>If this parameter is set to the default value, this parameter indicates the oversubscribing number of threads of each CPU core. The default value is <code>3</code>, which is an empirical value that can fully utilize CPU resources. If this parameter is set to a value smaller than <code>3</code>, more sleep and wake-up events may occur.|If the number of active worker threads in a thread group exceeds the value of this parameter, the number of active worker threads is too large and you need to reduce this number. You are advised to set this parameter to the number of concurrent threads or the <code>thread_pool_size</code> value that delivers optimal performance.|
-|thread_pool_toobusy|Threshold of the number of threads that determines whether a thread group is too busy.|When the number of active worker threads in the thread group plus the number of worker threads in lock or I/O waiting is greater than the threshold plus 1, the thread group is considered too busy and does not process low-priority tasks. Instead, the thread group only processes ongoing tasks and those tasks in the high-priority queue until the thread group returns to the non-busy state. You are advised to set this parameter to the same value as <code>thread_pool_oversubscribe</code>.|
-|thread_pool_dedicated_listener|Whether the listener thread only waits for network events by calling <code>epoll_wait</code>.|You are advised to set this parameter to <code>ON</code>. After network events are obtained, the listener thread puts all network event tasks in the priority queue or common queue, and then calls <code>epoll_wait</code> to wait for network events. In this way, network events can be obtained more efficiently.|
-
+    |**Parameter**|**Description**|**Recommended Configuration**|
+    |--|--|--|
+    |thread_pool_size|Number of thread groups in the thread pool.|The default value indicates that the number of thread groups is the same as that of CPU cores. To achieve optimal performance, you can set the number of thread groups to one to three times that of CPUs or the optimal number of concurrent threads based on the actual scenario. For example, the number of connections exceeds the number of logical CPU cores, the performance bottleneck does not lie in lock contention, and the CPU pressure is not full.|
+    |thread_pool_oversubscribe|Oversubscribing number of threads in each thread group.<br>If this parameter is set to the default value, this parameter indicates the oversubscribing number of threads of each CPU core. The default value is <code>3</code>, which is an empirical value that can fully utilize CPU resources. If this parameter is set to a value smaller than <code>3</code>, more sleep and wake-up events may occur.|If the number of active worker threads in a thread group exceeds the value of this parameter, the number of active worker threads is too large and you need to reduce this number. You are advised to set this parameter to the number of concurrent threads or the <code>thread_pool_size</code> value that delivers optimal performance.|
+    |thread_pool_toobusy|Threshold of the number of threads that determines whether a thread group is too busy.|When the number of active worker threads in the thread group plus the number of worker threads in lock or I/O waiting is greater than the threshold plus 1, the thread group is considered too busy and does not process low-priority tasks. Instead, the thread group only processes ongoing tasks and those tasks in the high-priority queue until the thread group returns to the non-busy state. You are advised to set this parameter to the same value as <code>thread_pool_oversubscribe</code>.|
+    |thread_pool_dedicated_listener|Whether the listener thread only waits for network events by calling <code>epoll_wait</code>.|You are advised to set this parameter to <code>ON</code>. After network events are obtained, the listener thread puts all network event tasks in the priority queue or common queue, and then calls <code>epoll_wait</code> to wait for network events. In this way, network events can be obtained more efficiently.|
 
 3. Perform a TPC-C test to obtain the performance improvement data after the MySQL thread pool feature is used. For details about the test procedure, see [BenchmarkSQL Test Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/testguide/tstg/kunpengbenchmarksql_06_0001.html).
 
@@ -331,7 +330,7 @@ MySQL parameters are also called system variables, which are used to set service
 1. Uninstall the thread pool plugin using either of the following methods:
     - Method 1: Run the `UNINSTALL` command.
 
-        ```
+        ```shell
         UNINSTALL PLUGIN THREAD_POOL_GROUPS;
         UNINSTALL PLUGIN THREAD_POOL_QUEUES;
         UNINSTALL PLUGIN THREAD_POOL_STATS;
@@ -348,16 +347,15 @@ MySQL parameters are also called system variables, which are used to set service
         >![](public_sys-resources/icon_notice.gif) **NOTICE:**
         >After uninstalling the thread pool plugin in this method, restart the database for the uninstallation to take effect.
 
-        ```
+        ```shell
         plugin-load-add=thread_pool.so
         ```
 
 2. Check whether the thread pool plugin has been successfully uninstalled:
 
-    ```
+    ```shell
     show plugins;
     ```
-
 
 #### thread_pool_size<a name="EN-US_TOPIC_0000002518703048" id="thread_pool_size"></a>
 
@@ -377,7 +375,6 @@ Value range: 1–1024
 
 This parameter specifies the number of thread groups in a thread pool. The default value indicates that the number of thread groups is the same as the number of CPU cores. You can set this parameter to one to three times the number of CPU cores to achieve better performance based on your requirements (for example, when the number of connections exceeds the number of logical CPU cores, the performance bottleneck is not caused by lock contention, and the CPU is not fully occupied).
 
-
 #### thread_pool_max_threads<a name="EN-US_TOPIC_0000002518703040"></a>
 
 Support CLI: Yes
@@ -395,7 +392,6 @@ Default value: `100000`
 Value range: 1–100000
 
 This parameter specifies the maximum number of threads in a thread pool. When the specified value is reached, you cannot create any new thread.
-
 
 #### thread_pool_stall_limit<a name="EN-US_TOPIC_0000002550182879"></a>
 
@@ -415,7 +411,6 @@ Value range: 10–4294967295
 
 This parameter specifies the interval for the timer thread to check the status of a thread group, in milliseconds. If a thread group is identified to be stalled, the thread group wakes up a sleeping thread or creates a new thread. This prevents the problem that a new query cannot be processed because a long query occupies a worker thread for a long time.
 
-
 #### thread_pool_idle_timeout<a name="EN-US_TOPIC_0000002550142887"></a>
 
 Support CLI: Yes
@@ -433,7 +428,6 @@ Default value: `60` (s)
 Value range: 1–4294967295
 
 This parameter specifies the waiting time of an idle thread after the worker thread enters the idle state. If the idle thread is not woken up by a new task after the period specified by this parameter, the idle thread exits.
-
 
 #### thread_pool_oversubscribe<a name="EN-US_TOPIC_0000002550142883"></a>
 
@@ -453,7 +447,6 @@ Value range: 1–1000
 
 This parameter specifies the oversubscribing number of threads in each thread group. If it is set to the default value, it indicates the oversubscribing number of threads of each CPU core. The default value is `3`, which is an empirical value that can fully utilize CPU resources. If this parameter is set to a value smaller than `3`, more sleep and wake-up events may occur. If the number of active worker threads in a thread group exceeds the value of this parameter, the system considers that there are too many active worker threads and you need to reduce this number.
 
-
 #### thread_pool_toobusy<a name="EN-US_TOPIC_0000002518543134"></a>
 
 Support CLI: Yes
@@ -471,7 +464,6 @@ Default value: `13`
 Value range: 1–1000
 
 This parameter specifies the threshold number of worker threads for determining whether a thread group is busy. If (*Number of active worker threads in a thread group* + *Number of worker threads in lock or I/O waiting*) > (`thread_pool_toobusy` + 1), the thread group is busy and does not handle low-priority tasks until the thread group returns to a non-busy state. Instead, the thread group waits for the ongoing tasks and high-priority tasks to be handled.
-
 
 #### thread_pool_high_prio_mode<a name="EN-US_TOPIC_0000002550142869" id="thread_pool_high_prio_mode"></a>
 
@@ -502,7 +494,6 @@ This parameter is used to provide finer-grained control over high-priority sched
     >![](public_sys-resources/icon_notice.gif) **NOTICE:**
     >Setting this parameter to `none` globally essentially disables high-priority scheduling, since in this case all statements from all connections have the same priority.
 
-
 #### thread_pool_high_prio_tickets<a name="EN-US_TOPIC_0000002550142871" id="thread_pool_high_prio_tickets"></a>
 
 Support CLI: Yes
@@ -520,7 +511,6 @@ Default value: `4294967295`
 Value range: 0–4294967295
 
 This parameter controls the high-priority queue policy. Each new connection is assigned this many tickets to enter the high-priority queue. Setting this parameter to `0` disables the high-priority queue. The number of tickets is decremented by 1 each time a connection is put into the high-priority queue. If the number of tickets decreases to 0, connections enter the low-priority queue instead. When a connection enters a low-priority queue, the number of tickets held by the connection is reset to the `thread_pool_high_prio_tickets` preset value of the session of the connection. The goal is to prevent worker threads from being occupied by a large number of high-priority connections for a long time, so that low-priority connections can be processed.
-
 
 #### thread_pool_dedicated_listener<a name="EN-US_TOPIC_0000002518543130"></a>
 
@@ -541,7 +531,6 @@ Possible values: `OFF` and `ON`
 This parameter specifies whether the listener thread only waits for network events by calling `epoll_wait`. The default value is `OFF`. That is, when one or more network events occur and the priority and common queues are empty (the network is not busy), the listener thread reserves the first network event and puts the other events (if there are multiple network events polled in one `epoll_wait`) in the common queue or high-priority queue. The listener thread becomes a worker thread to process the first reserved network event to reduce thread context switches.
 
 Set this parameter to `ON` if you configure a small `thread_pool_size`. After network events are obtained, the listener thread puts all network event tasks in the priority queue or common queue, and then calls `epoll_wait` to wait for network events. In this way, network events can be obtained more efficiently.
-
 
 #### thread_pool_sched_affinity<a name="EN-US_TOPIC_0000002550182881"></a>
 
@@ -571,7 +560,6 @@ By default, the thread group and NUMA affinity function is disabled in the threa
 
 This reduces the probability of cross-NUMA memory access in scenarios where one session is used to query specific data only and thereby improves query performance.
 
-
 #### thread_pool_connection_balance<a name="EN-US_TOPIC_0000002550142885"></a>
 
 Support CLI: Yes
@@ -589,7 +577,6 @@ Default value: `OFF`
 Possible values: `OFF` and `ON`
 
 This parameter is used to enable or disable the connection quantity balancing function. When this function is disabled, the `group_id` of the thread group to which the connection belongs is determined based on the polling method. When this function is enabled, the system checks the connection quantity balancing status after SQL statements are executed. If the number of connections in the thread group to which the current connection belongs exceeds the average number of connections in a thread group, the system migrates connections to a thread group whose number of connections is less than the average number. This approach will ensure that the difference between the number of connections in each thread group does not exceed 1, maximizing the overall thread group performance.
-
 
 #### thread_pool_sched_affinity_foreground_thread<a name="EN-US_TOPIC_0000002550182895" id="thread_pool_sched_affinity_foreground_thread"></a>
 
@@ -616,7 +603,6 @@ For example, the following lists valid values of CPU cores:
 
 This parameter is used to specify the CPU cores available to MySQL foreground threads. You are advised to bind foreground threads and background threads to different cores.
 
-
 #### thread_pool_sched_affinity_log_checkpointer<a name="EN-US_TOPIC_0000002518543144"></a>
 
 Support CLI: Yes
@@ -641,7 +627,6 @@ For example, the following lists valid values of CPU cores:
 - `0,2-5,7`
 
 This parameter is used to specify the CPU cores available to the MySQL log_checkpointer thread. You are advised to bind background threads to cores of the same NUMA node.
-
 
 #### thread_pool_sched_affinity_log_flush_notifier<a name="EN-US_TOPIC_0000002550182885"></a>
 
@@ -668,7 +653,6 @@ For example, the following lists valid values of CPU cores:
 
 This parameter is used to specify the CPU cores available to the MySQL log_flush_notifier thread. You are advised to bind background threads to cores of the same NUMA node.
 
-
 #### thread_pool_sched_affinity_log_flusher<a name="EN-US_TOPIC_0000002518703050"></a>
 
 Support CLI: Yes
@@ -693,7 +677,6 @@ For example, the following lists valid values of CPU cores:
 - `0,2-5,7`
 
 This parameter is used to specify the CPU cores available to the MySQL log_flusher thread. You are advised to bind background threads to cores of the same NUMA node.
-
 
 #### thread_pool_sched_affinity_log_write_notifier<a name="EN-US_TOPIC_0000002518703036"></a>
 
@@ -720,7 +703,6 @@ For example, the following lists valid values of CPU cores:
 
 This parameter is used to specify the CPU cores available to the MySQL log_write_notifier thread. You are advised to bind background threads to cores of the same NUMA node.
 
-
 #### thread_pool_sched_affinity_log_writer<a name="EN-US_TOPIC_0000002550182893"></a>
 
 Support CLI: Yes
@@ -745,7 +727,6 @@ For example, the following lists valid values of CPU cores:
 - `0,2-5,7`
 
 This parameter is used to specify the CPU cores available to the MySQL log_writer thread. You are advised to bind background threads to cores of the same NUMA node.
-
 
 #### thread_pool_sched_affinity_purge_coordinator<a name="EN-US_TOPIC_0000002518703044" id="thread_pool_sched_affinity_purge_coordinator"></a>
 
@@ -772,8 +753,6 @@ For example, the following lists valid values of CPU cores:
 
 This parameter is used to specify the CPU cores available to the MySQL purge_coordinator thread. You are advised to bind background threads to cores of the same NUMA node.
 
-
-
 ### Setting thread_pool_size to a Small Value<a name="EN-US_TOPIC_0000002550142875"></a>
 
 Compared with the default configuration mode, setting a small `thread_pool_size` creates more active threads in each thread group. In this manner, after the connection of a long query is bound to a thread group, executing the long query only has a minor impact on the execution of other short queries in the thread group. In OLTP write-only scenarios, when there are many connections (for example, 8192), the performance can remain about 90% of the optimal in the configuration mode of a small number of thread groups.
@@ -789,8 +768,6 @@ Compared with the default mode (which uses default parameters), configuring a sm
 |thread_pool_oversubscribe|Use the default value <code>3</code>.|Set it to the number of connections for the optimal performance of the baseline version divided by the value of <code>thread_pool_size</code>.|
 |thread_pool_toobusy|Use the default value <code>13</code>.|Set it to the same value as <code>thread_pool_oversubscribe</code>.|
 
-
-
 ### New information_schema Tables<a name="EN-US_TOPIC_0000002550182897" id="new-information-schema-tables"></a>
 
 #### Overview<a name="EN-US_TOPIC_0000002550142881"></a>
@@ -799,10 +776,9 @@ For details about `INFORMATION_SCHEMA`, see the MySQL official document [INFORMA
 
 An example of query from `INFORMATION_SCHEMA` is as follows:
 
-```
+```sql
 select * from information_schema.THREAD_POOL_GROUPS;
 ```
-
 
 #### THREAD_POOL_GROUPS Table<a name="EN-US_TOPIC_0000002550182891"></a>
 
@@ -821,8 +797,6 @@ select * from information_schema.THREAD_POOL_GROUPS;
 |HAS_LISTENER|Whether a listener thread exists in a thread group. Possible cases:<br>· When a worker thread does not obtain any task, the worker thread determines that there is no listener in the thread group before entering the idle state. In this case, the worker thread changes to a listener thread.<br>· When a thread group is closed, the listener thread exits.<br>· After a listener thread polls a network event by calling <code>epoll_wait</code>, if there is no task in the priority and common queues, the listener thread changes to a worker thread to process the first network event polled, and the listener thread no longer exists.|
 |IS_STALLED|Whether a thread group is stalled. If neither the common queue nor the priority queue is empty, and no new task is put into the queues or no task is pulled out for processing in a period of time, the thread group is stalled. Possible cases:<br>· A thread group that is being initialized is not in the stalled state.<br>· When executing <code>check_stall</code>, the timer thread checks whether any task in the thread group has been pulled from the queue since the last <code>check_stall</code> and whether the common and priority queues are empty. If no task has been pulled from the queue and the queues are not empty, the thread group is stalled.<br>· When a worker thread pulls a task from the waiting queue, the task is about to be executed and the thread group is not stalled.|
 
-
-
 #### THREAD_POOL_QUEUES Table<a name="EN-US_TOPIC_0000002550142877"></a>
 
 `THREAD_POOL_QUEUES` provides connection information in a thread group queue.
@@ -836,8 +810,6 @@ select * from information_schema.THREAD_POOL_GROUPS;
 |PRIORITY|The value <code>0</code> indicates the high-priority queue, and <code>1</code> indicates the common queue.|
 |CONNECTION_ID|Unique ID of a connection. The value is the same as the value of <code>id</code> in the output of the <code>show processlist</code> command.|
 |QUEUEING_TIME_MICROSECONDS|Waiting time of a task in a queue, in μs.|
-
-
 
 #### THREAD_POOL_STATS Table<a name="EN-US_TOPIC_0000002518703046"></a>
 
@@ -857,8 +829,6 @@ select * from information_schema.THREAD_POOL_GROUPS;
 |POLLS_BY_LISTENERPOLLS_BY_WORKER|Total number of epoll network events since the thread group is initialized.<br>· <code>POLLS_BY_WORKER</code> indicates that the poll initiator is a worker thread.<br>· <code>POLLS_BY_LISTENER</code> indicates that the initiator is a listener thread.|
 |DEQUEUES_BY_LISTENERDEQUEUES_BY_WORKER|Number of times that tasks are pulled from the queue since the thread group is initialized.<br>· <code>DEQUEUES_BY_WORKER</code> indicates that the dequeue initiator is a worker thread.<br>· <code>DEQUEUES_BY_LISTENER</code> indicates that the initiator is a listener thread.|
 
-
-
 #### THREAD_POOL_WAITS Table<a name="EN-US_TOPIC_0000002550142879"></a>
 
 `THREAD_POOL_WAITS` provides statistics about reasons that worker threads in a thread group enter the waiting state during SQL statement execution. Reasons for the waiting are `UNKNOWN`, `SLEEP`, `DISKIO`, `ROW_LOCK`, `GLOBAL_LOCK`, `META_DATA_LOCK`, `TABLE_LOCK`, `USER_LOCK`, `BINLOG`, `GROUP_COMMIT`, and `SYNC`.
@@ -869,10 +839,6 @@ select * from information_schema.THREAD_POOL_GROUPS;
 |--|--|
 |REASON|Reason why a thread enters the waiting state. <code>wait_reasons</code> stores the reasons in the form of an array string.|
 |COUNT|Number of times that a worker thread enters the waiting state due to a certain reason (lock, I/O, etc.) since the thread group is initialized.|
-
-
-
-
 
 ## Acronyms and Abbreviations<a name="EN-US_TOPIC_0000002518703052"></a>
 

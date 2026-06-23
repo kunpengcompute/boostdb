@@ -23,7 +23,6 @@
 </tbody>
 </table>
 
-
 ### Software Version Mapping<a name="EN-US_TOPIC_0000002552623509"></a>
 
 |Type|Version|
@@ -31,21 +30,15 @@
 |OS|openEuler 22.03 LTS SP4|
 |Percona|Percona-Server 5.7.44-53 or Percona-Server 8.0.43-34|
 
-
-
 ### Hardware Version Mapping<a name="EN-US_TOPIC_0000002521623550"></a>
 
 |Item|Requirement|
 |--|--|
 |Processor|New Kunpeng 920 processor model or Kunpeng 950 processor|
 
-
-
 ### Virus Scan Results<a name="EN-US_TOPIC_0000002552663491"></a>
 
 Virus scanning is not involved because no software package is released.
-
-
 
 ## v25.3.0<a name="EN-US_TOPIC_0000002521623548"></a>
 
@@ -53,17 +46,13 @@ Virus scanning is not involved because no software package is released.
 
 In MySQL read-only online transaction processing (OLTP) scenarios, Kunpeng BoostKit provides a series of optimization mechanisms for hotspot functions, including those related to record matching and character set processing. In addition, Kunpeng 920 series processors now support unaligned memory access. Therefore, the unaligned memory access optimization policies implemented on the x86 architecture can be migrated to the Arm architecture for higher performance.
 
-
 ### Resolved Issues<a name="EN-US_TOPIC_0000002552623511"></a>
 
 None
 
-
 ### Known Issues<a name="EN-US_TOPIC_0000002521623546"></a>
 
 None
-
-
 
 ## Related Documentation<a name="EN-US_TOPIC_0000002521463534"></a>
 
@@ -73,8 +62,6 @@ None
 |--|--|--|
 |*Kunpeng BoostKit 25.3.0 MySQL Computing Path Optimization Release Notes*|Describes the version release and mapping information of the MySQL computing path optimization feature.|Open-source repository|
 |*Kunpeng BoostKit 25.3.0 MySQL Computing Path Optimization Feature Guide*|Describes the environment requirements and provides guidance on enabling the MySQL computing path optimization feature.|Open-source repository|
-
-
 
 ### Obtaining Documentation<a name="EN-US_TOPIC_0000002552663495"></a>
 

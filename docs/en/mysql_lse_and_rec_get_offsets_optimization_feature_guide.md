@@ -8,7 +8,6 @@ This document describes how to install and enable the MySQL Large System Extensi
 
 In MySQL online transaction processing (OLTP) scenarios, a large number of concurrent read and write operations result in lock contention, causing linear performance deterioration. LSE is a hardware-accelerated atomic operation solution designed for multi-core and high-concurrency environments. It resolves the scalability bottleneck of load-link/store-conditional (LL/SC) instructions through single-instruction atomic operations. In addition, each call to the rec_get_offsets function relies on dict_table_is_comp to check whether the table uses the compact row format. By performing this check ahead of time and passing the result as a parameter to the refactored function, the record read efficiency is improved.
 
-
 ### Principles<a name="EN-US_TOPIC_0000002511086262"></a>
 
 This feature introduces LSE hardware-based acceleration and optimizes the rec_get_offsets call logic to alleviate performance deterioration under high concurrency and improve the overall performance and system stability of MySQL on Kunpeng servers.
@@ -29,8 +28,6 @@ LL/SC atomic instructions load shared variables to the L1 cache where the curren
 
 In the InnoDB storage engine, the rec_get_offsets function is used to determine the byte offset of each field in a physical record (rec_t). In the original implementation, each call to this function relies on dict_table_is_comp to check whether the table uses the compact row format. As this function is called frequently during physical record reads, the repeated checks introduce additional overhead. To improve performance, this feature allows the row format check to be performed before rec_get_offsets calls, and passes the result as a parameter to the rec_get_offsets_with_comp function. The new function directly uses the input compact flag, avoiding internal repeated queries. This reduces the call overhead and improves the efficiency of the InnoDB storage engine in processing records.
 
-
-
 ## Environment Requirements<a name="EN-US_TOPIC_0000002542686221"></a>
 
 This document provides guidance based on specific environments. Before performing operations, ensure that your hardware and software meet the requirements.
@@ -40,7 +37,6 @@ This document provides guidance based on specific environments. Before performin
 |Item|Specifications|
 |--|--|
 |CPU|New Kunpeng 920 processor model or Kunpeng 950 processor|
-
 
 **Table 2** OS and software requirements<a id="os-and-software-requirements"></a>
 
@@ -59,13 +55,14 @@ The following uses Percona-Server 5.7.44-53 as an example to describe how to ins
 2. Download the Percona-Server 5.7.44-53 RPM package described in [**Table 2**](#os-and-software-requirements) and save the package to the target path, for example, `/home`.
 3. Run the following command to install the RPM package. The default installation directory is `/usr/local/mysql`.
 
-    ```
+    ```shell
     cd /home
     rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm
     ```
 
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >If dependency packages have been installed but the RPM-related check fails, run the following command to skip the dependency check (using `--nodeps`):
+>
     >```
     >rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm --nodeps
     >```
@@ -80,7 +77,7 @@ The following uses Percona-Server 5.7.44-53 as an example to describe how to ins
 
 Address space layout randomization (ASLR) is a security technology against buffer overflow. It randomizes the layout of linear areas such as heap, stack, and shared library mapping to make it difficult for attackers to predict target addresses and directly locate code, thereby preventing overflow attacks.
 
-```
+```shell
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 

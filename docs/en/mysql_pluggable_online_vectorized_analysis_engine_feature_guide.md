@@ -25,7 +25,6 @@ KAE is a hardware acceleration solution based on the Kunpeng 920 processor. It i
 
 This feature is compatible with other features. For details about the compatibility between MySQL features, see [Compatibility Between Features](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html).
 
-
 ### Software Architecture<a name="EN-US_TOPIC_0000002550183951"></a>
 
 KOVAE is an engine in the MySQL executor layer which is below the optimizer layer. KOVAE uses the plugin API provided by MySQL, and filters and transfers the SQL statements that meet the parallel conditions to the KOVAE execution engine for parallel execution. KOVAE better leverages the multi-core advantage of the Kunpeng server, thereby improving the SQL statement execution performance.
@@ -46,14 +45,13 @@ KOVAE is an engine in the MySQL executor layer which is below the optimizer laye
 **Figure 2** KOVAE architecture<a name="fig666215371344"></a><a id="kovae-architecture"></a><br>
 ![](figures/kovae_architecture.png "KOVAE architecture")
 
-
 ### SQL Statement Specifications Supported by KOVAE<a name="EN-US_TOPIC_0000002550143937" id="sql-statement-specifications-supported-by-kovae"></a>
 
 #### Support for SELECT Statement Elements<a name="EN-US_TOPIC_0000002550183943"></a>
 
 A complete set of SELECT statement elements is as follows. For details about the SELECT statement syntax, visit the [MySQL official website](https://dev.mysql.com/doc/refman/8.0/en/select.html).
 
-```
+```sql
 SELECT
 [ALL | DISTINCT | DISTINCTROW ]
 [HIGH_PRIORITY]
@@ -112,7 +110,6 @@ export_options
 |[FOR {UPDATE \| SHARE}[OF tbl_name [, tbl_name] ...]<br>[NOWAIT \| SKIP LOCKED]<br>\| LOCK IN SHARE MODE]|Indicates that locking reads are performed on the queried data.|Not supported.|
 |[into_option]|Indicates that the result set is written to files on the server.|Not supported. This is not a common scenario.|
 
-
 **Table 2** Support for other items<a id="support-for-other-items"></a>
 
 |Item|Supported or Not|
@@ -124,7 +121,6 @@ export_options
 |Querying the maximum number of fields|Query statements where the number of fields is greater than the value of <code>MAX_FIELDS</code> are not supported.|
 |Query in which the optimizer determines an empty result set|If the optimizer has determined that the query result set must be an empty set, the query is not supported.|
 |Character set|Only the UTF8MB4 character set is supported.|
-
 
 Only the first five table access types in [**Table 3**](#supported-table-access-types) are supported.
 
@@ -142,8 +138,6 @@ Only the first five table access types in [**Table 3**](#supported-table-access-
 |JT_FT|-|Not supported|
 |JT_REF_OR_NULL|-|Not supported|
 |JT_INDEX_MERGE|-|Not supported|
-
-
 
 #### Support for Execution Plans<a name="EN-US_TOPIC_0000002518544216"></a>
 
@@ -169,8 +163,6 @@ Only the first five table access types in [**Table 3**](#supported-table-access-
 |MaterializeIterator|Materialize operator|Supported|
 |StreamingIterator|Streaming operator|Supported|
 
-
-
 ##### Support for Item Types<a name="EN-US_TOPIC_0000002550143935"></a>
 
 [**Table 1**](#supported-item-types) lists the item types supported by KOVAE. Other item types are not supported so far.
@@ -188,7 +180,6 @@ Only the first five table access types in [**Table 3**](#supported-table-access-
 |INT_ITEM|Constant of the int type|Supported|
 |DECIMAL_ITEM|Constant of the decimal type|Supported|
 |CACHE_ITEM|-|Supported|
-
 
 [**Table 2**](#supported-functions) lists the functions supported by KOVAE. Other functions are not supported so far.
 
@@ -227,8 +218,6 @@ Only the first five table access types in [**Table 3**](#supported-table-access-
 |cast|Forcible conversion to a specified type|
 |extract|Extracting a specific part of the date|
 
-
-
 ##### Support for Data Types<a name="EN-US_TOPIC_0000002550183955"></a>
 
 [**Table 1**](#supported-data-types) lists the data types supported by KOVAE. Other data types are not supported so far.
@@ -248,8 +237,6 @@ Only the first five table access types in [**Table 3**](#supported-table-access-
 |MYSQL_TYPE_DATETIME|Datetime type|
 |MYSQL_TYPE_NEWDECIMAL|High-precision decimal or numeric type|
 
-
-
 ##### Other Support Rules<a name="EN-US_TOPIC_0000002518704108"></a>
 
 In addition to the support rules for SELECT statement elements, operators, items, and data types, there are some other restrictions and rules on the secondary engine usage, as shown in [**Table 1**](#other-support-rules-table).
@@ -266,16 +253,11 @@ In addition to the support rules for SELECT statement elements, operators, items
 |Support for NestedLoopJoin|Only the scenario where the internal table uses the equality index scanning operator or the filtering and equality index scanning operator is supported.|
 |Support for the equality index scanning operator|Primary key indexes, unique indexes, common indexes, and composite indexes are supported. Prefix indexes are not supported. For index conditions, only same data types are supported, and constants and expressions are not supported.|
 
-
-
-
-
 ### Reference Standards and Protocols<a name="EN-US_TOPIC_0000002518704104"></a>
 
 - [MySQL SELECT statement structure standards](https://dev.mysql.com/doc/refman/8.0/en/select.html)
 - [MySQL plugin standards](https://dev.mysql.com/doc/refman/8.0/en/plugin-loading.html)
 - [MySQL configuration parameter standards](https://dev.mysql.com/doc/refman/8.0/en/server-option-variable-reference.html)
-
 
 ### Constraints<a name="EN-US_TOPIC_0000002518544208"></a>
 
@@ -299,7 +281,6 @@ Before configuring KOVAE, you are advised to understand the impact of KOVAE on t
 - KOVAE performs parallel executions. If the SQL statements specify no result set sorting information, the result set may be sorted differently from that of the open-source MySQL.
 - Only some SQL statements can be offloaded to KOVAE for execution. For details, see [SQL Statement Specifications Supported by KOVAE](#sql-statement-specifications-supported-by-kovae). You can add hints or set cost thresholds to control the offloading conditions for SQL statements.
 
-
 ### Application Scenarios<a name="EN-US_TOPIC_0000002550143953"></a>
 
 KOVAE applies to OLAP query, large data volume, and multi-core CPU scenarios.
@@ -309,7 +290,6 @@ The required scenarios where this feature can apply to are as follows:
 - OLAP query, which does not require transaction support
 - Large amount of data to be queried (more than 10,000 lines recommended)
 - Multi-core CPUs for parallel advantage, requiring the number of logical CPU cores greater than 2
-
 
 ### Principles<a name="EN-US_TOPIC_0000002518544210"></a>
 
@@ -334,8 +314,6 @@ Upper-layer operators (such as Agg, Sort, HashJoin or NestedLoopJoin) of the Tab
 
 MySQL InnoDB uses the row-store structure while KOVAE uses the column-store structure. When a specified column is calculated, data in the same column is adjacent in the memory, which makes data processing more efficient.
 
-
-
 ## KOVAE Deployment<a name="EN-US_TOPIC_0000002550183945"></a>
 
 ### Environment Requirements<a name="EN-US_TOPIC_0000002518704116"></a>
@@ -355,7 +333,6 @@ For details about how to compile and install MySQL 8.0.25, see [MySQL Porting Gu
 |Server|Kunpeng server|
 |Processor|Kunpeng 920 series|
 |Drive|If a performance test needs to be performed, at least two drives are required: one system drive and one data drive. If no performance test needs to be performed, a data directory can be directly created on the system drive. Configure the number of drives based on actual requirements.|
-
 
 **OS and Software Requirements<a name="section771295715106"></a>**
 
@@ -386,7 +363,6 @@ For details about how to compile and install MySQL 8.0.25, see [MySQL Porting Gu
 |BoostKit_Kovae_1.0.0.zip|1.0.0|Download the [BoostKit_Kovae_1.0.0.zip](https://kunpeng-repo.obs.cn-north-4.myhuaweicloud.com/Kunpeng%20BoostKit/Kunpeng%20BoostKit%2024.0.0/BoostKit_Kovae_1.0.0.zip) package and decompress it to obtain the <code>ha_kovae.so</code> file.<br>Before using the software package, read and agree to [Kunpeng BoostKit User License Agreement 2.0](https://www.hikunpeng.com/en/developer/boostkit/software/protocol).|
 |MySQL|8.0.25|[Link](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.gz)
 
-
 ### Integrity Verification<a name="EN-US_TOPIC_0000002518544212"></a>
 
 After obtaining the software package, verify that it is consistent with that provided on the corresponding website.
@@ -405,16 +381,15 @@ Install KAEzip to reduce the drive space required by the system.
 
 2. Create a symbolic link.
 
-    ```
+    ```shell
     ln -s /usr/local/kaezip/lib/libz.so.1.2.11 /usr/local/kaezip/lib/libzkae.so
     ```
 
 3. Set the path for loading the dynamic library.
 
-    ```
+    ```shell
     export LD_LIBRARY_PATH=/usr/local/kaezip/lib:/usr/local/lib:$LD_LIBRARY_PATH
     ```
-
 
 ### KOVAE Installation<a name="EN-US_TOPIC_0000002518704102"></a>
 
@@ -429,13 +404,13 @@ KOVAE can be loaded to the MySQL service by modifying the `my.cnf` configuration
 2. Log in to the MySQL service through the MySQL client.
 3. On the MySQL client, send a statement to query the path where the MySQL plugin is stored (`plugin_dir`):
 
-    ```
+    ```sql
     show variables like "%plugin_dir%";
     ```
 
     The following information is displayed, in which `/usr/local/mysql-8.0.25/lib/plugin/` indicates the path for storing the MySQL plugin (`plugin_dir`).
 
-    ```
+    ```text
     +---------------+--------------------------------+
     | Variable_name | Value                          |
     +---------------+--------------------------------+
@@ -449,31 +424,31 @@ KOVAE can be loaded to the MySQL service by modifying the `my.cnf` configuration
     2. After copying the file, use a terminal tool such as SSH to log in to the server.
     3. On the SSH terminal, run the following command to check `ha_kovae.so` in the path specified by `plugin_dir`:
 
-        ```
+        ```shell
         ls /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
         ```
 
         The `ha_kovae.so` file information is returned as follows:
 
-        ```
+        ```text
         /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
         ```
 
 5. Grant the execute permission on `ha_kovae.so`.
 
-    ```
+    ```shell
     chmod 755 /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
     ```
 
     Check the configured permission on `ha_kovae.so`.
 
-    ```
+    ```shell
     ll /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
     ```
 
     The following information is displayed, indicating that the permission on `ha_kovae.so` is set to `-rwxr-xr-x`:
 
-    ```
+    ```text
      -rwxr-xr-x 1 root root 1839816 May 16 17:00 /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
     ```
 
@@ -484,13 +459,14 @@ KOVAE can be loaded to the MySQL service by modifying the `my.cnf` configuration
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >To prevent buffer overflow attacks, you are advised to use the address space layout randomization (ASLR) technology to randomize the layout of linear areas such as the heap, stack, and shared library mapping to make it more difficult for attackers to predict target addresses and locate code. This technology can be applied to heaps, stacks, and memory mapping areas (mmap base addresses, shared libraries, and vDSO pages).
     >Run the following command to enable ASLR:
-    >```
+>
+    >```shell
     >echo 2 > /proc/sys/kernel/randomize_va_space
     >```
 
     - Method 1: Automatically load and install the plugin. Add a configuration line under the `[mysqld]` section in the `my.cnf` file. Restart the database to make the configuration take effect. For example:
 
-        ```
+        ```text
         plugin-load-add=ha_kovae.so
         ```
 
@@ -498,16 +474,15 @@ KOVAE can be loaded to the MySQL service by modifying the `my.cnf` configuration
         1. Log in to the MySQL service through the MySQL client.
         2. Install the `ha_kovae.so` plugin.
 
-            ```
+            ```shell
             install plugin kovae soname "ha_kovae.so";
             ```
 
             If the following information is displayed, the installation is successful:
 
-            ```
+            ```text
             Query OK, 0 rows affected (0.01 sec)
             ```
-
 
 ### KOVAE Enablement<a name="EN-US_TOPIC_0000002518544204"></a>
 
@@ -517,7 +492,7 @@ After KOVAE is installed, you need to enable KOVAE in the database and ensure th
 
 1. Log in to the MySQL service through the MySQL client. For example:
 
-    ```
+    ```shell
     mysql -uroot -p -S /data/mysql/run/mysql.sock
     ```
 
@@ -525,26 +500,26 @@ After KOVAE is installed, you need to enable KOVAE in the database and ensure th
 
 2. Execute the following statement on the MySQL client to set the secondary engine of the target table to KOVAE. Each table needs to be configured only once. Reconfiguration is not required after the MySQL service is restarted. `t1` indicates the name of the target table. Change it based on actual requirements.
 
-    ```
+    ```sql
     ALTER TABLE t1 SECONDARY_ENGINE = kovae;
     ```
 
     If the following information is displayed, the operation is successful:
 
-    ```
+    ```text
     Query OK, 0 rows affected (0.01 sec)
     Records: 0  Duplicates: 0  Warnings: 0
     ```
 
 3. Check the secondary engine settings of the table. `t1` indicates the name of the target table. Change it based on actual requirements.
 
-    ```
+    ```sql
     show create table t1;
     ```
 
     If `SECONDARY_ENGINE=kovae` is displayed in the target table creation information, the operation is successful.
 
-    ```
+    ```text
     +-------+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
     | Table | Create Table
                   |
@@ -562,16 +537,15 @@ After KOVAE is installed, you need to enable KOVAE in the database and ensure th
     >![](public_sys-resources/icon_notice.gif) **NOTICE:**
     >Each table needs to be configured only once. The target table needs to be loaded to KOVAE again after the MySQL service is restarted.
 
-    ```
+    ```sql
     ALTER TABLE t1 SECONDARY_LOAD;
     ```
 
     If the following information is displayed, the operation is successful:
 
-    ```
+    ```text
     Query OK, 0 rows affected (0.00 sec)
     ```
-
 
 ### KOVAE Verification<a name="EN-US_TOPIC_0000002550183961"></a>
 
@@ -582,25 +556,25 @@ After setting the secondary engine of the target table to KOVAE, perform the fol
 1. Log in to the MySQL service through the MySQL client.
 2. Execute the following statement on the MySQL client to set the connection character set:
 
-    ```
+    ```sql
     set character_set_connection=utf8mb4;
     ```
 
     If the following information is displayed, the operation is successful:
 
-    ```
+    ```text
      Query OK, 0 rows affected (0.00 sec)
     ```
 
     Check whether the connection character set is configured successfully.
 
-    ```
+    ```sql
     show variables like "%character_set_connection%";
     ```
 
     The expected result for successful connection character set configuration is as follows:
 
-    ```
+    ```text
     +--------------------------+---------+
     | Variable_name            | Value   |
     +--------------------------+---------+
@@ -611,37 +585,37 @@ After setting the secondary engine of the target table to KOVAE, perform the fol
 
 3. After setting the secondary engine of the target table to KOVAE, run the following command to load the table. `t1` indicates the name of the target table. Change it based on actual requirements.
 
-    ```
+    ```sql
     ALTER TABLE t1 SECONDARY_LOAD;
     ```
 
     If the following information is displayed, the operation is successful:
 
-    ```
+    ```text
      Query OK, 0 rows affected (0.00 sec)
     ```
 
 4. Set `secondary_engine_cost_threshold` to `0` to ensure that SQL statements can access the secondary engine.
 
-    ```
+    ```sql
     set secondary_engine_cost_threshold=0;
     ```
 
     If the following information is displayed, the operation is successful:
 
-    ```
+    ```text
      Query OK, 0 rows affected (0.00 sec)
     ```
 
     1. Check the statistics of the current KOVAE status variable.
 
-        ```
+        ```sql
         show status like '%kovae%';
         ```
 
         The expected result is as follows:
 
-        ```
+        ```text
         +-------------------------------+-------+
         | Variable_name                 | Value |
         +-------------------------------+-------+
@@ -654,13 +628,13 @@ After setting the secondary engine of the target table to KOVAE, perform the fol
 
     2. Query all data in the `t1` table.
 
-        ```
+        ```sql
         select * from t1;
         ```
 
         The expected result is as follows:
 
-        ```
+        ```text
         +------+------+
         | a    | b    |
         +------+------+
@@ -672,13 +646,13 @@ After setting the secondary engine of the target table to KOVAE, perform the fol
 
     3. Run the following command to check the updated statistics of the KOVAE status variable:
 
-        ```
+        ```sql
         show status like '%kovae%';
         ```
 
         It can be seen that the value of `kovae_execution_succeed_times` is updated, that is, the SQL statements have accessed KOVAE and are successfully executed in KOVAE.
 
-        ```
+        ```text
         +-------------------------------+-------+
         | Variable_name                 | Value |
         +-------------------------------+-------+
@@ -688,7 +662,6 @@ After setting the secondary engine of the target table to KOVAE, perform the fol
         +-------------------------------+-------+
         3 rows in set (0.00 sec)
         ```
-
 
 ### KOVAE Uninstallation<a name="EN-US_TOPIC_0000002550143951"></a>
 
@@ -704,43 +677,40 @@ For details about the configuration and operation of standard MySQL plugins, see
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >If multiple tables need to be unloaded, execute the SQL statement to unload the target tables one by one.
 
-    ```
+    ```sql
     ALTER TABLE t1 SECONDARY_UNLOAD;
     ```
 
     If the following information is displayed, the operation is successful:
 
-    ```
+    ```text
     Query OK, 0 rows affected (0.00 sec)
     ```
 
 3. Change the secondary engine of the tables from KOVAE to `null`. `t1` indicates the name of the target table. Change it based on actual requirements.
 
-    ```
+    ```sql
     ALTER TABLE t1 SECONDARY_ENGINE = null;
     ```
 
     If the following information is displayed, the operation is successful:
 
-    ```
+    ```text
     Query OK, 0 rows affected (0.01 sec)
     Records: 0  Duplicates: 0  Warnings: 0
     ```
 
 4. Execute the following statement to uninstall KOVAE:
 
-    ```
+    ```shell
     uninstall plugin kovae;
     ```
 
     If the following information is displayed, the operation is successful:
 
-    ```
+    ```text
     Query OK, 0 rows affected (0.32 sec)
     ```
-
-
-
 
 ## Feature Usage<a name="EN-US_TOPIC_0000002550143939" id="feature-usage"></a>
 
@@ -753,13 +723,13 @@ To set and clear the secondary engine attribute of a data table, you must have t
 1. Log in to the MySQL service through the MySQL client.
 2. Set the secondary engine of the data table to KOVAE. `t1` indicates the name of the target table. Change it based on actual requirements.
 
-    ```
+    ```sql
     ALTER TABLE t1 SECONDARY_ENGINE = kovae;
     ```
 
     If the following information is displayed, the operation is successful:
 
-    ```
+    ```text
     Query OK, 0 rows affected (0.01 sec)
     Records: 0  Duplicates: 0  Warnings: 0
     ```
@@ -769,17 +739,16 @@ To set and clear the secondary engine attribute of a data table, you must have t
 1. Log in to the MySQL service through the MySQL client.
 2. Clear the secondary engine configuration information of the data table. `t1` indicates the name of the target table. Change it based on actual requirements.
 
-    ```
+    ```sql
     ALTER TABLE t1 SECONDARY_ENGINE = null;
     ```
 
     If the following information is displayed, the operation is successful:
 
-    ```
+    ```text
     Query OK, 0 rows affected (0.01 sec)
     Records: 0  Duplicates: 0  Warnings: 0
     ```
-
 
 ### Loading and Unloading a Data Table on the Secondary Engine<a name="EN-US_TOPIC_0000002550183959" id="loading-and-unloading-a-data-table-on-the-secondary-engine"></a>
 
@@ -790,13 +759,13 @@ Loading a data table to the secondary engine is the prerequisite for offloading 
 1. Log in to the MySQL service through the MySQL client.
 2. Load a data table to the secondary engine. `t1` indicates the name of the target table. Change it based on actual requirements.
 
-    ```
+    ```sql
     ALTER TABLE t1 SECONDARY_LOAD;
     ```
 
     If the following information is displayed, the operation is successful:
 
-    ```
+    ```text
     Query OK, 0 rows affected (0.00 sec)
     ```
 
@@ -805,16 +774,15 @@ Loading a data table to the secondary engine is the prerequisite for offloading 
 1. Log in to the MySQL service through the MySQL client.
 2. Unload a data table from the secondary engine. `t1` indicates the name of the target table. Change it based on actual requirements.
 
-    ```
+    ```sql
     ALTER TABLE t1 SECONDARY_UNLOAD;
     ```
 
     If the following information is displayed, the operation is successful:
 
-    ```
+    ```text
     Query OK, 0 rows affected (0.00 sec)
     ```
-
 
 ### Setting Whether an SQL Statement Accesses the Secondary Engine for Execution<a name="EN-US_TOPIC_0000002518544206" id="setting-whether-a-sql-statement-accesses-the-secondary-engine-for-execution"></a>
 
@@ -828,13 +796,13 @@ For an SQL statement, add hints to force the SQL statement to access the seconda
 2. Set whether the SQL statement accesses the secondary engine for execution.
     - Force it to access the secondary engine.
 
-        ```
+        ```sql
         SELECT /*+ SET_VAR(use_secondary_engine = FORCED) */ ... FROM ...
         ```
 
     - Force it not to access the secondary engine.
 
-        ```
+        ```sql
         SELECT /*+ SET_VAR(use_secondary_engine = OFF) */ ... FROM ...
         ```
 
@@ -843,17 +811,17 @@ For an SQL statement, add hints to force the SQL statement to access the seconda
 1. Log in to the MySQL service through the MySQL client.
 2. Set the query cost threshold.
 
-    ```
+    ```sql
     set secondary_engine_cost_threshold=<Cost_threshold>;
     ```
 
     For example, in the following SELECT statement, `cost` in the statement is `0.35`. After `secondary_engine_cost_threshold` is set to a value less than `0.35` (for example, `0.1`), the statement can access KOVAE to be filtered by the allowlist and be executed in KOVAE if it passes the filtering.
 
-    ```
+    ```shell
     explain format=tree select * from t1;
     ```
 
-    ```
+    ```text
     +------------------------------------------+
     | EXPLAIN                                  |
     +------------------------------------------+
@@ -865,7 +833,6 @@ For an SQL statement, add hints to force the SQL statement to access the seconda
 **Allowlist Filtering<a name="section1131174110213"></a>**
 
 Currently, the allowlist cannot be manually configured. For details about the support for SQL statements by KOVAE, see [SQL Statement Specifications Supported by KOVAE](#sql-statement-specifications-supported-by-kovae).
-
 
 ### Setting and Querying KOVAE Parameters and Querying Status Variables<a name="EN-US_TOPIC_0000002518704112" id="setting-and-querying-kovae-parameters-and-querying-status-variables"></a>
 
@@ -913,18 +880,17 @@ You can configure KOVAE parameters by using the database startup command line, t
 |kovae_buffer_view_hashjoin|Yes|Yes|Yes|Global|Bool|false|true and false|Indicates whether the HashJoin operator collects statistics on cache usage and release.|
 |kovae_buffer_view_material|Yes|Yes|Yes|Global|Bool|false|true and false|Indicates whether the Materialize operator collects statistics on cache usage and release.|
 
-
 1. Log in to the MySQL service through the MySQL client.
 2. Run the following commands to set KOVAE parameters:
 
-    ```
+    ```sql
     set variable <Parameter_name>=<Parameter_value>;
     set global variable <Parameter_name>=<Parameter_value>;
     ```
 
 3. Run the following command to check the configured KOVAE parameters:
 
-    ```
+    ```sql
     show variables like "%<Parameter_name>%";
     ```
 
@@ -940,11 +906,10 @@ Three status variables listed in [**Table 2**](#status-variables) are added to K
 |kovae_execution_times|Indicates the number of SQL statements filtered by the allowlist control and executed in KOVAE.|
 |kovae_execution_succeed_times|Indicates the number of SQL statements that have been executed in KOVAE.|
 
-
 1. Log in to the MySQL service through the MySQL client.
 2. Run the following command to query the value of a status variable:
 
-    ```
+    ```sql
     show status like "%<Status_variable>%";
     ```
 
@@ -963,17 +928,16 @@ The parameters related to memory control for parallel queries are as follows. Fo
 1. Log in to the MySQL service through the MySQL client.
 2. Set KOVAE parameters.
 
-    ```
+    ```sql
     set variable <Parameter_name>=<Parameter_value>;
     set global variable <Parameter_name>=<Parameter_value>;
     ```
 
 3. Check the configured parameters.
 
-    ```
+    ```sql
     show variables like "%<Parameter_name>%";
     ```
-
 
 ### Setting the Number of Parallel Operators in the Secondary Engine<a name="EN-US_TOPIC_0000002550143947"></a>
 
@@ -991,17 +955,16 @@ The parameters related to the number of parallel operators are as follows. For d
 1. Log in to the MySQL service through the MySQL client.
 2. Set KOVAE parameters.
 
-    ```
+    ```sql
     set variable <Parameter_name>=<Parameter_value>;
     set global variable <Parameter_name>=<Parameter_value>;
     ```
 
 3. Check the configured parameters.
 
-    ```
+    ```sql
     show variables like "%<Parameter_name>%";
     ```
-
 
 ### Setting Cache Flushing to Drives for Operators<a name="EN-US_TOPIC_0000002518544218"  id="setting-cache-flushing-to-drives-for-operators"></a>
 
@@ -1016,17 +979,16 @@ KOVAE has the Agg, HashJoin, Sort, and Materialize operators, which support the 
 1. Log in to the MySQL service through the MySQL client.
 2. Set KOVAE parameters.
 
-    ```
+    ```sql
     set variable <Parameter_name>=<Parameter_value>;
     set global variable <Parameter_name>=<Parameter_value>;
     ```
 
 3. Check the configured parameters.
 
-    ```
+    ```sql
     show variables like "%<Parameter_name>%";
     ```
-
 
 ### Querying the Number of SQL Statement Execution Times in the Secondary Engine<a name="EN-US_TOPIC_0000002550183957" id="querying-the-number-of-sql-statement-execution-times-in-the-secondary-engine"></a>
 
@@ -1047,10 +1009,9 @@ If an SQL statement fails to be executed in KOVAE, the value of `kovae_execution
 1. Log in to the MySQL service through the MySQL client.
 2. Check the value of a status variable.
 
-    ```
+    ```sql
     show status like "%<Status_variable>%";
     ```
-
 
 ### Querying Tables Related to Parallel Query Information Monitoring<a name="EN-US_TOPIC_0000002550143945" id="querying-tables-related-to-parallel-query-information-monitoring"></a>
 
@@ -1070,7 +1031,6 @@ The `INFORMATION_SCHEMA.KOVAE_THREADS_LIST` table is used to query the thread us
 |ThreadId|Int|Thread ID, corresponding to the thread ID on the OS|
 |Time|Int|Statistics about the thread running time, in milliseconds. In parallel queries, if the record in the current row is the main thread of the session connection, the total running time of all worker threads in the session is displayed. If the record in the current row is the worker thread of the session connection, the running time of that worker thread is displayed.|
 
-
 **INFORMATION_SCHEMA.KOVAE_MEMORY_ACTIVE Table<a name="section8151122312462"></a>**
 
 The `INFORMATION_SCHEMA.KOVAE_MEMORY_ACTIVE` table is used to query the memory usage of the session where parallel queries are being executed.
@@ -1086,7 +1046,6 @@ The `INFORMATION_SCHEMA.KOVAE_MEMORY_ACTIVE` table is used to query the memory u
 |OPERATOR|MYSQL_TYPE_STRING|Execution operator|
 |USED_MEMORY|MYSQL_TYPE_LONGLONG|Size of the used memory|
 |PEAK_MEMORY|MYSQL_TYPE_LONGLONG|Peak memory size|
-
 
 **INFORMATION_SCHEMA.KOVAE_MEMORY_HISTORY Table<a name="section112972348461"></a>**
 
@@ -1104,7 +1063,6 @@ The `INFORMATION_SCHEMA.KOVAE_MEMORY_HISTORY` table records the memory usage inf
 |USED_MEMORY|MYSQL_TYPE_LONGLONG|Memory size when the execution ends|
 |PEAK_MEMORY|MYSQL_TYPE_LONGLONG|Peak memory size|
 
-
 **INFORMATION_SCHEMA.KOVAE_STATEMENT_HISTORY Table<a name="section134359220127"></a>**
 
 The `INFORMATION_SCHEMA.KOVAE_STATEMENT_HISTORY` table displays the SQL statements that have been executed in KOVAE. The maximum number of rows that can be displayed is specified by `kovae_statement_history_schema_size`.
@@ -1121,7 +1079,6 @@ The `INFORMATION_SCHEMA.KOVAE_STATEMENT_HISTORY` table displays the SQL statemen
 |TIMER_START|MYSQL_TYPE_LONGLONG|Start timestamp of the current query (from <code>1970-01-01 00:00:00</code> to the query start time, in nanoseconds)|
 |TIMER_END|MYSQL_TYPE_LONGLONG|End timestamp of the current query (from <code>1970-01-01 00:00:00</code> to the query end time, in nanoseconds)|
 
-
 **INFORMATION_SCHEMA.KOVAE_THREADS_HISTORY Table<a name="section227162861413"></a>**
 
 The `INFORMATION_SCHEMA.KOVAE_THREADS_HISTORY` table displays the used worker threads (`WORKER_THREAD_ID`) during the parallel execution of the SQL statement (`QUERY_ID`) in KOVAE. The maximum number of rows that can be displayed is the value of `kovae_threads_history_schema_size`.
@@ -1136,7 +1093,6 @@ The `KOVAE_STATEMENT_HISTORY` table is associated with the `KOVAE_THREADS_HISTOR
 |WORKER_THREAD_ID|MYSQL_TYPE_LONGLONG|Worker thread ID of the current query|
 |TIMER_START|MYSQL_TYPE_LONGLONG|Start timestamp of the worker thread execution in the current query (from <code>1970-01-01 00:00:00</code> to the query start time, in nanoseconds)|
 |TIMER_END|MYSQL_TYPE_LONGLONG|End timestamp of the worker thread execution in the current query (from <code>1970-01-01 00:00:00</code> to the query end time, in nanoseconds)|
-
 
 **INFORMATION_SCHEMA.KOVAE_MEMORY_DETAIL_HISTORY Table<a name="section16582146171417"></a>**
 
@@ -1154,7 +1110,6 @@ The `INFORMATION_SCHEMA.KOVAE_MEMORY_DETAIL_HISTORY` table displays which worker
 |NUMBER_OF_BYTES|MYSQL_TYPE_LONGLONG|Number of bytes in the memory of the current operation|
 |TIMER_STAMP|MYSQL_TYPE_LONGLONG|Timestamp of the current operation (from <code>1970-01-01 00:00:00</code> to the operation time, in nanoseconds)|
 
-
 **INFORMATION_SCHEMA.KOVAE_BUFFER_DETAIL_HISTORY Table<a name="section138351756201417"></a>**
 
 The `INFORMATION_SCHEMA.KOVAE_BUFFER_DETAIL_HISTORY` table displays which worker threads (`WORKER_THREAD_ID`) in which modules occupy what amount of cache (key cache concerned by the service, such as the sorting cache of the Sort operator and the hash cache of HashAgg, HashJoin, and Material) during the parallel execution of the SQL statement (`QUERY_ID`) in KOVAE. The maximum number of rows that can be displayed is the value of `kovae_buffer_detail_history_schema_size`.
@@ -1171,17 +1126,14 @@ The `INFORMATION_SCHEMA.KOVAE_BUFFER_DETAIL_HISTORY` table displays which worker
 |NUMBER_OF_BYTES|MYSQL_TYPE_LONGLONG|Number of bytes in the cache of the current operation|
 |TIMER_STAMP|MYSQL_TYPE_LONGLONG|Timestamp of the current operation (from <code>1970-01-01 00:00:00</code> to the operation time, in nanoseconds)|
 
-
 **Procedure<a name="section2016465018266"></a>**
 
 1. Log in to the MySQL service through the MySQL client.
 2. Check the `INFORMATION_SCHEMA` table. Use the `INFORMATION_SCHEMA.KOVAE_THREADS_LIST` table as an example:
 
-    ```
+    ```sql
     select * from information_schema.KOVAE_THREADS_LIST;
     ```
-
-
 
 ## Feature Tuning<a name="EN-US_TOPIC_0000002550143941"></a>
 
@@ -1197,7 +1149,6 @@ This section provides tuning suggestions for memory parameters, thread parameter
 |kovae_memory_buffer_size|If drive flushing operators (such as the Sort, Aggregation, HashJoin, and Materialize operators) exist in a query while the query table contains a large amount of data, this parameter has a significant impact on the performance.|A larger value of this parameter usually indicates a better performance. However, when memory control is disabled, an excessively large value of this parameter may trigger OOM. When memory control is enabled, an excessively large value of this parameter may trigger insufficient memory that causes query failures. You are advised to set the value of this parameter to 10% of the KOVAE maximum available memory.|
 |kovae_serial_mode|When memory control is enabled and only one client is executing queries, this parameter (the serial mode) can be enabled to improve query performance.|After the serial mode is enabled, KOVAE automatically adjusts the cache size of drive flushing operators to minimize data flushing.|
 
-
 **Table 2** Tuning suggestions for thread parameters<a id="tuning-suggestions-for-thread-parameters"></a>
 
 |Parameter|Description|Tuning Suggestion|
@@ -1207,13 +1158,11 @@ This section provides tuning suggestions for memory parameters, thread parameter
 |kovae_threadpool_stalltime|When the thread usage reaches the upper limit, a smaller value of this parameter indicates a better overall performance. However, a new query request will wait for a longer time and starvation occurs.|To gain a better overall performance, you can decrease the value of <code>kovae_threadpool_stalltime</code>.|
 |innodb_parallel_read_threads|Indicates the number of threads that concurrently read a table.|If the number of sessions is small, increase the value of this parameter to accelerate the query. You are advised to set the parameter to the value of Number of available CPU cores/Number of parallel queries and sessions that are simultaneously executed with a high probability.|
 
-
 **Table 3** Tuning suggestions for hash parameters<a id="tuning-suggestions-for-hash-parameters"></a>
 
 |Parameter|Description|Tuning Suggestion|
 |--|--|--|
 |kovae_aggregator_hash_type|Indicates the working mode of the Agg operator during hash grouping.|When the number of groups generated by the <code>GROUP BY</code> operation on a column is small, you can set the value of <code>kovae_aggregator_hash_type</code> to <code>1</code> to improve the query speed.|
-
 
 **Table 4** Typical configurations (example hardware environment: Kunpeng 920 processor + 512 GB memory + 1 TB drive)<a id="typical-configurations"></a>
 
@@ -1225,7 +1174,6 @@ This section provides tuning suggestions for memory parameters, thread parameter
 |kovae_memory_max_size|<code>200</code> × <code>1024</code> × <code>1024</code> × <code>1024</code> = 200 GB|Set the value constraint relationship as: MySQL <code>innodb_buffer_pool_size</code> + <code>kovae_memory_max_size</code> ≤ 70% of the physical machine memory.<br>For example, 512 GB memory of a physical machine × 70% is 358.4 GB. The typical value of <code>innodb_buffer_pool_size</code> for a 100 GB TPC-H database is 150 GB. Therefore, the typical value of <code>kovae_memory_max_size</code> is 200 GB.|
 |kovae_memory_buffer_size|<code>20</code> × <code>1024</code> × <code>1024</code> × <code>1024</code> = 20 GB|Set the value of this parameter to 10% of the <code>kovae_memory_max_size</code> value.|
 |Other parameters|Retain the default value.|-|
-
 
 ## Troubleshooting<a name="EN-US_TOPIC_0000002518544202"></a>
 
@@ -1245,18 +1193,17 @@ When the number of records in the table exceeds the configured value of this var
 
 If some expected wait events are missing in the returned result from the query, you can set the size of the `events_waits_history_long` table to a larger value by adding the following line to the configuration file to obtain the expected wait events:
 
-```
+```text
 performance_schema_events_waits_history_long_size=1048576
 ```
 
 If some wait events that are not expected to be generated are returned, the possible cause is that the `events_waits_history_long` table contains wait event records of historical SQL statements. Run the following command to clear the wait event records generated by historical SQL statements, run the SQL statement again, and query wait events:
 
-```
+```text
 TRUNCATE table performance_schema.events_waits_history_long;
 ```
 
 Other performance event records in PFS are similar to lock wait events. You can solve similar problems by configuring size parameters of the related tables or using `TRUNCATE table`.
-
 
 ### Error Reported During SQL Statement Execution Due to Too Few Files That Can Be Opened by Users and Too Many Files Flushed to Drives<a name="EN-US_TOPIC_0000002550183947"></a>
 
@@ -1272,12 +1219,11 @@ Multiple files need to be created when they are flushed to drives. If the number
 
 1. Execute the following statement to modify the limit:
 
-    ```
+    ```shell
     ulimit -SHn 1000000000
     ```
 
 2. After the limit is modified, restart the database.
-
 
 ### Failed to Execute SQL Queries Due to Insufficient Drive Space<a name="EN-US_TOPIC_0000002518704106"></a>
 
@@ -1300,8 +1246,6 @@ Check the error logs of the database and take the following measures accordingly
 - If the logs indicate that the drive space is insufficient, increase the drive space.
 - If the logs indicate that the write permission on the file is missing, grant the write permission on the file.
 - If the logs indicate that the drive is faulty, replace the drive.
-
-
 
 ## Acronyms and Abbreviations<a name="EN-US_TOPIC_0000002518704110"></a>
 

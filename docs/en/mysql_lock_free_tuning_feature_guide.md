@@ -24,7 +24,6 @@ Among the operations in the critical region protected by Trx-sys->mutex, two tim
 
 In this feature, the lock-free hash rw_trx_hash is used to replace the function of rw_trx_set to reduce the time consumed in the critical region of Trx-sys->mutex and relieve the contention for Trx-sys->mutex, thereby improving system throughput. MySQL has used lock-free hash in performance schema and MDL. The original code has LF_HASH implementation and can be reused. Although thread security is ensured for rw_trx_hash access, the rw_trx_hash and data objects in the critical region are not synchronized because related operations have been moved out of the critical region. The logic must be correct during code implementation.
 
-
 ## Code Implementation<a name="EN-US_TOPIC_0000002518705186"></a>
 
 [**Table 1**](#new-classes) lists the new classes of the MySQL lock-free tuning feature.
@@ -35,7 +34,6 @@ In this feature, the lock-free hash rw_trx_hash is used to replace the function 
 |--|--|
 |rw_trx_hash_t|Lock-free hash container, which encapsulates the MySQL LF_HASH.|
 |rw_trx_hash_element_t|Elements of rw_trx_hash_t.|
-
 
 **Changes in trx_lists_init_at_db_start:** During the database startup process, the TrxIdSet whose life cycle is trx_lists_init_at_db_start is used to implement the original global TrxIdSet function. In "Resurrect transactions that were doing updates" of trx_resurrect, trxid is used to locate the transaction instance, which prevents repeated creation of trx instances.
 
@@ -66,7 +64,6 @@ In this feature, the lock-free hash rw_trx_hash is used to replace the function 
 
 **Changes in rec_queue_validate_latched:** Due to the changes in trx_release_impl_and_expl_locks, a method similar to lock_rec_convert_impl_to_expl_for_trx is used to determine the transaction state.
 
-
 ## Usage Description<a name="EN-US_TOPIC_0000002550185029"></a>
 
 Fix vulnerabilities as soon as possible based on the Common Vulnerabilities and Exposures (CVE) of MySQL 8.0.20 on the official website.
@@ -87,7 +84,7 @@ The MySQL lock-free tuning feature is provided as a patch file. This patch is de
 
 1. Download the [MySQL 8.0.20 source code](https://github.com/mysql/mysql-server/archive/mysql-8.0.20.tar.gz), upload it to the `/home` directory on the server and decompress it, and then go to the root directory of the MySQL source code.
 
-    ```
+    ```shell
     cd /home
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
@@ -96,21 +93,24 @@ The MySQL lock-free tuning feature is provided as a patch file. This patch is de
 2. Download the [fine-grained lock tuning patch](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.20/boostdb-patches/0001-SHARDED-LOCK-SYS.patch) and [lock-free tuning patch](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.20/boostdb-patches/0002-LOCK-FREE-TRX-SYS.patch) and upload them to the root directory of the MySQL source code.
 3. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```
+    ```shell
     git init
     git add -A
     git commit -m "Initial commit"
     ```
 
     >![](public_sys-resources/icon_note.gif) **NOTE:**
-    >-   Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
+    >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
+>
+    > ```
+    > yum install git
     >    ```
-    >    yum install git
-    >    ```
-    >-   If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
-    >    ```
-    >    git config user.email "123@example.com"
-    >    git config user.name "123"
+>
+    >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
+>
+    > ```
+    > git config user.email "123@example.com"
+    > git config user.name "123"
     >    ```
 
 4. If the Yum repository is not configured, configure it. For details, see [Configuring the Yum Repository](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0013.html).
@@ -144,7 +144,6 @@ The MySQL lock-free tuning feature is provided as a patch file. This patch is de
 
     **Figure 1** Performance comparison before and after MySQL lock-free tuning is used<a name="fig289014232378"></a><a id="performance-comparison"></a><br>
     ![](figures/performance_comparison_lock_free_tuning.png "Performance comparison before and after MySQL lock-free tuning is used")
-
 
 ## Change History<a name="EN-US_TOPIC_0000002550145029"></a>
 
