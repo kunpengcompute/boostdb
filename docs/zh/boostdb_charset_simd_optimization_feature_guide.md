@@ -70,18 +70,18 @@
         collation_server = utf8_unicode_ci
         ```
 
-    >![](public_sys-resources/icon_note.gif) **说明：**
-    >在Percona-Server 8.0.43-34中则进行以下配置：
->
-    > ```txt
-    > character_set_server = utf8mb3
-    > collation_server = utf8mb3_general_ci
-    >    ```
->
-    > ```txt
-    > character_set_server = utf8mb3
-    > collation_server = utf8mb3_unicode_ci
-    >    ```
+         >![](public_sys-resources/icon_note.gif) **说明：**
+         >在Percona-Server 8.0.43-34中则进行以下配置：
+         >
+         > ```txt
+         > character_set_server = utf8mb3
+         > collation_server = utf8mb3_general_ci
+         >    ```
+         >
+         > ```txt
+         > character_set_server = utf8mb3
+         > collation_server = utf8mb3_unicode_ci
+         >    ```
 
     3. 字符集为utf8mb4时，在“[mysqld]”下增加字符集和比较规则的配置，请根据使用场景选择以下几种的其中一种配置即可。
 
@@ -95,13 +95,13 @@
         collation_server = utf8mb4_unicode_ci
         ```
  
-    >![](public_sys-resources/icon_note.gif) **说明：**
-    >Percona-Server 8.0.43-34中除支持以上配置外，另外支持以下配置：
->
-    > ```txt
-    > character_set_server = utf8mb4
-    > collation_server = utf8mb4_0900_ai_ci
-    >    ```
+        >![](public_sys-resources/icon_note.gif) **说明：**
+        >Percona-Server 8.0.43-34中除支持以上配置外，另外支持以下配置：
+        >
+        > ```txt
+        > character_set_server = utf8mb4
+        > collation_server = utf8mb4_0900_ai_ci
+        >    ```
 
     4. 按“Esc”键退出编辑模式，输入 **:wq!**，按“Enter”键保存并退出文件。
 

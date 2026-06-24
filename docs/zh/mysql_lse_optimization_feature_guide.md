@@ -56,7 +56,7 @@ LL/SC原子指令需要把共享变量先load到本核所在的L1 Cache中进行
    rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm
    ```
 
-   > ![](../public_sys-resources/icon_note.gif) **说明：**
+   > ![](public_sys-resources/icon_note.gif) **说明：**
    > 安装过程中，如果存在已安装依赖包但rpm相关检验不通过的情况，使用--nodeps跳过依赖检查，即执行如下命令。
    >
    > ```shell

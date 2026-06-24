@@ -92,7 +92,7 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
     cmake .. -DBUILD_CONFIG=mysql_release -DWITH_ZSTD=system -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/data/mysql/data -DWITH_BOOST=/home/mysql-8.0.25/boost/boost_1_73_0
     ```
 
-    >![](public_sys-resources/icon-note.gif) **说明：** 
+    >![](public_sys-resources/icon_note.gif) **说明：** 
     >如果执行**cmake**命令后提示“Cannot find system zstd libraries”，请参见[合入MySQL KAEZstd页压缩解压缩优化Patch包时提示找不到zstd库的解决方法](#ZH-CN_TOPIC_0000002133806097)。
 
     按照《MySQL 移植指南》中的后续步骤，完成MySQL的编译和安装为止。
@@ -135,7 +135,7 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
 
 4. 通过Sysbench测试可以得到使用MySQL KAEZstd页压缩解压缩优化特性前后的存储空间节约程度和TPS劣化程度，详细测试步骤请参见《[Sysbench 0.5&1.0 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)》。
 
-    >![](public_sys-resources/icon-notice.gif) **须知：** 
+    >![](public_sys-resources/icon_notice.gif) **须知：** 
     >使用Sysbench导入数据时，需要在Sysbench工具的oltp\_common.lua脚本的建表语句中加上如下内容。
 >
     >```shell
