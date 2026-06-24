@@ -6,7 +6,7 @@
 
 | 文档版本 | 发布日期       | 修改说明                                                                                                                                 |
 | ---- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| 01   | 2026-03-30 |- 首次发布MySQL Plan Cache特性。<br>- 首次发布MySQL事务锁优化特性。<br>- 首次发布MySQL字符集处理SIMD优化特性。 |
+| 01   | 2026-03-30 |- 首次发布MySQL Plan Cache特性。<br>- 首次发布MySQL事务锁优化特性。<br>- 更新MySQL字符集处理SIMD优化特性。 |
 
 ### 版本配套说明
 
@@ -52,7 +52,7 @@
 
 ##### MySQL事务锁优化
 
-新增MySQL事务锁优化特性。该特性包含3个补丁，分别从锁系统分片与闩锁优化、表锁队列检查优化以及Read View版本跟踪优化三个方面增强Percona-Server 5.7.44-53的InnoDB事务与锁管理能力，以降低高并发场景中的全局互斥竞争、表锁队列扫描开销和Read View管理成本。
+新增MySQL事务锁优化特性。该特性包含3个补丁，分别从锁系统分片与闩锁优化、表锁队列检查优化以及Read View版本跟踪优化三个方面增强Percona-Server 5.7.44-53的InnoDB事务与锁管理能力，以降低高并发场景中的全局竞争、表锁队列扫描开销和Read View管理成本。
 
 ##### MySQL Plan Cache
 
@@ -60,7 +60,7 @@
 
 ##### MySQL字符集处理SIMD优化
 
-新增MySQL字符集处理SIMD优化特性。在MySQL OLTP场景中，针对字符集处理相关的热点函数（如my_strnxfrm_unicode、my_ismbchar_utf8、my_charpos_mb、my_hash_sort_utf8、my_lengthsp_8bit），利用SIMD指令进行了向量化加速优化，在Sysbench只读场景中可获得10%的性能提升。
+更新MySQL字符集处理SIMD优化特性。在MySQL OLTP场景中，针对字符集处理相关的热点函数（如my_strnxfrm_unicode、my_ismbchar_utf8、my_charpos_mb、my_hash_sort_utf8、my_lengthsp_8bit），利用SIMD指令进行了向量化加速优化，在Sysbench只读场景中可获得10%的性能提升。
 
 #### 已解决的问题
 
@@ -232,7 +232,7 @@
 |《MySQL Binlog writeset_history数据结构优化 特性指南》|本文档提供MySQL Binlog writeset_history数据结构优化特性的环境要求、特性使能指导。|开源仓|
 |《MySQL记录匹配优化 特性指南》|本文档提供MySQL记录匹配优化特性的环境要求、特性使能指导。|开源仓|
 |《MySQL字符集处理SIMD优化 特性指南》|本文档提供MySQL字符集处理SIMD优化特性的环境要求、特性使能指导。|开源仓|
-|《MySQL Binlog预分配优化 特性指南》|本文档提供MySQL Binlog预分配优化特性的环境要求、特性使能指导。|开源仓|
+|《MySQL非对齐内存访问优化 特性指南》|本文档提供MySQL非对齐内存访问优化特性的环境要求、特性使能指导。|开源仓|
 
 ### 获取文档的方法<a name="ZH-CN_TOPIC_0000002544372643"></a>
 
