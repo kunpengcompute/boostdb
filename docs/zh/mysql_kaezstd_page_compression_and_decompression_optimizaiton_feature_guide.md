@@ -93,7 +93,7 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
     ```
 
     >![](public_sys-resources/icon-note.gif) **说明：** 
-    >如果执行**cmake**命令后提示“Cannot find system zstd libraries”，请参见[合入MySQL KAEZstd页压缩解压缩优化Patch包时提示找不到zstd库的解决方法](合入MySQL-KAEZstd页压缩解压缩优化Patch包时提示找不到zstd库的解决方法.md)。
+    >如果执行**cmake**命令后提示“Cannot find system zstd libraries”，请参见[合入MySQL KAEZstd页压缩解压缩优化Patch包时提示找不到zstd库的解决方法](#ZH-CN_TOPIC_0000002133806097)。
 
     按照《MySQL 移植指南》中的后续步骤，完成MySQL的编译和安装为止。
 
@@ -154,7 +154,7 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
 
 ## 故障排除<a name="ZH-CN_TOPIC_0000002133846477"></a>
 
-### 合入MySQL KAEZstd页压缩解压缩优化Patch包时提示找不到zstd库的解决方法<a name="ZH-CN_TOPIC_0000002133806097"></a>
+### 合入MySQL KAEZstd页压缩解压缩优化Patch包时提示找不到zstd库的解决方法<a id="ZH-CN_TOPIC_0000002133806097"></a>
 
 **问题现象描述<a name="section99584372123"></a>**
 

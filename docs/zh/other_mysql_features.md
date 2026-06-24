@@ -209,7 +209,7 @@ innodb\_undo\_spaces\_snapshot\_tickets用于控制单次undo tablespace truncat
 
 **优化问题描述<a name="section22331871216"></a>**
 
-当MySQL进行sysbench select point性能测试时，服务端CPU利用率接近100%，通过perf top工具可以观察到mysqld的dispatch\_command函数是明显的热点函数，占比超过20%，使用工具进一步解析dispatch\_command，观察到两处原子变量加减操作占比极高，占比各超过40%，存在显著的竞争，是明显的瓶颈点，如[**图 1** mysqld的热点函数](#mysqld的热点函数)\~[**图 3** 热点函数dispatch\_command瓶颈点二](#热点函数dispatch\_command瓶颈点二)所示。
+当MySQL进行sysbench select point性能测试时，服务端CPU利用率接近100%，通过perf top工具可以观察到mysqld的dispatch\_command函数是明显的热点函数，占比超过20%，使用工具进一步解析dispatch\_command，观察到两处原子变量加减操作占比极高，占比各超过40%，存在显著的竞争，是明显的瓶颈点，如[**图 1** mysqld的热点函数](#mysqld的热点函数)\~[**图 3** 热点函数dispatch\_command瓶颈点二](#热点函数dispatch_command瓶颈点二)所示。
 
 **图 1** mysqld的热点函数<a name="fig6544941161514"></a><a id="mysqld的热点函数"></a><br>
 ![](figures/mysqld的热点函数.png "mysqld的热点函数")
@@ -217,7 +217,7 @@ innodb\_undo\_spaces\_snapshot\_tickets用于控制单次undo tablespace truncat
 **图 2** 热点函数dispatch\_command瓶颈点一<a name="fig1858521141619"></a><a id="热点函数dispatch\_command瓶颈点一"></a><br>
 ![](figures/热点函数dispatch_command瓶颈点一.png "热点函数dispatch_command瓶颈点一")
 
-**图 3** 热点函数dispatch\_command瓶颈点二<a name="fig12699201251719"></a><a id="热点函数dispatch\_command瓶颈点二"></a><br>
+**图 3** 热点函数dispatch\_command瓶颈点二<a name="fig12699201251719"></a><a id="热点函数dispatch_command瓶颈点二"></a><br>
 ![](figures/热点函数dispatch_command瓶颈点二.png "热点函数dispatch_command瓶颈点二")
 
 **优化原理介绍<a name="section137419344219"></a>**
