@@ -17,23 +17,23 @@ In addition to single tables, simple parallel query of multiple tables is allowe
 
 - Single-table trustlist:
 
-    ```
+    ```sql
     select {<Column_name>| Aggregate } from table where {=|>| < |>= |<= |like |between…and| in} group by {<Column_name>} having {<Column_name>}order by {<Column_name>| Aggregate } limit x
     ```
 
     >![](public_sys-resources/icon_note.gif) **NOTE:**
-    >-   In the trustlist format, `select` and `from` are mandatory, and `where`, `group by`, `having`, `order by`, and `limit` are optional.
-    >-   Aggregate can be SUM, MIN, MAX, AVG, or COUNT.
+    >- In the trustlist format, `select` and `from` are mandatory, and `where`, `group by`, `having`, `order by`, and `limit` are optional.
+    >- Aggregate can be SUM, MIN, MAX, AVG, or COUNT.
 
 - Multi-table trustlist:
 
-    ```
+    ```sql
     select {<Column_name>| Aggregate } from table1 table2 …  where {=|>| < |>= |<= |like |between…and| in} group by {<Column_name>} having {<Column_name>}order by {<Column_name>} limit x
     ```
 
     >![](public_sys-resources/icon_note.gif) **NOTE:**
-    >-   In the trustlist format, `select` and `from` are mandatory, and `where`, `group by`, `having`, `order by`, and `limit` are optional.
-    >-   Parallel query does not take effect for system tables, temporary tables, non-InnoDB tables, stored procedures, or serialized isolation levels.
+    >- In the trustlist format, `select` and `from` are mandatory, and `where`, `group by`, `having`, `order by`, and `limit` are optional.
+    >- Parallel query does not take effect for system tables, temporary tables, non-InnoDB tables, stored procedures, or serialized isolation levels.
 
 - Semi-join query:
 
@@ -46,7 +46,6 @@ In addition to single tables, simple parallel query of multiple tables is allowe
 **Security Hardening Statement<a name="section1867017506565"></a>**
 
 MySQL parallel query tuning supports MySQL 8.0.20 and MySQL 8.0.25. Promptly fix the CVE vulnerabilities of the corresponding MySQL versions released on the MySQL official website.
-
 
 ### Parallel Query<a name="EN-US_TOPIC_0000002518544828"></a>
 
@@ -69,7 +68,6 @@ Parallel query involves two key events: table splitting and execution plan recon
 
     **Figure 2** Execution plan reconstruction<a name="fig17701652134517"></a><a id="execution-plan-reconstruction"></a><br>
     ![](figures/execution_plan_reconstruction.png "Execution plan reconstruction")
-
 
 #### Key Function Process<a name="EN-US_TOPIC_0000002518544826"></a>
 
@@ -95,9 +93,6 @@ The `make_pq_leader_plan` function of the leader thread determines whether state
 
 The worker threads are created and started by the leader thread. The number of worker threads to be started depends on the parallelism degree. The worker thread calls `make_pq_worker_plan` to generate its own execution plan. In this process, a replaceable iterator in the original execution plan is replaced with the parallel iterator PQblockScanlterator. Then, the `read` function of PQblockScanIterator is called. This function calls the interaction interface with the InnoDB storage engine to obtain data from InnoDB. Then the `send_data` function is called to send the data to the message queue for the leader thread.
 
-
-
-
 ## Patch Usage<a name="EN-US_TOPIC_0000002550144563" id="patch-usage"></a>
 
 The detailed procedure is as follows:
@@ -106,13 +101,12 @@ The detailed procedure is as follows:
 
     **Table 1** Download URLs for different MySQL versions<a id="download-urls-for-different-mysql-versions"></a>
 
-|Version|Download URL|
-|--|--|
-|MySQL 8.0.20|[Link](https://github.com/mysql/mysql-server/archive/mysql-8.0.20.tar.gz)|
-|MySQL 8.0.25|[Link](https://github.com/mysql/mysql-server/archive/mysql-8.0.25.tar.gz)|
+   |Version|Download URL|
+   |--|--|
+   |MySQL 8.0.20|[Link](https://github.com/mysql/mysql-server/archive/mysql-8.0.20.tar.gz)|
+   |MySQL 8.0.25|[Link](https://github.com/mysql/mysql-server/archive/mysql-8.0.25.tar.gz)|
 
-
-  ![](public_sys-resources/icon_notice.gif) **NOTICE:**
+     ![](public_sys-resources/icon_notice.gif) **NOTICE:**
     The code downloaded from GitHub does not contain the `boost` folder. You can download the source code containing `boost` from the MySQL official website and obtain the `boost` folder from the source code. The path to the `boost` folder will be used during compilation.
 
 2. Download the patch packages of the MySQL parallel query tuning feature based on [**Table 2**](#patch-packages-for-different-mysql-versions).
@@ -125,7 +119,6 @@ The detailed procedure is as follows:
 |MySQL 8.0.20|[mtr-pq.patch](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.20/boostdb-patches/mtr-pq.patch)|Patch for MTR tests in mysql-test, which ensures that all MTR tests are passed.|
 |MySQL 8.0.25|[code-pq-for-MySQL-8.0.25.patch](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.25/boostdb-patches/code-pq-for-MySQL-8.0.25.patch)|Source code patch, which contains all the code required by parallel query.|
 |MySQL 8.0.25|[mtr-pq-for-MySQL-8.0.25.patch](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.25/boostdb-patches/mtr-pq-for-MySQL-8.0.25.patch)|Patch for MTR tests in mysql-test, which ensures that all MTR tests are passed.|
-
 
     - The patch packages are generated based on MySQL 8.0.20 and 8.0.25 in the Gitee community.
     - The patch packages have been verified on the AArch64 Linux platform.
@@ -168,7 +161,6 @@ The detailed procedure is as follows:
 
 6. Compile and install the MySQL source code. For details, see [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengdbs_02_0002.html).
 
-
 ## Parallel Query Parameters<a name="EN-US_TOPIC_0000002550184565"></a>
 
 [**Table 1**](#parallel-query-parameter) describes the six new parallel query parameters.
@@ -184,7 +176,6 @@ The detailed procedure is as follows:
 |parallel_queue_timeout|Global- and session-level parameter, which is used to set the timeout interval for parallel queries.<br>If system resources are insufficient, for example, the number of running parallel query threads reaches the value of <code>parallel_max_threads</code>, the parallel query statements will wait for available resources. If no resource is available after timeout, a query process of open-source MySQL is executed.|Value range: [0, <code>ULONG_MAX</code>], in milliseconds<br>Default value: <code>0</code>|
 |force_parallel_execute|Global- and session-level parameter, which is used to set the switch for parallel queries.|The bool value is <code>on</code> or <code>off</code>.<br>The value <code>on</code> enables parallel query while <code>off</code> disables parallel query.<br>Default value: <code>off</code>|
 
-
 [**Table 2**](#status-variables) describes the four new status variables.
 
 **Table 2** Status variables<a id="status-variables"></a>
@@ -195,8 +186,6 @@ The detailed procedure is as follows:
 |PQ_memory_used|Global-level variable, which indicates the total memory used for parallel execution.|
 |PQ_threads_refused|Global-level variable, which indicates the total number of parallel queries that cannot be executed due to the limit on the total number of threads.|
 |PQ_memory_refused|Global-level variable, which indicates the total number of parallel queries that fail to be executed due to the total memory limit.|
-
-
 
 ## Parallel Query Usage<a name="EN-US_TOPIC_0000002550184561"></a>
 
@@ -210,7 +199,7 @@ You can use the parallel query tuning feature in either of the following ways:
 
     For example, if you want to enable parallel execution and the number of parallel threads is 4, run the following commands:
 
-    ```
+    ```shell
     force_parallel_execute=on;
     parallel_default_dop=4;
     ```
@@ -234,7 +223,6 @@ According to the test data, the parallelism degree is improved after MySQL paral
 
 ![](figures/en-us_image_0000002518544832.png)
 
-
 ## Possible Incompatibility with Serial Results<a name="EN-US_TOPIC_0000002518704732"></a>
 
 The parallel execution result may be incompatible with the serial execution result in the following scenarios:
@@ -251,7 +239,6 @@ The parallel execution result may be incompatible with the serial execution resu
 
     When multiple worker threads execute the query, the returned result set may have a different sequence from the serial execution sequence. If the `GROUP BY` statement exists, the sequence in the group after grouping may be different from the serial execution sequence. If the `LIMIT` statement exists, it is more likely that the parallel execution result is different from the serial execution result.
 
-
 ## Constraints<a name="EN-US_TOPIC_0000002550184563"></a>
 
 [**Table 1**](#query-statements-that-cannot-be-executed-in-parallel) describes the query statements that cannot be executed in parallel.
@@ -265,8 +252,6 @@ The parallel execution result may be incompatible with the serial execution resu
 |Index|Spatial index<br>Full-text index<br>Index merge|
 |Function|Window functions<br>with rollup<br>Spatial functions (such as <code>SP_WITHIN_FUNC</code>)<br>distinct<br>User-defined functions<br>GROUP_CONCAT<br>JSON functions<br>XML functions<br>STD/STDDEV/STDDEV_POP<br>VARIANCE/VAR_POP/VAR_SAMP<br>BIT_AND, BIT_OR, BIT_XOR<br>randst_distance<br>get_lock<br>is_free_lock, is_used_lock, release_lock, release_all_locks<br>sleep<br>weight_string<br>SHA, SHA1, SHA2, MD5<br>row_count<br>round<br>VARIANCE|
 |Others|Subqueries<br>union<br>Stored procedure<br>Triggers<br>Lock queries, such as the serializable isolation level and "for update/share lock"<br>Prepared Statements<br>generated column<br>Not compliant with the <code>only_full_group_by</code> condition<br>No line of data returned in the execution result (The execution plan displays Zero limit, Impossible WHERE, Impossible HAVING, No matching min/max row, Select tables optimized away, Impossible HAVING noticed after reading const tables, no matching row in const table, etc.)|
-
-
 
 ## FAQs<a name="EN-US_TOPIC_0000002518704728"></a>
 
@@ -286,8 +271,6 @@ The parallel execution result may be incompatible with the serial execution resu
 |8|When the trustlist format is met, the parallel query function is enabled, and the threshold is 0, will parallel query be triggered if there is only one data record (for example, <code>select * from t1;</code>) in t1?|Only one data record is considered as a const table and parallel query will not be triggered. If there is more than one data record, parallel query will be triggered. However, if the data volume is too small, the parallel query performance may be undermined.|
 |9|In parallel query, can only <code>t1,t2;</code> be used to combine multiple tables in the multi-table trustlist? Is there any other format?|The format is not limited to <code>t1,t2;</code>. The supported formats depend on the query optimizer and execution plan generation policy of the database.<br>Take <code>SELECT t1.a, t2.b FROM t1 INNER JOIN t2 ON t1.id = t2.id;</code> as an example. If t1 and t2 meet the single-table conditions for parallel query, this query statement may trigger parallel query.|
 |10|If the associated field has indexes in two tables or the indexes in two tables are used in the condition, is it possible for index merging to occur while a parallel query is not triggered?|In this case, if the index merging conditions are met, index merging will be triggered. Index merging optimization is performed for a single table. When a table uses multiple indexes for condition scanning at the same time, index merging optimization may be triggered. You can query the execution plan to check whether index merging is triggered. If index merge is triggered, parallel query will not be triggered.|
-
-
 
 ## Change History<a name="EN-US_TOPIC_0000002550144561"></a>
 

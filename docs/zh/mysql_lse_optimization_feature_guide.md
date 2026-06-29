@@ -40,8 +40,8 @@ LL/SC原子指令需要把共享变量先load到本核所在的L1 Cache中进行
 | ------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
 | 操作系统    | openEuler 22.03 LTS SP4  | [获取链接](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)  |
 | 操作系统    | openEuler 24.03 LTS SP3  | [获取链接](https://repo.huaweicloud.com/openeuler/openEuler-24.03-LTS-SP3/ISO/aarch64/openEuler-24.03-LTS-SP3-everything-aarch64-dvd.iso)  |
-| Percona | Percona-Server 5.7.44-53 | [获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v4/BoostDB-Percona-5.7.44-53.aarch64.rpm) |
-| Percona | Percona-Server 8.0.43-34 | [获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v3/BoostDB-Percona-8.0.43-34.aarch64.rpm) |
+| Percona | Percona-Server 5.7.44-53 | [获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v3/BoostDB-Percona-5.7.44-53.aarch64.rpm) |
+| Percona | Percona-Server 8.0.43-34 | [获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v2/BoostDB-Percona-8.0.43-34.aarch64.rpm) |
 
 ## 安装和使能特性<a name="ZH-CN_TOPIC_0000002542566233"></a>
 
@@ -50,17 +50,21 @@ LL/SC原子指令需要把共享变量先load到本核所在的L1 Cache中进行
 1. 请参见《Percona 移植指南》中的[配置编译环境](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/Percona/kunpengpercona_02_0014.html)章节安装依赖。
 2. 请参见**[表 2](#操作系统和软件要求)** [操作系统和软件要求](#操作系统和软件要求)下载Percona-Server 5.7.44-53对应的rpm包并存放至目标路径，例如“/home”。
 3. 执行如下命令安装rpm包。安装完成后，默认安装目录位于“/usr/local/mysql”。
-   ```
+
+   ```shell
    cd /home
    rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm
    ```
-   > ![](../public_sys-resources/icon_note.gif) **说明：**
+
+   > ![](public_sys-resources/icon_note.gif) **说明：**
    > 安装过程中，如果存在已安装依赖包但rpm相关检验不通过的情况，使用--nodeps跳过依赖检查，即执行如下命令。
    >
-   > ```
+   > ```shell
    > rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm --nodeps
    > ```
+   >
 4. 启动数据库。启动数据库的操作请参见《MySQL 移植指南》的[运行MySQL](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_03_0013.html)章节。
+
 5. （可选）通过Sysbench测试可以得到使能本特性前后的性能提升效果，详细测试步骤请参见《[Sysbench 0.5&1.0 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)》。MySQL LSE及rec\_get\_offsets优化特性可以使Sysbench 8U16G规格下256并发综合性能（只读、读写、只写）提升5%，优化前后对比效果如**[图 3](#mysql-lse-rec-get-offsets-perf-compare)** [MySQL LSE及rec_get_offsets优化特性优化前后性能对比](#mysql-lse-rec-get-offsets-perf-compare)所示。
 
    **图 3** MySQL LSE优化特性优化前后性能对比<a name="fig937192253919"></a><a id="mysql-lse-rec-get-offsets-perf-compare"></a>
@@ -70,7 +74,7 @@ LL/SC原子指令需要把共享变量先load到本核所在的L1 Cache中进行
 
 ASLR（Address Space Layout Randomization，地址空间布局随机化）是一种针对缓冲区溢出的安全保护技术，通过对堆、栈、共享库映射等线性区布局的随机化，增加攻击者预测目的地址的难度，防止攻击者直接定位攻击代码位置，达到阻止溢出攻击的目的。
 
-```
+```shell
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 

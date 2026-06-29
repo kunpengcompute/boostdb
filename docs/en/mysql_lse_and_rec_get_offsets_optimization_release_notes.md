@@ -23,7 +23,6 @@
 </tbody>
 </table>
 
-
 ### Software Version Mapping<a name="EN-US_TOPIC_0000002512812560"></a>
 
 |Type|Version|
@@ -31,21 +30,15 @@
 |OS|openEuler 22.03 LTS SP4 or openEuler 24.03 LTS SP3|
 |Percona|Percona-Server 5.7.44-53 or Percona-Server 8.0.43-34|
 
-
-
 ### Hardware Version Mapping<a name="EN-US_TOPIC_0000002512932482"></a>
 
 |Item|Requirement|
 |--|--|
 |Processor|New Kunpeng 920 processor model or Kunpeng 950 processor|
 
-
-
 ### Virus Scan Results<a name="EN-US_TOPIC_0000002544372463"></a>
 
 Virus scanning is not involved because no software package is released.
-
-
 
 ## v26.0.RC1<a name="EN-US_TOPIC_0000002512932480"></a>
 
@@ -53,17 +46,13 @@ Virus scanning is not involved because no software package is released.
 
 The MySQL LSE and rec_get_offsets optimization feature is added. This feature introduces LSE hardware-based acceleration and optimizes the rec_get_offsets call logic to alleviate performance deterioration under high concurrency and improve the overall performance and system stability of MySQL on Kunpeng servers.
 
-
 ### Resolved Issues<a name="EN-US_TOPIC_0000002512812562"></a>
 
 None
 
-
 ### Known Issues<a name="EN-US_TOPIC_0000002512932478"></a>
 
 None
-
-
 
 ## Related Documentation<a name="EN-US_TOPIC_0000002544492469"></a>
 
@@ -73,8 +62,6 @@ None
 |--|--|--|
 |*Kunpeng BoostKit 26.0.RC1 MySQL LSE and rec_get_offsets Optimization Release Notes*|Describes the version release and mapping information of the MySQL LSE and rec_get_offsets optimization feature.|Open-source repository|
 |*Kunpeng BoostKit 26.0.RC1 MySQL LSE and rec_get_offsets Optimization Feature Guide*|Describes the environment requirements and provides guidance on enabling the MySQL LSE and rec_get_offsets optimization feature.|Open-source repository|
-
-
 
 ### Obtaining Documentation<a name="EN-US_TOPIC_0000002544372467"></a>
 

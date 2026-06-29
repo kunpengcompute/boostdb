@@ -33,18 +33,17 @@ Lock-sys会维持多个队列用于存储事务对资源的占用情况，每当
 
 以上所有步骤（除步骤2外，因为我们通常已经知道这些页）都是借助一行代码实现的：
 
-```
+```C++
 locksys::Shard_latches_guard guard{*block_a, *block_b};
 ```
 
 如果要“stop-the-world”，只需通过以下代码对global latch上x-latch：
 
-```
+```C++
 locksys::Exclusive_global_latch_guard guard{};
 ```
 
 为了使用友元保护器类，如Shard\_latches\_guard，该类不会公开太多的公共函数。
-
 
 ## 代码实现<a name="ZH-CN_TOPIC_0000002518705092"></a>
 
@@ -61,7 +60,6 @@ locksys::Exclusive_global_latch_guard guard{};
 |Naked_shard_latch_guard|只锁一个shard，但不锁global_latch。该类与Shared_global_latch_guard结合使用。|
 |Try_exclusive_global_latch|试图在其生命周期内对global_latch执行x-latch。该类唯一用例在srv_printf_innodb_monitor()中，其作用是试图避免在报告InnoDB监视器输出时干扰工作负载。|
 |Unsafe_global_latch_manipulator|允许以非结构化的方式按需手动锁定和解锁独占global_latch。在如下代码实现路径下需要使用该类：srv_printf_innodb_monitor() =>srv_printf_locks_and_transactions() =>lock_print_info_all_transactions() =>lock_trx_print_locks() =>lock_rec_fetch_page()|
-
 
 - **trx-\>mutex的变更：**
 
@@ -124,7 +122,6 @@ locksys::Exclusive_global_latch_guard guard{};
     - 可以通过删除重复代码，并使用更结构化的latch锁定来简化lock\_rec\_queue\_validate\(\)的代码。
     - 更新sync0debug，使其有适当的latch锁定顺序规则。
 
-
 ## 使用说明<a id="ZH-CN_TOPIC_0000002518545196"></a>
 
 建议关注[MySQL官网](https://www.mysql.com/)MySQL 8.0.20版本的CVE漏洞，按照要求及时进行漏洞修复。
@@ -145,7 +142,7 @@ MySQL细粒度锁优化特性以Patch补丁文件形式提供，该补丁基于M
 
 1. 下载[MySQL 8.0.20源码](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.20.tar.gz)，上传源码至服务器“/home”目录下后，解压源码包并进入MySQL源码的根目录。
 
-    ```
+    ```shell
     cd /home
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
@@ -154,40 +151,43 @@ MySQL细粒度锁优化特性以Patch补丁文件形式提供，该补丁基于M
 2. 下载[MySQL细粒度锁优化特性Patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)，解压后将0001-SHARDED-LOCK-SYS.patch上传至MySQL源码的根目录。
 3. 解压源码包并进入MySQL源码目录。
 
-    ```
+    ```shell
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
     ```
 
 4. 在源码根目录，使用git初始化命令来建立git管理信息。
 
-    ```
+    ```shell
     git init
     git add -A
     git commit -m "Initial commit"
     ```
 
     >![](public_sys-resources/icon_note.gif) **说明：**
-    >-   一般情况下，系统自带git，若需要安装git，请先参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中配置Yum源相关内容，再执行如下命令安装git。
+    >- 一般情况下，系统自带git，若需要安装git，请先参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中配置Yum源相关内容，再执行如下命令安装git。
+>
+    > ```shell
+    > yum install git
     >    ```
-    >    yum install git
-    >    ```
-    >-   若未配置git的提交用户信息，git commit前需要先配置用户邮件及用户名称信息。
-    >    ```
-    >    git config user.email "123@example.com"
-    >    git config user.name "123"
+>
+    >- 若未配置git的提交用户信息，git commit前需要先配置用户邮件及用户名称信息。
+>
+    > ```shell
+    > git config user.email "123@example.com"
+    > git config user.name "123"
     >    ```
 
 5. （可选）如果没有配置Yum源，请配置Yum源，详细信息请参见[配置Yum源](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0013.html)。
 6. （可选）如果没有安装dos2unix，请执行如下命令安装dos2unix。
 
-    ```
+    ```shell
     yum install dos2unix
     ```
 
 7. 合入MySQL细粒度锁优化特性补丁。
 
-    ```
+    ```shell
     dos2unix 0001-SHARDED-LOCK-SYS.patch
     git apply --check 0001-SHARDED-LOCK-SYS.patch
     git apply --whitespace=nowarn 0001-SHARDED-LOCK-SYS.patch
@@ -203,12 +203,9 @@ MySQL细粒度锁优化特性以Patch补丁文件形式提供，该补丁基于M
     **图 1** MySQL细粒度锁优化特性优化前后性能对比<a name="fig20903163123514"></a><a id="MySQL细粒度锁优化特性优化前后性能对比"></a><br>
     ![](figures/MySQL细粒度锁优化特性优化前后性能对比.png "MySQL细粒度锁优化特性优化前后性能对比")
 
-
 ## 修订记录<a name="ZH-CN_TOPIC_0000002550184931"></a>
 
 |发布日期|修订记录|
 |--|--|
 |2023-07-25|第二次正式发布。更新MySQL细粒度锁优化特性的[使用说明](#ZH-CN_TOPIC_0000002518545196)章节中合入补丁操作步骤的命令。|
 |2020-07-13|第一次正式发布。|
-
-

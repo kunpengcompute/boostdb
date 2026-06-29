@@ -29,8 +29,8 @@ MySQL的二进制日志（Binlog）是记录所有数据库数据变更操作（
 |项目|版本|获取地址|
 |--|--|--|
 |操作系统|openEuler 22.03 LTS SP4|[获取链接](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
-|Percona|Percona-Server 5.7.44-53|[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v4/BoostDB-Percona-5.7.44-53.aarch64.rpm)|
-|Percona|Percona-Server 8.0.43-34|[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v3/BoostDB-Percona-8.0.43-34.aarch64.rpm)|
+|Percona|Percona-Server 5.7.44-53|[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v3/BoostDB-Percona-5.7.44-53.aarch64.rpm)|
+|Percona|Percona-Server 8.0.43-34|[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v2/BoostDB-Percona-8.0.43-34.aarch64.rpm)|
 
 ## 安装和使能特性<a name="ZH-CN_TOPIC_0000002550137589"></a>
 
@@ -40,14 +40,15 @@ MySQL的二进制日志（Binlog）是记录所有数据库数据变更操作（
 2. 请参见[**表 2** 操作系统和软件要求](#操作系统和软件要求)下载Percona-Server 5.7.44-53对应的rpm包并存放至目标路径，例如"/home"。
 3. 执行如下命令安装rpm包。安装完成后，默认安装目录位于"/usr/local/mysql"。
 
-    ```
+    ```shell
     cd /home
     rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm
     ```
 
     >![](public_sys-resources/icon_note.gif) **说明：** 
     >安装过程中，如果存在已安装依赖包但rpm相关检验不通过的情况，使用--nodeps跳过依赖检查，即执行如下命令。
-    >```
+>
+    >```shell
     >rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm --nodeps
     >```
 
@@ -74,27 +75,27 @@ MySQL的二进制日志（Binlog）是记录所有数据库数据变更操作（
 
 1. 下载gcc 12.3.1（GCC for openEuler 3.0.3）。
 
-    ```
+    ```shell
     cd /home
     wget https://mirrors.huaweicloud.com/kunpeng/archive/compiler/kunpeng_gcc/gcc-12.3.1-2024.12-aarch64-linux.tar.gz
     ```
 
 2. 执行以下命令解压。
 
-    ```
+    ```shell
     tar zxvf gcc-12.3.1-2024.12-aarch64-linux.tar.gz
     ```
 
 3. 备份当前系统的libstdc++.so.6，创建高版本libstdc++.so.6软链接。
 
-    ```
+    ```shell
     mv /usr/lib64/libstdc++.so.6 /usr/lib64/libstdc++.so.6.bak
     ln -s /home/gcc-12.3.1-2024.12-aarch64-linux/lib64/libstdc++.so.6 /usr/lib64/libstdc++.so.6
     ```
 
 4. 检查当前库版本，若有输出，则说明已满足需求。
 
-    ```
+    ```shell
     strings /usr/lib64/libstdc++.so.6 | grep GLIBCXX_3.4.29
     ```
 
@@ -104,7 +105,7 @@ MySQL的二进制日志（Binlog）是记录所有数据库数据变更操作（
 
 ASLR（Address Space Layout Randomization，地址空间布局随机化）是一种针对缓冲区溢出的安全保护技术，通过对堆、栈、共享库映射等线性区布局的随机化，增加攻击者预测目的地址的难度，防止攻击者直接定位攻击代码位置，达到阻止溢出攻击的目的。
 
-```
+```shell
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 

@@ -49,35 +49,36 @@
 2. 请参见[**表 2** 操作系统和软件要求](#操作系统和软件要求)下载Percona-Server 5.7.44-53对应的rpm包并存放至目标路径，例如`/home`。
 3. 执行如下命令安装rpm包。安装完成后，默认安装目录位于`/usr/local/mysql`。
 
-    ```
+    ```shell
     cd /home
     rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm
     ```
 
     >![](public_sys-resources/icon_note.gif) **说明：**
     >安装过程中，如果存在已安装依赖包但rpm相关检验不通过的情况，使用--nodeps跳过依赖检查，即执行如下命令。
-    >```
+    >
+    >```shell
     >rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm --nodeps
     >```
 
 4. 在MySQL配置文件`/etc/my.cnf`中增加字符序配置。
     1. 打开MySQL配置文件`/etc/my.cnf`。
 
-        ```
+        ```shell
         vi /etc/my.cnf
         ```
 
     2. 按`i`进入编辑模式。
         - 字符集为utf8时，在`[mysqld]`下增加以下配置。
 
-            ```
+            ```text
             character_set_server = utf8
             collation_server = utf8_general_ci
             ```
 
         - 字符集为utf8mb4时，在`[mysqld]`下增加以下配置。
 
-            ```
+            ```text
             character_set_server = utf8mb4
             collation_server = utf8mb4_general_ci
             ```
@@ -88,7 +89,7 @@
 
 6. 以数据库sbtest中的表sbtest1为例说明如何查询数据库和表的字符集、字符序配置。
 
-    ```
+    ```sql
     show create database sbtest;
     SHOW VARIABLES LIKE 'collation_database';
     show create table sbtest1;
@@ -129,27 +130,27 @@
 
 1. 下载gcc 12.3.1（GCC for openEuler 3.0.3）。
 
-    ```
+    ```shell
     cd /home
     wget https://mirrors.huaweicloud.com/kunpeng/archive/compiler/kunpeng_gcc/gcc-12.3.1-2024.12-aarch64-linux.tar.gz
     ```
 
 2. 执行以下命令解压。
 
-    ```
+    ```shell
     tar zxvf gcc-12.3.1-2024.12-aarch64-linux.tar.gz
     ```
 
 3. 备份当前系统的libstdc++.so.6，创建高版本libstdc++.so.6软链接。
 
-    ```
+    ```shell
     mv /usr/lib64/libstdc++.so.6 /usr/lib64/libstdc++.so.6.bak
     ln -s /home/gcc-12.3.1-2024.12-aarch64-linux/lib64/libstdc++.so.6 /usr/lib64/libstdc++.so.6
     ```
 
 4. 检查当前库版本，若有输出，则说明已满足需求。
 
-    ```
+    ```shell
     strings /usr/lib64/libstdc++.so.6 | grep GLIBCXX_3.4.29
     ```
 
@@ -159,7 +160,7 @@
 
 ASLR（Address Space Layout Randomization，地址空间布局随机化）是一种针对缓冲区溢出的安全保护技术，通过对堆、栈、共享库映射等线性区布局的随机化，增加攻击者预测目的地址的难度，防止攻击者直接定位攻击代码位置，达到阻止溢出攻击的目的。
 
-```
+```shell
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 

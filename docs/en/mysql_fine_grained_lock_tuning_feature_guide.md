@@ -33,18 +33,17 @@ Accessing two queues to obtain two records involves the following steps:
 
 All of the preceding steps (except step 2, as we usually know the page already) are accomplished by using the following code:
 
-```
+```c++
 locksys::Shard_latches_guard guard{*block_a, *block_b};
 ```
 
 For the "stop the world" operation, x-latch the global latch by using the following code:
 
-```
+```c++
 locksys::Exclusive_global_latch_guard guard{};
 ```
 
 To use friend guard classes, like Shard_latches_guard, this class does not expose too many public functions.
-
 
 ## Code Implementation<a name="EN-US_TOPIC_0000002518705092"></a>
 
@@ -61,7 +60,6 @@ To use friend guard classes, like Shard_latches_guard, this class does not expos
 |Naked_shard_latch_guard|Latches only a shard, but not the global latch. This class is used in combination with Shared_global_latch_guard.|
 |Try_exclusive_global_latch|Tries to x-latch the global latch for its lifetime. This class is the only use case in the srv_printf_innodb_monitor() function, and the class tries to avoid interfering with workload when the function reports InnoDB monitor output.|
 |Unsafe_global_latch_manipulator|Manually latches and unlatches the exclusive global latch on demand in a non-structured way. This class is required in the following code implementation path: srv_printf_innodb_monitor() => srv_printf_locks_and_transactions() => lock_print_info_all_transactions() => lock_trx_print_locks() => lock_rec_fetch_page()|
-
 
 - **Changes in trx->mutex:**
 
@@ -124,7 +122,6 @@ To use friend guard classes, like Shard_latches_guard, this class does not expos
     - The code around lock_rec_queue_validate() could be simplified by removing code duplication, and using more structured latching.
     - Update sync0debug so it has proper rules for latching order.
 
-
 ## Usage Description<a name="EN-US_TOPIC_0000002518545196"></a>
 
 Fix vulnerabilities as soon as possible based on the Common Vulnerabilities and Exposures (CVE) of MySQL 8.0.20 on the [MySQL official website](https://www.mysql.com/).
@@ -145,7 +142,7 @@ The MySQL fine-grained lock tuning feature is provided as a patch file. This pat
 
 1. Download the [MySQL 8.0.20 source code](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.20.tar.gz), upload it to the `/home` directory on the server and decompress it, and then go to the root directory of the MySQL source code.
 
-    ```
+    ```shell
     cd /home
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
@@ -154,40 +151,43 @@ The MySQL fine-grained lock tuning feature is provided as a patch file. This pat
 2. Download the [MySQL fine-grained lock tuning patch](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.20/boostdb-patches/0001-SHARDED-LOCK-SYS.patch) and upload it to the root directory of the MySQL source code.
 3. Decompress the source package and go to the MySQL source code directory.
 
-    ```
+    ```shell
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
     ```
 
 4. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```
+    ```shell
     git init
     git add -A
     git commit -m "Initial commit"
     ```
 
     >![](public_sys-resources/icon_note.gif) **NOTE:**
-    >-   Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
+    >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
+>
+    > ```shell
+    > yum install git
     >    ```
-    >    yum install git
-    >    ```
-    >-   If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
-    >    ```
-    >    git config user.email "123@example.com"
-    >    git config user.name "123"
+>
+    >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
+>
+    > ```shell
+    > git config user.email "123@example.com"
+    > git config user.name "123"
     >    ```
 
 5. (Optional) If the Yum repository is not configured, configure it. For details, see [Configuring the Yum Repository](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0013.html).
 6. (Optional) If dos2unix is not installed, run the following command to install it:
 
-    ```
+    ```shell
     yum install dos2unix
     ```
 
 7. Apply the MySQL fine-grained lock tuning patch.
 
-    ```
+    ```shell
     dos2unix 0001-SHARDED-LOCK-SYS.patch
     git apply --check 0001-SHARDED-LOCK-SYS.patch
     git apply --whitespace=nowarn 0001-SHARDED-LOCK-SYS.patch
@@ -202,7 +202,6 @@ The MySQL fine-grained lock tuning feature is provided as a patch file. This pat
 
     **Figure 1** Performance comparison before and after MySQL fine-grained lock tuning is used<a name="fig20903163123514"></a><a id="performance-comparison"></a><br>
     ![](figures/performance_comparison_fine_grained_lock_tuning.png "Performance comparison before and after MySQL fine-grained lock tuning is used")
-
 
 ## Change History<a name="EN-US_TOPIC_0000002550184931"></a>
 

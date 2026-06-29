@@ -23,7 +23,6 @@
 </tbody>
 </table>
 
-
 ### Software Version Mapping<a name="EN-US_TOPIC_0000002521623612"></a>
 
 |Type|Version|
@@ -31,21 +30,15 @@
 |OS|openEuler 22.03 LTS SP4|
 |Percona|Percona-Server 5.7.44-53<br>Percona-Server 8.0.43-34|
 
-
-
 ### Hardware Version Mapping<a name="EN-US_TOPIC_0000002552663559"></a>
 
 |Item|Requirement|
 |--|--|
 |Processor|New Kunpeng 920 processor model or Kunpeng 950 processor|
 
-
-
 ### Virus Scan Results<a name="EN-US_TOPIC_0000002521463602"></a>
 
 Virus scanning is not involved because no software package is released.
-
-
 
 ## v25.3.0<a name="EN-US_TOPIC_0000002552663563"></a>
 
@@ -55,17 +48,13 @@ MySQL's binary log (binlog) records all database data changes (such as INSERT, U
 
 The binlog optimization feature identifies hotspot functions that affect performance in write-only scenarios and optimizes these functions through binlog pre-allocation, lock splitting, and writeset_history data structure replacement. This reduces binlog write overhead and improves performance in write-only scenarios.
 
-
 ### Resolved Issues<a name="EN-US_TOPIC_0000002552623579"></a>
 
 None
 
-
 ### Known Issues<a name="EN-US_TOPIC_0000002552623577"></a>
 
 None
-
-
 
 ## Related Documentation<a name="EN-US_TOPIC_0000002521463604"></a>
 
@@ -75,8 +64,6 @@ None
 |--|--|--|
 |*Kunpeng BoostKit 25.3.0 MySQL Binlog Optimization Release Notes*|Provides the version release and mapping information of the MySQL binlog optimization feature.|[Open-source repository](https://gitcode.com/boostkit/mysql/tree/master/docs/en)|
 |*Kunpeng BoostKit 25.3.0 MySQL Binlog Optimization Feature Guide*|Describes the environment requirements and provides guidance on enabling the MySQL binlog optimization feature.|[Open-source repository](https://gitcode.com/boostkit/mysql/tree/master/docs/en)|
-
-
 
 ### Obtaining Documentation<a name="EN-US_TOPIC_0000002521623614"></a>
 

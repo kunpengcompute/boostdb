@@ -20,7 +20,7 @@ This feature is compatible with other features. For details about the compatibil
 
 Run the following command to check whether the CPU supports CRC32 hardware instructions:
 
-```
+```shell
 cat /proc/cpuinfo
 ```
 
@@ -31,7 +31,6 @@ If the `Features` line in the command output contains `crc32`, the CPU supports 
 **Compilation Options<a name="section9456123913580"></a>**
 
 During GCC compilation, the `-march` option can be used to specify the Arm architecture version and extension instruction set. In this feature patch, `-march=armv8-a+crc` is used, and CRC32 hardware instructions are used to replace the software implementation of the CRC32 algorithm.
-
 
 #### LSE Compilation Instructions<a name="EN-US_TOPIC_0000002518700242"></a>
 
@@ -49,9 +48,6 @@ LSE instruction (ldaddal):
 
 In the MySQL source package, the `-march=armv8-a+lse` compilation option can be added to the `CMakeLists.txt` file to use the atomic instruction extension LSE for performance optimization.
 
-
-
-
 ## Environment Requirements<a name="EN-US_TOPIC_0000002518540334"></a>
 
 This document provides guidance based on the Kunpeng server and openEuler OS. Before performing operations, ensure that your hardware and software meet the requirements.
@@ -66,7 +62,6 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Be
 |--|--|
 |CPU|Kunpeng 920|
 
-
 **OS and Software Requirements<a name="section1240364411598"></a>**
 
 [**Table 2**](#os-and-software-requirements) lists the OS and software requirements.
@@ -78,8 +73,6 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Be
 |OS|openEuler 20.03 LTS SP1<br>openEuler 22.03 LTS SP1|openEuler 20.03 LTS SP1: [Link](https://www.openeuler.org/en/download/archive/detail/?version=openEuler%2020.03%20LTS%20SP1)<br>openEuler 22.03 LTS SP1: [Link](https://www.openeuler.org/en/download/archive/detail/?version=openEuler%2022.03%20LTS%20SP1)|
 |mysql-boost-8.0.25.tar.gz|MySQL 8.0.25|[Link](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.gz)|
 |0001-CRC32-AARCH64.patch|-|[Link](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.25/boostdb-patches/0001-CRC32-AARCH64.patch)|
-
-
 
 ## Feature Installation and Usage<a name="EN-US_TOPIC_0000002550180081"></a>
 
@@ -95,21 +88,24 @@ The CRC32 instruction optimization feature is provided as a patch file for MySQL
 
 3. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```
+    ```shell
     git init
     git add -A
     git commit -m "Initial commit"
     ```
 
     >![](public_sys-resources/icon_note.gif) **NOTE:**
-    >-   Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
+    >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
+>
+    > ```
+    > yum install git
     >    ```
-    >    yum install git
-    >    ```
-    >-   If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
-    >    ```
-    >    git config user.email "123@example.com"
-    >    git config user.name "123"
+>
+    >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
+>
+    > ```
+    > git config user.email "123@example.com"
+    > git config user.name "123"
     >    ```
 
 4. Run the following commands in the MySQL installation directory to apply the patch file of the CRC32 instruction optimization feature:
@@ -141,7 +137,6 @@ The CRC32 instruction optimization feature is provided as a patch file for MySQL
     **Figure 1** Performance comparison<a name="fig20274152011365"></a><a id="performance-comparison"></a><br>
     ![](figures/performance_comparison_crc32.png "Performance comparison before and after optimization")
 
-
 ## Security Management<a name="EN-US_TOPIC_0000002518540336"></a>
 
 **Routine Check Using Antivirus Software<a name="en-us_topic_0000001821389094_section11752161613273"></a>**
@@ -156,14 +151,11 @@ To ensure the security of the production environment and reduce the risk of atta
 - OpenSSL vulnerabilities
 - Vulnerabilities in other components
 
-
 ## Acronyms and Abbreviations<a name="EN-US_TOPIC_0000002518700244"></a>
 
 |Acronym/Abbreviation|Full Spelling|
 |--|--|
 |CRC|cyclic redundancy check|
-
-
 
 ## Change History<a name="EN-US_TOPIC_0000002518700240"></a>
 

@@ -23,15 +23,12 @@
 </tbody>
 </table>
 
-
 ### Software Version Mapping<a name="EN-US_TOPIC_0000002518703996"></a>
 
 |Type|Version|Description|
 |--|--|--|
 |MySQL|8.0.25|This product is a dynamic library plugin and needs to be loaded by the MySQL server.|
 |OS|openEuler 20.03 LTS SP1 for Arm<br>openEuler 22.03 LTS SP1 for Arm|-|
-
-
 
 ### Hardware Version Mapping<a name="EN-US_TOPIC_0000002518703994"></a>
 
@@ -46,8 +43,6 @@ The following table lists the recommended configurations.
 |CPU|MHz|2600|
 |Memory|Capacity|16 × 32 GB = 512 GB|
 |Drive|Capacity|40 GB (for the OS) + 1 TB (for data)|
-
-
 
 ### Virus Scan Results<a name="EN-US_TOPIC_0000002550143829"></a>
 
@@ -140,8 +135,6 @@ The software packages and related documents have been scanned by antivirus softw
 </tbody>
 </table>
 
-
-
 ## V1.0.0<a name="EN-US_TOPIC_0000002518544098"></a>
 
 ### Change Description<a name="EN-US_TOPIC_0000002518544094"></a>
@@ -163,17 +156,13 @@ The parallel acceleration technology provided by KOVAE improves the query perfor
 
 KAE is a hardware acceleration solution based on the Kunpeng 920 processor. It includes KAE encryption and decryption as well as KAEzip. KAEzip is the compression module of KAE. It implements the deflate algorithm and works with the lossless user-space driver framework to provide high-performance gzip or zlib interfaces. For more information about KAEzip, see [Kunpeng Accelerator Engine User Guide](https://www.hikunpeng.com/document/detail/en/kunpengaccel/kae/usermanual/kunpengaccel_16_0002.html).
 
-
 ### Resolved Issues<a name="EN-US_TOPIC_0000002550143835"></a>
 
 None
 
-
 ### Known Issues<a name="EN-US_TOPIC_0000002518544092"></a>
 
 None
-
-
 
 ## Related Documentation<a name="EN-US_TOPIC_0000002550143833"></a>
 
@@ -184,13 +173,9 @@ None
 |*Kunpeng BoostKit 24.0.0 MySQL Pluggable Online Vectorized Analysis Engine Release Notes*|This document provides the version release and mapping information of KOVAE that is pluggable on MySQL.|Open-source repository|
 |*Kunpeng BoostKit 24.0.0 MySQL Pluggable Online Vectorized Analysis Engine Feature Guide*|This document provides guidance for using the features of KOVAE that is pluggable on MySQL.|Open-source repository|
 
-
-
 ### Obtaining Documentation<a name="EN-US_TOPIC_0000002550183835"></a>
 
 Visit the [open-source repository](https://gitcode.com/boostkit/mysql) to view or download related documents.
-
-
 
 ## Acronyms and Abbreviations<a name="EN-US_TOPIC_0000002550143831"></a>
 
@@ -199,8 +184,6 @@ Visit the [open-source repository](https://gitcode.com/boostkit/mysql) to view o
 |KAE|Kunpeng Accelerator Engine|
 |KOVAE|Kunpeng Online Vectorized Analysis Engine|
 |OLAP|online analytical processing|
-
-
 
 ## List of Fixed Vulnerabilities<a name="EN-US_TOPIC_0000002518544096"></a>
 
