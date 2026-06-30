@@ -7,3 +7,5 @@
 - [MySQL Unaligned Memory Access Optimization Feature Guide](./mysql_unaligned_memory_access_optimization_feature_guide.md)
 - [MySQL LSE Optimization Feature Guide](./mysql_lse_optimization_feature_guide.md)
 - [MySQL rec_get_offsets Optimization Feature Guide](./mysql_rec_get_offsets_optimization_feature_guide.md)
+- [MySQL Plan Cache Feature Guide](./boostdb_plan_cache_optimization_feature_guide.md)
+- [MySQL KAEzstd Page Compression and Decompression Optimization Feature Guide](./mysql_kaezstd_page_compression_and_decompression_optimization_feature_guide.md)
