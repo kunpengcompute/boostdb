@@ -32,7 +32,6 @@ MySQL内存压缩特性主要由以下几个部分组成：
 |项目|规格|
 |--|--|
 |CPU|鲲鹏920系列处理器、鲲鹏950处理器|
-|NUMA|推荐多NUMA节点服务器，单NUMA节点也可使用本特性，但NUMA压力分摊能力不生效|
 |内存|建议验证环境具备`512GB`及以上物理内存|
 
 **表2** 操作系统和软件要求<a id="memory_compression_software_requirements"></a>
@@ -42,7 +41,7 @@ MySQL内存压缩特性主要由以下几个部分组成：
 |操作系统|openEuler内核源码仓|`OLK-5.10`分支|[获取链接](https://atomgit.com/openeuler/kernel.git)|
 |内核配置|基础页大小|`64K`页|内核源码编译配置|
 |Percona|Percona-Server|5.7.44-53|[获取链接](https://github.com/percona/percona-server/archive/refs/tags/Percona-Server-5.7.44-53.tar.gz)|
-|内核补丁|内存压缩特性OS补丁|2个补丁文件|随特性发布|
+|内核补丁|内存压缩特性OS补丁|2个补丁文件|[获取链接](https://www.atomgit.com/openeuler/kernel/pull/24858)|
 
 >![](../public_sys-resources/icon_note.gif) **说明：**
 >
@@ -93,27 +92,36 @@ MySQL内存压缩特性主要由以下几个部分组成：
    make menuconfig
    ```
 
-7. 编译内核rpm包。
+7. 安装内核编译依赖。
+
+   ```bash
+   yum install -y rpm-build openssl-devel bc rsync gcc gcc-c++ flex bison m4 dwarves ncurses-devel
+   ```
+
+   >![](../public_sys-resources/icon_note.gif) **说明：**
+   >部分环境在执行内核编译时，可能会因为缺少`rpm-build`、`bc`、`dwarves`、`ncurses-devel`等依赖而报错。建议在编译前先安装上述依赖包。
+
+8. 编译内核rpm包。
 
    ```bash
    make INSTALL_MOD_STRIP=1 binrpm-pkg -j380
    ```
 
-8. 安装生成的内核rpm包。
+9. 安装生成的内核rpm包。
 
    ```bash
    rpm -ivh xxx.rpm --oldpackage
    ```
 
-9. 将新内核设置为默认启动项，并确认默认内核信息。
+10. 将新内核设置为默认启动项，并确认默认内核信息。
 
-   ```bash
-   grubby --set-default-index=0
-   grubby --default-kernel
-   grubby --info=0
-   ```
+    ```bash
+    grubby --set-default-index=0
+    grubby --default-kernel
+    grubby --info=0
+    ```
 
-10. 重启系统后，确认已进入新内核。
+11. 重启系统后，确认已进入新内核。
 
     ```bash
     uname -r
@@ -129,7 +137,7 @@ MySQL内存压缩特性主要由以下几个部分组成：
 
 1. 根据Percona-Server 5.7.44-53的常规流程编译并安装MySQL。详细信息请参见《[Percona移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/Percona/kunpengpercona_02_0001.html)》。
 
-2. 完成实例初始化并启动MySQL服务。
+2. 完成实例初始化并启动MySQL服务，启动数据库的操作请参见《MySQL 移植指南》的[运行MySQL](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_03_0013.html)章节。
 
 3. 根据减配方案调整`InnoDB Buffer Pool`大小，例如将`Buffer Pool`设置为`470GB`。
 
@@ -145,6 +153,64 @@ MySQL内存压缩特性主要由以下几个部分组成：
    ```
 
 ### 配置OS内存压缩参数
+
+本节按功能点说明MySQL内存压缩特性涉及的OS接口、合法取值与本特性推荐取值。取值范围依据openEuler内核源码`OLK-5.10`分支核实。
+
+#### 禁用THP并下调min水线
+
+本功能点涉及透明大页开关和最低空闲内存水线，配置如下。
+
+|接口|功能|合法取值|本特性取值|
+|--|--|--|--|
+|`/sys/kernel/mm/transparent_hugepage/enabled`|透明大页使能开关|`always`表示全开启<br/>`madvise`表示仅对`MADV_HUGEPAGE`项开启<br/>`never`表示全关闭|`never`|
+|`/proc/sys/vm/min_free_kbytes`|设置各zone的最低空闲内存水线，单位为KB。下调后释放原先由内核静态保留的内存|整数，`>=0`|`91589`|
+
+#### 配置KSM合并重复匿名页
+
+本功能点采用全局使能KSM、专用cgroup定向扫描的方式，只把`mysqld`纳入扫描。
+
+|接口|功能|合法取值|本特性取值|
+|--|--|--|--|
+|`/sys/kernel/mm/ksm/pages_to_scan`|设置每轮扫描的页数。值越大合并越快，但CPU占用越高|整数，`0`到`UINT_MAX`|`100000`|
+|`/sys/kernel/mm/ksm/use_zero_pages`|是否把内容全为`0`的页合并到系统`0`页|`0`表示关闭<br>`1`表示开启|`1`|
+|`/sys/kernel/mm/ksm/run`|启动或停止KSM扫描|`0`表示停止<br>`1`表示运行<br>`2`表示解除已有合并|`1`|
+|`/sys/fs/cgroup/memory/<cg>/memory.ksm`|对该cgroup内的进程开启或关闭KSM扫描|`0`表示关闭<br>`1`表示开启|`1`|
+|`/sys/fs/cgroup/memory/<cg>/cgroup.procs`|把进程加入该cgroup，使其匿名页被KSM扫描|pid列表|`pidof mysqld`|
+
+KSM只读统计接口用于观察合并效果。
+
+|接口|含义|
+|--|--|
+|`/sys/kernel/mm/ksm/pages_shared`|已合并的共享页数。值越大，省下的内存越多|
+|`/sys/kernel/mm/ksm/pages_sharing`|指向共享页的页数。`pages_sharing`与`pages_shared`的差值越大，合并收益越高|
+|`/sys/kernel/mm/ksm/pages_unshared`|扫描过但未找到重复、未能合并的页数|
+|`/sys/kernel/mm/ksm/full_scans`|全量扫描已完成轮数|
+
+`memory.ksm`接口也可以读取该cgroup的合并页数、节省内存等统计信息，用于验证定向扫描效果。
+
+#### 配置zram swap承接匿名页回收
+
+本功能点使用zram作为匿名页回收的swap承接载体，相关接口如下。
+
+|接口|功能|合法取值|本特性取值|
+|--|--|--|--|
+|`/sys/block/zram0/reset`|重置zram设备|非`0`整数|`1`|
+|`/sys/block/zram0/comp_algorithm`|设置zram压缩算法|内核已注册的压缩算法名，例如`zstd`、`lzo`、`lz4`|`zstd`|
+|`/sys/block/zram0/disksize`|设置zram块设备大小|支持`K`、`M`、`G`后缀，`0`无效|`512G`|
+
+配置zram设备后，还需要执行`mkswap /dev/zram0`格式化，并执行`swapon /dev/zram0`或带优先级参数的`swapon -p 100 /dev/zram0`启用为swap。
+
+#### 保持高内存利用率并降低压缩量
+
+本功能点通过回收控制和NUMA demotion降低超量回收与实际压缩量，相关接口如下。
+
+|接口|功能|合法取值|本特性取值|
+|--|--|--|--|
+|`/proc/sys/vm/watermark_boost_factor`|碎片化水位提升因子。发生内存碎片化时，`kswapd`会额外回收内存，上限为high水位的`watermark_boost_factor`/`10000`倍，默认`15000`表示`150%`。该机制用于给内存规整让路，提高THP等高阶分配成功率，但会带来超量回收，本特性置`0`关闭|整数，`>=0`|`0`|
+|`/proc/sys/vm/shrink_lruvec_strict`（新增）|严格回收开关。置`1`后回收达到目标量即提前退出本轮，不再多扫其他LRU，不再超量回收|`0`表示关闭<br/>`1`表示开启|`1`|
+|`/proc/sys/vm/numa_demotion_enabled`（新增）|NUMA demotion开关。置`1`后回收前优先把页迁移到其他有空闲内存的NUMA节点，而非直接压缩或换出|`0`表示关闭<br/>`1`表示开启|`1`|
+
+完成上述接口确认后，按以下步骤配置OS内存压缩参数。
 
 1. 关闭透明大页。
 
@@ -255,8 +321,8 @@ MySQL内存压缩特性主要由以下几个部分组成：
 
 4. 以如下两组配置进行对比测试：
 
-   - 基线组：`768GB`物理内存，`576GB Buffer Pool`
-   - 优化组：`512GB`物理内存，`470GB Buffer Pool`，使能本特性全部OS参数
+   - 基线组：`768GB`物理内存，`576GB Buffer Pool`。
+   - 优化组：`512GB`物理内存，`470GB Buffer Pool`，使能本特性全部OS参数。
 
 5. 若优化组相较基线组的性能劣化控制在`10%`以内，且系统运行过程中未出现明显OOM、zram异常增长或持续direct reclaim，同时KSM存在有效共享页增长，则说明特性使能成功。
 
