@@ -7,3 +7,5 @@
 - [MySQL非对齐内存访问优化 特性指南](./mysql_unaligned_memory_access_optimization_feature_guide.md)
 - [MySQL LSE优化 特性指南](./mysql_lse_optimization_feature_guide.md)
 - [MySQL rec_get_offsets优化 特性指南](./mysql_rec_get_offsets_optimization_feature_guide.md)
+- [MySQL Plan Cache特性指南](./boostdb_plan_cache_optimization_feature_guide.md)
+- [MySQL KAEzstd页压缩解压缩优化 特性指南](./mysql_kaezstd_page_compression_and_decompression_optimizaiton_feature_guide.md)
