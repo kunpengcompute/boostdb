@@ -62,9 +62,9 @@ None
 
 |Document|Description|Delivery Method|
 |--|--|--|
-|*Kunpeng BoostKit 25.3.0 MySQL Binlog Optimization Release Notes*|Provides the version release and mapping information of the MySQL binlog optimization feature.|[Open-source repository](https://gitcode.com/boostkit/mysql/tree/master/docs/en)|
-|*Kunpeng BoostKit 25.3.0 MySQL Binlog Optimization Feature Guide*|Describes the environment requirements and provides guidance on enabling the MySQL binlog optimization feature.|[Open-source repository](https://gitcode.com/boostkit/mysql/tree/master/docs/en)|
+|*Kunpeng BoostKit 25.3.0 MySQL Binlog Optimization Release Notes*|Provides the version release and mapping information of the MySQL binlog optimization feature.|[Open-source repository](https://gitcode.com/boostkit/boostdb/tree/master/docs/en)|
+|*Kunpeng BoostKit 25.3.0 MySQL Binlog Optimization Feature Guide*|Describes the environment requirements and provides guidance on enabling the MySQL binlog optimization feature.|[Open-source repository](https://gitcode.com/boostkit/boostdb/tree/master/docs/en)|
 
 ### Obtaining Documentation<a name="EN-US_TOPIC_0000002521623614"></a>
 
-Visit the [open-source repository](https://gitcode.com/boostkit/mysql/tree/master/docs/en) to view or download required documents.
+Visit the [open-source repository](https://gitcode.com/boostkit/boostdb/tree/master/docs/en) to view or download required documents.
