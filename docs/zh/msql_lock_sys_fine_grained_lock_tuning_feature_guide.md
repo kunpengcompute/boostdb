@@ -43,11 +43,11 @@ BoostDB-Percona优化版本已默认集成本特性，无需单独获取补丁�
 
 1. 请参见《[BoostDB-Percona 安装指南](./boostdb-percona-install.md)》安装BoostDB-Percona优化版本。
 2. 启动数据库。启动数据库的操作请参见《MySQL移植指南》的[运行MySQL](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_03_0013.html)章节。
-3. （可选）通过Sysbench测试可以得到使能优化特性前后的性能提升效果，详细测试步骤请参见《[Sysbench 0.5&1.0测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)》。本特性可以使Sysbench只写场景性能提升2%，优化前后对比效果如[图1 Lock-sys细粒度锁优化特性优化前后性能对比](#fig937192253919)所示。
+3. （可选）通过Sysbench测试可以得到使能优化特性前后的性能提升效果，详细测试步骤请参见《[Sysbench 0.5&1.0测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)》。本特性可以使Sysbench只写场景性能提升5%，优化前后对比效果如[图1 Lock-sys细粒度锁优化特性优化前后性能对比](#Lock-sys细粒度锁优化特性优化前后性能对比)所示。
 
     **图1** Lock-sys细粒度锁优化特性优化前后性能对比<a name="fig937192253919"></a><a id="Lock-sys细粒度锁优化特性优化前后性能对比"></a><br>
 
-    ![](figures/Lock-sys细粒度锁优化特性Sysbench写场景优化前后性能对比.png  "Lock-sys细粒度锁优化特性优化前后性能对比")
+    ![](figures/Lock_sys细粒度锁优化特性Sysbench写场景优化前后性能对比.png "Lock-sys细粒度锁优化特性优化前后性能对比")
 
 ## 安全检查与加固<a name="ZH-CN_TOPIC_0000002602100008"></a>
 
