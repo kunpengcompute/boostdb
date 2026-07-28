@@ -98,13 +98,13 @@ MySQL源码文件中，CMakeLists.txt文件中使用“-march=armv8-a+lse”编�
 
     >![](public_sys-resources/icon_note.gif) **说明：** 
     >- 一般情况下，系统自带git，若需要安装git，请先参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中配置Yum源相关内容，再执行如下命令安装git。
->
+    >
     > ```shell
     > yum install git
     >    ```
->
+    >
     >- 若未配置git的提交用户信息，git commit前需要先配置用户邮件及用户名称信息。
->
+    >
     > ```shell
     > git config user.email "123@example.com"
     > git config user.name "123"
