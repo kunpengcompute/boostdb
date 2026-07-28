@@ -156,21 +156,21 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >You can also run the following commands to download the MySQL source code.
     >For MySQL 8.0.25:
->
+    >
     >```shell
     >wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.25.tar.gz --no-check-certificate
     >tar -zxvf mysql-boost-8.0.25.tar.gz
     >```
->
+    >
     >For MySQL 8.0.30:
->
+    >
     >```shell
     >wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.30.tar.gz --no-check-certificate
     >tar -zxvf mysql-boost-8.0.30.tar.gz
     >```
->
+    >
     >For MySQL 8.0.35:
->
+    >
     >```shell
     >wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.35.tar.gz --no-check-certificate
     >tar -zxvf mysql-boost-8.0.35.tar.gz
@@ -186,25 +186,25 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
 
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
->
+    >
     > ```shell
     > yum install git
     >    ```
->
+    >
     >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
->
+    >
     > ```shell
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
 
-3. Download the [MySQL thread pool feature patch](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.25/boostdb-patches/code-threadpool-for-MySQL-8.0.patch) and upload it to the root directory of the MySQL source code. This patch applies to MySQL 8.0.25, 8.0.30, and 8.0.35.
+3. Download the [MySQL thread pool feature patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip) and upload it to the root directory of the MySQL source code. This patch applies to MySQL 8.0.25, 8.0.30, and 8.0.35.
 
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >You can also run the following command to download the MySQL thread pool feature patch:
->
+    >
     >```shell
-    >wget https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.25/boostdb-patches/code-threadpool-for-MySQL-8.0.patch --no-check-certificate
+    >wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip --no-check-certificate
     >```
 
 4. Check whether the content is modified.
@@ -303,7 +303,7 @@ MySQL parameters are also called system variables, which are used to set service
 
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >The default path to the database configuration file is `/etc/my.cnf`. If you want to use a configuration file in another path, you can use the `--defaults-file` option to specify the configuration file, for example, `/tmp/myconfig.txt`.
->
+    >
     >```shell
     >mysqld --defaults-file=/tmp/myconfig.txt
     >```

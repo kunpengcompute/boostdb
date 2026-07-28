@@ -92,7 +92,7 @@ For details about the function configuration, see [Parameters](#parameters).
 3. Download the patch file and upload it to the root directory of the MySQL source code.
 
     ```shell
-    wget https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.20/boostdb-patches/0001-THREAD_POOL_8.patch --no-check-certificate
+    wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip --no-check-certificate
     ```
 
 4. Check whether the content is modified.

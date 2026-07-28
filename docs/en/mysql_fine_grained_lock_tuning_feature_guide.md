@@ -148,7 +148,7 @@ The MySQL fine-grained lock tuning feature is provided as a patch file. This pat
     cd mysql-8.0.20
     ```
 
-2. Download the [MySQL fine-grained lock tuning patch](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.20/boostdb-patches/0001-SHARDED-LOCK-SYS.patch) and upload it to the root directory of the MySQL source code.
+2. Download the [MySQL fine-grained lock tuning patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip) and upload it to the root directory of the MySQL source code.
 3. Decompress the source package and go to the MySQL source code directory.
 
     ```shell
