@@ -90,7 +90,7 @@ The MySQL lock-free tuning feature is provided as a patch file. This patch is de
     cd mysql-8.0.20
     ```
 
-2. Download the [fine-grained lock tuning patch](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.20/boostdb-patches/0001-SHARDED-LOCK-SYS.patch) and [lock-free tuning patch](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.20/boostdb-patches/0002-LOCK-FREE-TRX-SYS.patch) and upload them to the root directory of the MySQL source code.
+2. Download the [fine-grained lock tuning patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip) and [lock-free tuning patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip) and upload them to the root directory of the MySQL source code.
 3. In the root directory of the source code, run the `git init` command to create Git management information.
 
     ```shell

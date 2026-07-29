@@ -137,7 +137,7 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
 
     >![](public_sys-resources/icon_notice.gif) **须知：** 
     >使用Sysbench导入数据时，需要在Sysbench工具的oltp\_common.lua脚本的建表语句中加上如下内容。
->
+    >
     >```shell
     >COMPRESSION = 'zstd'
     >```

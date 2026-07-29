@@ -115,10 +115,10 @@ The detailed procedure is as follows:
 
 |Supported Version|Patch Package|Description|
 |--|--|--|
-|MySQL 8.0.20|[code-pq.patch](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.20/boostdb-patches/code-pq.patch)|Source code patch, which contains all the code required by parallel query.|
-|MySQL 8.0.20|[mtr-pq.patch](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.20/boostdb-patches/mtr-pq.patch)|Patch for MTR tests in mysql-test, which ensures that all MTR tests are passed.|
-|MySQL 8.0.25|[code-pq-for-MySQL-8.0.25.patch](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.25/boostdb-patches/code-pq-for-MySQL-8.0.25.patch)|Source code patch, which contains all the code required by parallel query.|
-|MySQL 8.0.25|[mtr-pq-for-MySQL-8.0.25.patch](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.25/boostdb-patches/mtr-pq-for-MySQL-8.0.25.patch)|Patch for MTR tests in mysql-test, which ensures that all MTR tests are passed.|
+|MySQL 8.0.20|[code-pq.patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|Source code patch, which contains all the code required by parallel query.|
+|MySQL 8.0.20|[mtr-pq.patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|Patch for MTR tests in mysql-test, which ensures that all MTR tests are passed.|
+|MySQL 8.0.25|[code-pq-for-MySQL-8.0.25.patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|Source code patch, which contains all the code required by parallel query.|
+|MySQL 8.0.25|[mtr-pq-for-MySQL-8.0.25.patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|Patch for MTR tests in mysql-test, which ensures that all MTR tests are passed.|
 
     - The patch packages are generated based on MySQL 8.0.20 and 8.0.25 in the Gitee community.
     - The patch packages have been verified on the AArch64 Linux platform.

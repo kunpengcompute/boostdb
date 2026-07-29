@@ -72,7 +72,7 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Be
 |--|--|--|
 |OS|openEuler 20.03 LTS SP1<br>openEuler 22.03 LTS SP1|openEuler 20.03 LTS SP1: [Link](https://www.openeuler.org/en/download/archive/detail/?version=openEuler%2020.03%20LTS%20SP1)<br>openEuler 22.03 LTS SP1: [Link](https://www.openeuler.org/en/download/archive/detail/?version=openEuler%2022.03%20LTS%20SP1)|
 |mysql-boost-8.0.25.tar.gz|MySQL 8.0.25|[Link](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.gz)|
-|0001-CRC32-AARCH64.patch|-|[Link](https://gitcode.com/boostkit/mysql/blob/MySQL-8.0.25/boostdb-patches/0001-CRC32-AARCH64.patch)|
+|0001-CRC32-AARCH64.patch|-|[Link](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|
 
 ## Feature Installation and Usage<a name="EN-US_TOPIC_0000002550180081"></a>
 

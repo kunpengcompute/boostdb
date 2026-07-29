@@ -4,13 +4,13 @@
 
 | 仓库  | 仓库说明 |  仓库地址 |
 |--|--|--|
-| MySQL仓  |  包含Kunpeng MySQL，提供包含NEON指令集向量化处理、非对齐内存访问优化、InnoDB、binlog等优化patch，以及基于GCC For openEuler的反馈编译优化版本。 | [https://gitcode.com/boostkit/mysql](https://gitcode.com/boostkit/mysql) |
+| MySQL仓  |  包含Kunpeng MySQL，提供包含NEON指令集向量化处理、非对齐内存访问优化、InnoDB、binlog等优化patch，以及基于GCC For openEuler的反馈编译优化版本。 | 闭源 |
 | Redis仓 | 包含Kunpeng Redis，即鲲鹏参与开源社区的Redis，做了网络异步化优化，提升Redis吞吐量。 | [https://gitcode.com/boostkit/Redis](https://gitcode.com/boostkit/Redis) |
 | Milvus仓  | 包含Kunpeng Milvus，提供包含Milvus向量指令和预取处理、Milvus KBest、Milvus KScaNN等优化patch。 | [https://gitcode.com/boostkit/milvus](https://gitcode.com/boostkit/milvus)  |
 
 ## MySQL
 
-[BoostKit数据库解决方案mysql仓](https://gitcode.com/boostkit/mysql)，包含Kunpeng MySQL，提供包含NEON指令集向量化处理、非对齐内存访问优化、InnoDB、binlog等优化patch，以及基于GCC For openEuler的反馈编译优化版本。
+BoostKit数据库解决方案mysql仓，包含Kunpeng MySQL，提供包含NEON指令集向量化处理、非对齐内存访问优化、InnoDB、binlog等优化patch，以及基于GCC For openEuler的反馈编译优化版本。
 
 ### 1.1  版本说明
 

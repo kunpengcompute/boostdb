@@ -2,10 +2,11 @@
 
 - [CRC32指令优化 特性指南](./crc32_instruction_optimization_feature_guide.md)
 - [MySQL NUMA调度优化 特性指南](./mysql_numa_schedule_optimization_feature_guide.md)
-- [MySQL字符集处理SIMD优化 特性指南](./mysql_charset_simd_optimization_feature_guide.md)
+- [MySQL字符集处理SIMD优化 特性指南](./boostdb_charset_simd_optimization_feature_guide.md)
 - [MySQL记录匹配优化 特性指南](./mysql_record_matching_optimization_feature_guide.md)
 - [MySQL非对齐内存访问优化 特性指南](./mysql_unaligned_memory_access_optimization_feature_guide.md)
 - [MySQL LSE优化 特性指南](./mysql_lse_optimization_feature_guide.md)
 - [MySQL rec_get_offsets优化 特性指南](./mysql_rec_get_offsets_optimization_feature_guide.md)
-- [MySQL Plan Cache特性指南](./boostdb_plan_cache_optimization_feature_guide.md)
+- [MySQL表锁队列检查优化 特性指南](./mysql_table_lock_queue_check_optimization_feature_guide.md)
+- [MySQL Read View版本跟踪优化 特性指南](./mysql_readview_version_tracking_optimization_feature_guide.md)
 - [MySQL KAEzstd页压缩解压缩优化 特性指南](./mysql_kaezstd_page_compression_and_decompression_optimizaiton_feature_guide.md)

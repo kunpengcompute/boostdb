@@ -47,7 +47,7 @@ MySQL的二进制日志（Binlog）是记录所有数据库数据变更操作（
 
     >![](public_sys-resources/icon_note.gif) **说明：** 
     >安装过程中，如果存在已安装依赖包但rpm相关检验不通过的情况，使用--nodeps跳过依赖检查，即执行如下命令。
->
+    >
     >```shell
     >rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm --nodeps
     >```

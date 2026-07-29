@@ -94,7 +94,7 @@ For details about the function configuration, see [Parameters](#parameters).
 4. Download the patch file.
 
     ```shell
-    wget https://gitcode.com/boostkit/mysql/blob/MySQL-5.7.27/boostdb-patches/0001-THREAD_POOL_5.patch --no-check-certificate
+    wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip --no-check-certificate
     ```
 
 5. Check whether the content is modified.
