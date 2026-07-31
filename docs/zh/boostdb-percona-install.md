@@ -59,14 +59,14 @@ BoostDB-Percona-8.0.43-34.aarch64.rpm基于Percona-Server-8.0.43-34源码，结�
 
     - Percona-Server 5.7.44-53：
 
-    ```shell
+    ```bash
     cd /home
     rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm
     ```
 
     - Percona-Server 8.0.43-34：
 
-    ```shell
+    ```bash
     cd /home
     rpm -ivh BoostDB-Percona-8.0.43-34.aarch64.rpm
     ```
@@ -74,7 +74,7 @@ BoostDB-Percona-8.0.43-34.aarch64.rpm基于Percona-Server-8.0.43-34源码，结�
     >![](public_sys-resources/icon_note.gif) **说明：**
     >安装过程中，如果存在已安装依赖包但rpm相关检验不通过的情况，使用--nodeps跳过依赖检查，即执行如下命令。
 >
-    >```shell
+    >```bash
     >rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm --nodeps
     >rpm -ivh BoostDB-Percona-8.0.43-34.aarch64.rpm --nodeps
     >```
@@ -95,27 +95,27 @@ BoostDB-Percona-8.0.43-34.aarch64.rpm基于Percona-Server-8.0.43-34源码，结�
 
 1. 下载gcc 12.3.1（GCC for openEuler 3.0.3）。
 
-    ```shell
+    ```bash
     cd /home
     wget https://mirrors.huaweicloud.com/kunpeng/archive/compiler/kunpeng_gcc/gcc-12.3.1-2024.12-aarch64-linux.tar.gz
     ```
 
 2. 执行以下命令解压。
 
-    ```shell
+    ```bash
     tar zxvf gcc-12.3.1-2024.12-aarch64-linux.tar.gz
     ```
 
 3. 不替换系统库，仅在当前终端会话中临时指定高版本libstdc++.so.6。
 
-    ```shell
+    ```bash
     export GCC_HOME=/home/gcc-12.3.1-2024.12-aarch64-linux
     export LD_LIBRARY_PATH=$GCC_HOME/lib64:$LD_LIBRARY_PATH
     ```
 
 4. 检查当前会话使用的库是否包含GLIBCXX_3.4.29，若有输出，则说明已满足需求。
 
-    ```shell
+    ```bash
     strings $GCC_HOME/lib64/libstdc++.so.6 | grep GLIBCXX_3.4.29
     ```
 
@@ -128,7 +128,7 @@ BoostDB-Percona-8.0.43-34.aarch64.rpm基于Percona-Server-8.0.43-34源码，结�
 
 ASLR（Address Space Layout Randomization，地址空间布局随机化）是一种针对缓冲区溢出的安全保护技术，通过对堆、栈、共享库映射等线性区布局的随机化，增加攻击者预测目的地址的难度，防止攻击者直接定位攻击代码位置，达到阻止溢出攻击的目的。
 
-```shell
+```bash
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 

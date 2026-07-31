@@ -51,7 +51,7 @@ LL/SC原子指令需要把共享变量先load到本核所在的L1 Cache中进行
 2. 请参见**[表 2](#操作系统和软件要求)** [操作系统和软件要求](#操作系统和软件要求)下载Percona-Server 5.7.44-53对应的rpm包并存放至目标路径，例如“/home”。
 3. 执行如下命令安装rpm包。安装完成后，默认安装目录位于“/usr/local/mysql”。
 
-   ```shell
+   ```bash
    cd /home
    rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm
    ```
@@ -59,7 +59,7 @@ LL/SC原子指令需要把共享变量先load到本核所在的L1 Cache中进行
    > ![](public_sys-resources/icon_note.gif) **说明：**
    > 安装过程中，如果存在已安装依赖包但rpm相关检验不通过的情况，使用--nodeps跳过依赖检查，即执行如下命令。
    >
-   > ```shell
+   > ```bash
    > rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm --nodeps
    > ```
    >
@@ -74,7 +74,7 @@ LL/SC原子指令需要把共享变量先load到本核所在的L1 Cache中进行
 
 ASLR（Address Space Layout Randomization，地址空间布局随机化）是一种针对缓冲区溢出的安全保护技术，通过对堆、栈、共享库映射等线性区布局的随机化，增加攻击者预测目的地址的难度，防止攻击者直接定位攻击代码位置，达到阻止溢出攻击的目的。
 
-```shell
+```bash
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 

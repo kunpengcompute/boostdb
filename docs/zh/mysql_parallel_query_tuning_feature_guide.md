@@ -17,7 +17,7 @@ MySQL并行查询优化方案，主要针对数据库的OLAP场景。OLAP场景�
 
 - 单表白名单：
 
-    ```shell
+    ```bash
     select {列名| Aggregate } from table where {=|>| < |>= |<= |like |between…and| in} group by {列名} having {列名}order by {列名| Aggregate } limit x
     ```
 
@@ -27,7 +27,7 @@ MySQL并行查询优化方案，主要针对数据库的OLAP场景。OLAP场景�
 
 - 多表白名单：
 
-    ```shell
+    ```bash
     select {列名| Aggregate } from table1 table2 …  where {=|>| < |>= |<= |like |between…and| in} group by {列名} having {列名}order by {列名} limit x
     ```
 
@@ -126,14 +126,14 @@ worker线程是由leader线程来启动创建的，根据并行度参数来控�
 
 3. 解压源码包并进入MySQL源码目录。
 
-    ```shell
+    ```bash
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
     ```
 
 4. 在源码根目录，使用git初始化命令来建立git管理信息。
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -141,21 +141,21 @@ worker线程是由leader线程来启动创建的，根据并行度参数来控�
 
     >![](public_sys-resources/icon_note.gif) **说明：**
     >- 一般情况下，系统自带git，若需要安装git，请先参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengdbs_02_0002.html)》中配置Yum源相关内容，再执行如下命令安装git。
->
-    > ```shell
+    >
+    > ```bash
     > yum install git
     >    ```
->
+    >
     >- 若未配置git的提交用户信息，git commit前需要先配置用户邮件及用户名称信息。
->
-    > ```shell
+    >
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
 
 5. 合入MySQL并行查询优化特性补丁。
 
-    ```shell
+    ```bash
     git apply --whitespace=nowarn -p1 < mtr-pq.patch
     git apply  --whitespace=nowarn -p1 < code-pq.patch
     ```

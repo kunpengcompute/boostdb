@@ -199,7 +199,7 @@ You can use the parallel query tuning feature in either of the following ways:
 
     For example, if you want to enable parallel execution and the number of parallel threads is 4, run the following commands:
 
-    ```shell
+    ```bash
     force_parallel_execute=on;
     parallel_default_dop=4;
     ```

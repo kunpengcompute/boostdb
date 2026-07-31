@@ -62,7 +62,7 @@ The MySQL NUMA scheduling tuning feature is provided as a patch file. This patch
 3. (Optional) If the Yum repository is not configured, configure it. For details, see [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0013.html).
 4. This feature depends on libnuma. Install related dependencies before compiling MySQL (take CentOS as an example):
 
-    ```shell
+    ```bash
     yum install -y numactl numactl-devel numactl-libs
     ```
 
@@ -71,7 +71,7 @@ The MySQL NUMA scheduling tuning feature is provided as a patch file. This patch
 
 5. Upload the MySQL source package to the `/home` directory, decompress the source package, and go to the root directory of the MySQL source code. (Assume that the MySQL version is 8.0.20.)
 
-    ```shell
+    ```bash
     cd /home
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
@@ -79,7 +79,7 @@ The MySQL NUMA scheduling tuning feature is provided as a patch file. This patch
 
 6. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -88,26 +88,26 @@ The MySQL NUMA scheduling tuning feature is provided as a patch file. This patch
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
 >
-     > ```shell
+     > ```bash
      > yum install git
      >  ```
 >
     >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
 >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >  ```
 
 7. (Optional) If dos2unix is not installed, run the following command to install it:
 
-    ```shell
+    ```bash
     yum install dos2unix
     ```
 
 8. Apply the NUMA scheduling tuning patch.
 
-    ```shell
+    ```bash
     dos2unix 0001-SCHED-AFFINITY.patch
     git apply --check 0001-SCHED-AFFINITY.patch
     git apply --whitespace=nowarn 0001-SCHED-AFFINITY.patch
@@ -154,7 +154,7 @@ The MySQL NUMA scheduling tuning feature is provided as a patch file. This patch
          >![](public_sys-resources/icon_note.gif) **NOTE:**
          > The default path to the database configuration file is `/etc/my.cnf`. You can also run the following command to set the `defaults-file` option, where `/tmp/myconfig.txt` indicates the configuration file path.
 >
-         > ```shell
+         > ```bash
          > mysqld --defaults-file=/tmp/myconfig.txt
          > ```
 
@@ -163,7 +163,7 @@ The MySQL NUMA scheduling tuning feature is provided as a patch file. This patch
     - **Method 2: Modify the database startup parameters.**
       1. When starting the database, add system variable configurations to the boot command. This method takes effect only after the database is restarted. Example:
 
-         ```shell
+         ```bash
          mysqld --defaults-file=/etc/my.cnf \
          --sched_affinity_numa_aware=ON \
          --sched_affinity_foreground_thread=0-29 \

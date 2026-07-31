@@ -31,7 +31,7 @@ The MySQL hash_table_locks tuning feature is provided as a patch file. This patc
 
 1. Download the [MySQL 8.0.20 source code](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.20.tar.gz), upload it to the `/home` directory on the server and decompress it, and then go to the root directory of the MySQL source code.
 
-    ```shell
+    ```bash
     cd /home
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
@@ -40,7 +40,7 @@ The MySQL hash_table_locks tuning feature is provided as a patch file. This patc
 2. Download the [hash_table_locks tuning patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip) and upload it to the root directory of the MySQL source code.
 3. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -126,7 +126,7 @@ The MySQL undo_spaces_lock tuning feature is provided as a patch file. This patc
 
 1. Download the [MySQL 8.0.20 source code](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.20.tar.gz), upload it to the `/home` directory on the server and decompress it, and then go to the root directory of the MySQL source code.
 
-    ```shell
+    ```bash
     cd /home
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
@@ -134,14 +134,14 @@ The MySQL undo_spaces_lock tuning feature is provided as a patch file. This patc
 
 2. Decompress the source package and go to the MySQL source code directory.
 
-    ```shell
+    ```bash
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
     ```
 
 3. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -150,13 +150,13 @@ The MySQL undo_spaces_lock tuning feature is provided as a patch file. This patc
     >![](./public_sys-resources/icon_note.gif) **NOTE:**
     >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
     >
-    > ```shell
+    > ```bash
     > yum install git
     >    ```
     >
     >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
     >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
@@ -164,7 +164,7 @@ The MySQL undo_spaces_lock tuning feature is provided as a patch file. This patc
 4. Apply the patch.
     - If this feature is not used together with the [MySQL NUMA scheduling tuning](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/numastf/kunpengdbsmysqlnuma_20_0001.html) feature, download the [undo_spaces_lock tuning patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip), place it to the root directory of the MySQL source code, and run the following command to make the patch take effect:
 
-        ```shell
+        ```bash
         git am --quiet --whitespace=nowarn 0001-UNDO-SPACES-LOCK-OPT.patch
         ```
 
@@ -174,7 +174,7 @@ The MySQL undo_spaces_lock tuning feature is provided as a patch file. This patc
 
         Download the [NUMA scheduling feature patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip) and [undo_spaces_lock tuning patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip), and place them to the root directory of the MySQL source code. Then run the following command to make the patches take effect:
 
-        ```shell
+        ```bash
         git am --quiet --whitespace=nowarn 0001-SCHED-AFFINITY.patch 0002-UNDO-SPACES-LOCK-OPT.AFTER-SCHED-AFFINITY.patch
         ```
 
@@ -246,7 +246,7 @@ The MySQL thread counter tuning feature is provided as a patch file. This patch 
 
 1. Download the [MySQL 8.0.20 source code](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.20.tar.gz), upload it to the `/home` directory on the server and decompress it, and then go to the root directory of the MySQL source code.
 
-    ```shell
+    ```bash
     cd /home
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
@@ -254,7 +254,7 @@ The MySQL thread counter tuning feature is provided as a patch file. This patch 
 
 2. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -263,26 +263,26 @@ The MySQL thread counter tuning feature is provided as a patch file. This patch 
     >![](./public_sys-resources/icon_note.gif) **NOTE:**
     >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
     >
-    > ```shell
+    > ```bash
     > yum install git
     >    ```
     >
     >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
     >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
 
 3. Download the MySQL thread counter tuning patch and upload it to the root directory of the MySQL source code.
 
-    ```shell
+    ```bash
     wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip --no-check-certificate
     ```
 
 4. Query the status of the local Git.
 
-    ```shell
+    ```bash
     git status
     ```
 
@@ -300,7 +300,7 @@ The MySQL thread counter tuning feature is provided as a patch file. This patch 
 
 5. Check whether the patch file conflicts with the MySQL source code.
 
-    ```shell
+    ```bash
     dos2unix 0001-THREAD_COUNTER_OPT.patch
     git apply --check 0001-THREAD_COUNTER_OPT.patch
     ```
@@ -309,7 +309,7 @@ The MySQL thread counter tuning feature is provided as a patch file. This patch 
 
 6. Apply the thread counter patch file.
 
-    ```shell
+    ```bash
     git apply --whitespace=nowarn 0001-THREAD_COUNTER_OPT.patch
     ```
 

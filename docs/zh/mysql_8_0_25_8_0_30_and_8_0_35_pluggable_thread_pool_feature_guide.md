@@ -131,7 +131,7 @@
 
     对于MySQL 8.0.25版本，执行以下命令：
 
-    ```shell
+    ```bash
     cd /home
     tar -zxvf mysql-boost-8.0.25.tar.gz
     cd mysql-8.0.25
@@ -139,7 +139,7 @@
 
     对于MySQL 8.0.30版本，执行以下命令：
 
-    ```shell
+    ```bash
     cd /home
     tar -zxvf mysql-boost-8.0.30.tar.gz
     cd mysql-8.0.30
@@ -147,7 +147,7 @@
 
     对于MySQL 8.0.35版本，执行以下命令：
 
-    ```shell
+    ```bash
     cd /home
     tar -zxvf mysql-boost-8.0.35.tar.gz
     cd mysql-8.0.35
@@ -157,28 +157,28 @@
     >您也可以通过如下命令下载MySQL源码。
     >MySQL 8.0.25版本：
 >
-    >```shell
+    >```bash
     >wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.25.tar.gz --no-check-certificate
     >tar -zxvf mysql-boost-8.0.25.tar.gz
     >```
 >
     >MySQL 8.0.30版本：
 >
-    >```shell
+    >```bash
     >wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.30.tar.gz --no-check-certificate
     >tar -zxvf mysql-boost-8.0.30.tar.gz
     >```
 >
     >MySQL 8.0.35版本：
 >
-    >```shell
+    >```bash
     >wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.35.tar.gz --no-check-certificate
     >tar -zxvf mysql-boost-8.0.35.tar.gz
     >```
 
 2. 在源码根目录，使用git初始化命令来建立git管理信息。
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -187,13 +187,13 @@
     >![](public_sys-resources/icon_note.gif) **说明：** 
     >- 一般情况下，系统自带git，若需要安装git，请先参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中配置Yum源相关内容，再执行如下命令安装git。
 >
-    > ```shell
+    > ```bash
     > yum install git
     >    ```
 >
     >- 若未配置git的提交用户信息，git commit前需要先配置用户邮件及用户名称信息。
 >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
@@ -203,14 +203,14 @@
     >![](public_sys-resources/icon_note.gif) **说明：** 
     >您也可以通过如下命令下载MySQL线程池特性patch。
 >
-    >```shell
+    >```bash
     >wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip --no-check-certificate
     >unzip boostdb-patch-release-20260330.zip
     >```
 
 4. 查看提交之后是否有内容修改。
 
-    ```shell
+    ```bash
     git status
     ```
 
@@ -228,14 +228,14 @@
 
 5. 合入线程池特性patch补丁。
 
-    ```shell
+    ```bash
     git apply --check boostdb-patch-release-20260330/code-threadpool-for-MySQL-8.0.patch
     git apply --whitespace=nowarn boostdb-patch-release-20260330/code-threadpool-for-MySQL-8.0.patch
     ```
 
 6. 合入补丁成功后，在mysql-8.0.25或mysql-8.0.30或mysql-8.0.35目录下可查看到新增的thread\_pool目录及目录下新增的源码文件。
 
-    ```shell
+    ```bash
     ll ./plugin/thread_pool/
     ```
 
@@ -286,13 +286,13 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
         >![](public_sys-resources/icon_notice.gif) **须知：** 
         >当前方式安装线程池插件后，需要重启数据库才能生效。
 
-        ```shell
+        ```bash
         plugin-load-add=thread_pool.so
         ```
 
         安装完成后，可以通过如下SQL语句查看线程池插件是否安装成功。
 
-        ```shell
+        ```bash
         show plugins;
         ```
 
@@ -305,7 +305,7 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
     >![](public_sys-resources/icon_note.gif) **说明：** 
     >数据库的配置文件默认路径为“/etc/my.cnf”。如果想要使用自定义的其他路径下的配置文件，可以通过--defaults-file选项指定，例如指定“/tmp/myconfig.txt”文件。
 >
-    >```shell
+    >```bash
     >mysqld --defaults-file=/tmp/myconfig.txt
     >```
 
@@ -331,7 +331,7 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
 1. 线程池插件的卸载方式如下：
     - 方式一：卸载线程池插件必须执行**UNINSTALL**命令：
 
-        ```shell
+        ```bash
         UNINSTALL PLUGIN THREAD_POOL_GROUPS;
         UNINSTALL PLUGIN THREAD_POOL_QUEUES;
         UNINSTALL PLUGIN THREAD_POOL_STATS;
@@ -348,13 +348,13 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
         >![](public_sys-resources/icon_notice.gif) **须知：** 
         >当前方式卸载线程池插件后，需要重启数据库才能生效。
 
-        ```shell
+        ```bash
         plugin-load-add=thread_pool.so
         ```
 
 2. 卸载后可通过如下语句检查线程池插件是否卸载成功。
 
-    ```shell
+    ```bash
     show plugins;
     ```
 

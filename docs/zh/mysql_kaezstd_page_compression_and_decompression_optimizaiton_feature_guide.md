@@ -49,7 +49,7 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
 
 2. 解压MySQL源码包并进入MySQL源码目录。
 
-    ```shell
+    ```bash
     tar -xzvf mysql-boost-8.0.25.tar.gz
     cd mysql-8.0.25
     ```
@@ -60,7 +60,7 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
 
 4. 在MySQL源码根目录，使用Git建立管理信息。
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -68,7 +68,7 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
 
 5. 合入MySQL KAEZstd页压缩解压缩优化特性Patch包。
 
-    ```shell
+    ```bash
     dos2unix /home/0001-support-transparent-page-compression-for-zstd.patch
     git apply --check -p1 < /home/0001-support-transparent-page-compression-for-zstd.patch
     git apply  --whitespace=nowarn -p1 < /home/0001-support-transparent-page-compression-for-zstd.patch
@@ -80,14 +80,14 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
 
     请根据《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0003.html)》编译安装MySQL，操作过程中，需要将“[编译和安装](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0008.html)”中的如下命令添加“-DWITH\_ZSTD=system”参数。
 
-    ```shell
+    ```bash
     cd build
     cmake .. -DBUILD_CONFIG=mysql_release -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/data/mysql/data -DWITH_BOOST=/home/mysql-8.0.25/boost/boost_1_73_0
     ```
 
     即，将上述命令修改为：
 
-    ```shell
+    ```bash
     cd build
     cmake .. -DBUILD_CONFIG=mysql_release -DWITH_ZSTD=system -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/data/mysql/data -DWITH_BOOST=/home/mysql-8.0.25/boost/boost_1_73_0
     ```
@@ -105,7 +105,7 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
 2. 使能KAEZstd。
     1. 执行如下命令设置环境变量**LD\_LIBRARY\_PATH**，以便MySQL数据库在运行时能够找到并使用KAEZstd库。
 
-        ```shell
+        ```bash
         export LD_LIBRARY_PATH=/usr/local/kaezstd/lib:$LD_LIBRARY_PATH
         ```
 
@@ -113,13 +113,13 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
 
         设置压缩等级的参数为**KAE\_ZSTD\_COMP\_TYPE**，可设置的值为**8**和**9**，默认为**8**。
 
-        ```shell
+        ```bash
         export KAE_ZSTD_COMP_TYPE=9
         ```
 
         设置窗口长度的参数为**KAE\_ZSTD\_WINTYPE**，可设置的值为**4**、**8**、**16**和**32**，默认为**32**。
 
-        ```shell
+        ```bash
         export KAE_ZSTD_WINTYPE=8
         ```
 
@@ -127,7 +127,7 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
 
     可通过监控实例队列数来验证KAEZstd是否被使用。
 
-    ```shell
+    ```bash
     watch -n 0.2 cat /sys/class/uacce/hisi_zip*/available_instances
     ```
 
@@ -138,7 +138,7 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
     >![](public_sys-resources/icon_notice.gif) **须知：** 
     >使用Sysbench导入数据时，需要在Sysbench工具的oltp\_common.lua脚本的建表语句中加上如下内容。
     >
-    >```shell
+    >```bash
     >COMPRESSION = 'zstd'
     >```
 
@@ -168,13 +168,13 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
 
 1. 安装zstd-devel依赖。
 
-    ```shell
+    ```bash
     yum install zstd-devel
     ```
 
 2. 重新执行CMake命令。
 
-    ```shell
+    ```bash
     cmake .. -DBUILD_CONFIG=mysql_release -DWITH_ZSTD=system -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/data/mysql/data -DWITH_BOOST=/home/mysql-8.0.25/boost/boost_1_73_0
     ```
 

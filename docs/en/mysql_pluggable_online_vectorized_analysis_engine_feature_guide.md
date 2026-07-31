@@ -381,13 +381,13 @@ Install KAEzip to reduce the drive space required by the system.
 
 2. Create a symbolic link.
 
-    ```shell
+    ```bash
     ln -s /usr/local/kaezip/lib/libz.so.1.2.11 /usr/local/kaezip/lib/libzkae.so
     ```
 
 3. Set the path for loading the dynamic library.
 
-    ```shell
+    ```bash
     export LD_LIBRARY_PATH=/usr/local/kaezip/lib:/usr/local/lib:$LD_LIBRARY_PATH
     ```
 
@@ -424,7 +424,7 @@ KOVAE can be loaded to the MySQL service by modifying the `my.cnf` configuration
     2. After copying the file, use a terminal tool such as SSH to log in to the server.
     3. On the SSH terminal, run the following command to check `ha_kovae.so` in the path specified by `plugin_dir`:
 
-        ```shell
+        ```bash
         ls /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
         ```
 
@@ -436,13 +436,13 @@ KOVAE can be loaded to the MySQL service by modifying the `my.cnf` configuration
 
 5. Grant the execute permission on `ha_kovae.so`.
 
-    ```shell
+    ```bash
     chmod 755 /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
     ```
 
     Check the configured permission on `ha_kovae.so`.
 
-    ```shell
+    ```bash
     ll /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
     ```
 
@@ -460,7 +460,7 @@ KOVAE can be loaded to the MySQL service by modifying the `my.cnf` configuration
     >To prevent buffer overflow attacks, you are advised to use the address space layout randomization (ASLR) technology to randomize the layout of linear areas such as the heap, stack, and shared library mapping to make it more difficult for attackers to predict target addresses and locate code. This technology can be applied to heaps, stacks, and memory mapping areas (mmap base addresses, shared libraries, and vDSO pages).
     >Run the following command to enable ASLR:
 >
-    >```shell
+    >```bash
     >echo 2 > /proc/sys/kernel/randomize_va_space
     >```
 
@@ -474,7 +474,7 @@ KOVAE can be loaded to the MySQL service by modifying the `my.cnf` configuration
         1. Log in to the MySQL service through the MySQL client.
         2. Install the `ha_kovae.so` plugin.
 
-            ```shell
+            ```bash
             install plugin kovae soname "ha_kovae.so";
             ```
 
@@ -492,7 +492,7 @@ After KOVAE is installed, you need to enable KOVAE in the database and ensure th
 
 1. Log in to the MySQL service through the MySQL client. For example:
 
-    ```shell
+    ```bash
     mysql -uroot -p -S /data/mysql/run/mysql.sock
     ```
 
@@ -702,7 +702,7 @@ For details about the configuration and operation of standard MySQL plugins, see
 
 4. Execute the following statement to uninstall KOVAE:
 
-    ```shell
+    ```bash
     uninstall plugin kovae;
     ```
 
@@ -817,7 +817,7 @@ For an SQL statement, add hints to force the SQL statement to access the seconda
 
     For example, in the following SELECT statement, `cost` in the statement is `0.35`. After `secondary_engine_cost_threshold` is set to a value less than `0.35` (for example, `0.1`), the statement can access KOVAE to be filtered by the allowlist and be executed in KOVAE if it passes the filtering.
 
-    ```shell
+    ```bash
     explain format=tree select * from t1;
     ```
 
@@ -1219,7 +1219,7 @@ Multiple files need to be created when they are flushed to drives. If the number
 
 1. Execute the following statement to modify the limit:
 
-    ```shell
+    ```bash
     ulimit -SHn 1000000000
     ```
 

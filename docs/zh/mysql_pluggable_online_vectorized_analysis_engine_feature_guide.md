@@ -385,13 +385,13 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
 
 2. 创建软链接。
 
-    ```shell
+    ```bash
     ln -s /usr/local/kaezip/lib/libz.so.1.2.11 /usr/local/kaezip/lib/libzkae.so
     ```
 
 3. 设置动态库加载路径。
 
-    ```shell
+    ```bash
     export LD_LIBRARY_PATH=/usr/local/kaezip/lib:/usr/local/lib:$LD_LIBRARY_PATH
     ```
 
@@ -428,25 +428,25 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
     2. 复制完成后，使用SSH等终端工具登录服务器。
     3. 在SSH终端上执行如下命令，查看plugin\_dir目录下的ha\_kovae.so文件。
 
-        ```shell
+        ```bash
         ls /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
         ```
 
         返回ha\_kovae.so文件信息如下。
 
-        ```shell
+        ```bash
         /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
         ```
 
 5. 将ha\_kovae.so赋予可执行权限。
 
-    ```shell
+    ```bash
     chmod 755 /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
     ```
 
     查看已设置ha\_kovae.so文件的权限。
 
-    ```shell
+    ```bash
     ll /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
     ```
 
@@ -464,13 +464,13 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
     >为阻止缓冲区溢出攻击，建议使用ASLR（Address space layout randomization）技术，通过堆、栈、共享库映射等线性区布局的随机化，增加攻击者预测目的地址的难度，防止攻击者直接定位攻击代码位置。该技术可作用于堆、栈、内存映射区（mmap基址、shared libraries、vdso页）。
     >开启ASLR的命令如下：
 >
-    >```shell
+    >```bash
     >echo 2 > /proc/sys/kernel/randomize_va_space
     >```
 
     - 方法一：自动加载安装插件。在my.cnf文件中的\[mysqld\]配置段下增加配置行，此方式需要重启数据库后才能生效。例如：
 
-        ```shell
+        ```bash
         plugin-load-add=ha_kovae.so
         ```
 
@@ -478,7 +478,7 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
         1. 通过MySQL客户端登录MySQL服务。
         2. 安装ha\_kovae.so插件。
 
-            ```shell
+            ```bash
             install plugin kovae soname "ha_kovae.so";
             ```
 
@@ -496,7 +496,7 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
 
 1. 通过MySQL客户端登录MySQL服务。例如：
 
-    ```shell
+    ```bash
     mysql -uroot -p -S /data/mysql/run/mysql.sock
     ```
 
@@ -504,7 +504,7 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
 
 2. 在MySQL客户端执行如下语句，将目标表的第二引擎设置为KOVAE。每个表只需操作一次，重启MySQL服务后不需要重新设置。t1为目标表的名称，请根据实际情况填写。
 
-    ```shell
+    ```bash
     ALTER TABLE t1 SECONDARY_ENGINE = kovae;
     ```
 
@@ -706,7 +706,7 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
 
 4. 执行如下语句，卸载KOVAE。
 
-    ```shell
+    ```bash
     uninstall plugin kovae;
     ```
 
@@ -1203,7 +1203,7 @@ performance_schema_events_waits_history_long_size=1048576
 
 若查询锁等待事件发现返回结果包含某些预期不产生的等待事件，则可能是由于events\_waits\_history\_long表中包含了历史SQL的等待事件记录。可执行如下命令，以清除历史SQL产生的等待事件记录，然后重新执行SQL、查询等待事件。
 
-```shell
+```bash
 TRUNCATE table performance_schema.events_waits_history_long;
 ```
 
@@ -1223,7 +1223,7 @@ PFS中其他性能事件记录与锁等待事件类似，可通过对相应表�
 
 1. 执行如下语句可以修改限制。
 
-    ```shell
+    ```bash
     ulimit -SHn 1000000000
     ```
 

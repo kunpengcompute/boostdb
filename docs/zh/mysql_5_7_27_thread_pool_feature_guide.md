@@ -58,7 +58,7 @@
 1. 请参见《MySQL 移植指南》“[创建用户组和用户](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_03_0006.html)”章节，创建MySQL用户。
 2. 使用root用户登录服务器，下载并解压MySQL 5.7.27源码包。
 
-    ```shell
+    ```bash
     cd /home
     wget https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-boost-5.7.27.tar.gz --no-check-certificate
     tar -zxvf mysql-boost-5.7.27.tar.gz
@@ -70,7 +70,7 @@
 
 3. 在源码根目录，使用git初始化命令来建立git管理信息。
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -80,27 +80,27 @@
     >- 若执行**git add -A**时报错，请根据提示执行**git config --global --add safe.directory /home/mysql-5.7.27**命令。
     >- 一般情况下，系统自带git，若需要安装git，请先参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中配置Yum源相关内容，再执行如下命令安装git。
 >
-    > ```shell
+    > ```bash
     > yum install git
     >    ```
 >
     >- 若未配置git的提交用户信息，git commit前需要先配置用户邮件及用户名称信息。
 >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
 
 4. 下载并解压patch补丁文件。
 
-    ```shell
+    ```bash
     wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip --no-check-certificate
     unzip boostdb-patch-release-20260330.zip
     ```
 
 5. 查看提交之后是否有内容修改。
 
-    ```shell
+    ```bash
     git status
     ```
 
@@ -117,7 +117,7 @@
 
 6. 合入线程池特性patch补丁。
 
-    ```shell
+    ```bash
     git apply --check boostdb-patch-release-20260330/0001-THREAD_POOL_5.patch
     git apply --whitespace=nowarn boostdb-patch-release-20260330/0001-THREAD_POOL_5.patch
     ```
@@ -135,7 +135,7 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
 
 - 命令行参数方式，例如：
 
-    ```shell
+    ```bash
     mysqld --thread_handling=pool-of-threads
     ```
 
@@ -362,20 +362,20 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
 
 使用方法与port参数（默认3306）类似，例如：
 
-```shell
+```bash
 mysql --port='extra-port-number' --protocol=tcp
 ```
 
 >![](public_sys-resources/icon_note.gif) **说明：** 
 >若未启用该配置（配置值为0），且由于启用线程池特性时所有工作线程都处于忙碌状态或被锁定而无法建立新的连接时，还可在MySQL服务运行所在的系统上，使用本地连接接入。
 >
->```shell
+>```bash
 >mysql -uroot -S xxxxx.sock -p
 >```
 >
 >或
 >
->```shell
+>```bash
 >mysql -uroot -h localhost -P3306 -p
 >```
 

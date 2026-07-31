@@ -57,7 +57,7 @@ The following uses Percona-Server 5.7.44-53 as an example to describe how to ins
 2. Download the Percona-Server 5.7.44-53 RPM package described in [**Table 2**](#os-and-software-requirements) and save the package to the target path, for example, `/home`.
 3. Run the following commands to install the RPM package. The default installation directory is `/usr/local/mysql`.
 
-    ```shell
+    ```bash
     cd /home
     rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm
     ```
@@ -65,7 +65,7 @@ The following uses Percona-Server 5.7.44-53 as an example to describe how to ins
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >If dependency packages have been installed but the RPM-related check fails, run the following command to skip the dependency check (using `--nodeps`):
     >
-    >```shell
+    >```bash
     >rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm --nodeps
     >```
 
@@ -92,27 +92,27 @@ The `libstdc++.so.6` version of the system is too early, and GLIBCXX_3.4.29 is m
 
 1. Download GCC 12.3.1 (GCC for openEuler 3.0.3).
 
-    ```shell
+    ```bash
     cd /home
     wget https://mirrors.huaweicloud.com/kunpeng/archive/compiler/kunpeng_gcc/gcc-12.3.1-2024.12-aarch64-linux.tar.gz
     ```
 
 2. Decompress the installation package.
 
-    ```shell
+    ```bash
     tar zxvf gcc-12.3.1-2024.12-aarch64-linux.tar.gz
     ```
 
 3. Back up `libstdc++.so.6` of the current system and create a symbolic link for a later version of `libstdc++.so.6`.
 
-    ```shell
+    ```bash
     mv /usr/lib64/libstdc++.so.6 /usr/lib64/libstdc++.so.6.bak
     ln -s /home/gcc-12.3.1-2024.12-aarch64-linux/lib64/libstdc++.so.6 /usr/lib64/libstdc++.so.6
     ```
 
 4. Check the current library version. If any output is displayed, the requirement is met.
 
-    ```shell
+    ```bash
     strings /usr/lib64/libstdc++.so.6 | grep GLIBCXX_3.4.29
     ```
 
@@ -122,7 +122,7 @@ The `libstdc++.so.6` version of the system is too early, and GLIBCXX_3.4.29 is m
 
 Address space layout randomization (ASLR) is a security technology against buffer overflow. It randomizes the layout of linear areas such as heap, stack, and shared library mapping to make it difficult for attackers to predict target addresses and directly locate code, thereby preventing overflow attacks.
 
-```shell
+```bash
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 

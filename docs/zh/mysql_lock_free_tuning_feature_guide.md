@@ -84,7 +84,7 @@ MySQL无锁优化特性以Patch补丁文件形式提供，该补丁基于MySQL 8
 
 1. 下载[MySQL 8.0.20源码](https://github.com/mysql/mysql-server/archive/mysql-8.0.20.tar.gz)，上传源码至服务器“/home”目录下后，解压源码包并进入MySQL源码的根目录。
 
-    ```shell
+    ```bash
     cd /home
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
@@ -93,7 +93,7 @@ MySQL无锁优化特性以Patch补丁文件形式提供，该补丁基于MySQL 8
 2. 下载[细粒度锁优化特性补丁文件和无锁优化特性补丁文件](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)，解压后将0001-SHARDED-LOCK-SYS.patch和0002-LOCK-FREE-TRX-SYS.patch上传至MySQL源码的根目录。
 3. 在源码根目录，使用git初始化命令来建立git管理信息。
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -102,13 +102,13 @@ MySQL无锁优化特性以Patch补丁文件形式提供，该补丁基于MySQL 8
     >![](public_sys-resources/icon_note.gif) **说明：**
     >- 一般情况下，系统自带git，若需要安装git，请先参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中配置Yum源相关内容，再执行如下命令安装git。
     >
-    > ```shell
+    > ```bash
     > yum install git
     >    ```
     >
     >- 若未配置git的提交用户信息，git commit前需要先配置用户邮件及用户名称信息。
     >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
@@ -116,7 +116,7 @@ MySQL无锁优化特性以Patch补丁文件形式提供，该补丁基于MySQL 8
 4. 如果没有配置Yum源，请配置Yum源，详细信息请参见[配置Yum源](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0013.html)。
 5. 如果没有安装dos2unix，请执行如下命令安装dos2unix。
 
-    ```shell
+    ```bash
     yum install dos2unix
     ```
 
@@ -126,7 +126,7 @@ MySQL无锁优化特性以Patch补丁文件形式提供，该补丁基于MySQL 8
 
     执行以下命令使细粒度锁优化特性补丁和无锁优化特性补丁生效。
 
-    ```shell
+    ```bash
     dos2unix 0001-SHARDED-LOCK-SYS.patch
     git apply --check 0001-SHARDED-LOCK-SYS.patch
     git apply --whitespace=nowarn 0001-SHARDED-LOCK-SYS.patch
