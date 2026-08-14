@@ -120,7 +120,7 @@ MySQL无锁优化特性以Patch补丁文件形式提供，该补丁基于MySQL 8
     yum install dos2unix
     ```
 
-6. 先合入[MySQL细粒度锁优化](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/appAccelFeatures/fglocktf/kunpengdbsmysqlfglock_20_0001.html)特性Patch补丁，再合入MySQL无锁优化特性Patch补丁。
+6. 先合入[MySQL细粒度锁优化](https://www.hikunpeng.com/document/detail/zh/boostdb/mysql/lock_atomic_var_opt/docs/zh/mysql_fine_grained_lock_tuning_feature_guide.md)特性Patch补丁，再合入MySQL无锁优化特性Patch补丁。
 
     本特性的前置特性为MySQL细粒度锁优化特性，所以需要先合入MySQL细粒度锁优化特性，再合入本特性。
 

@@ -74,7 +74,7 @@ This feature is released with Kunpeng Computing DC Solution 20.0.3.
 
 **Application Scenarios<a name="section8748937134614"></a>**
 
-When there are many write operations (such as update, insert, and delete) in the MySQL OLTP scenario, the global latch in the MySQL database may be the main factor that affects the throughput. After the [MySQL fine-grained lock tuning feature](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/fglocktf/kunpengdbsmysqlfglock_20_0001.html) is applied, if the Performance Schema shows that there is contention on trx_sys_mutex while the CPU usage is low, this feature can be used to alleviate the contention and improve the system throughput.
+When there are many write operations (such as update, insert, and delete) in the MySQL OLTP scenario, the global latch in the MySQL database may be the main factor that affects the throughput. After the [MySQL fine-grained lock tuning](https://www.hikunpeng.com/document/detail/en/boostdb/mysql/lock_atomic_var_opt/docs/en/mysql_fine_grained_lock_tuning_feature_guide.md) feature is applied, if the Performance Schema shows that there is contention on trx_sys_mutex while the CPU usage is low, this feature can be used to alleviate the contention and improve the system throughput.
 
 The MySQL lock-free tuning feature takes effect immediately after the patch is installed and the MySQL database is recompiled. You do not need to configure system variables.
 
@@ -120,7 +120,7 @@ The MySQL lock-free tuning feature is provided as a patch file. This patch is de
     yum install dos2unix
     ```
 
-6. Apply the patch of the [MySQL fine-grained lock tuning](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/fglocktf/kunpengdbsmysqlfglock_20_0001.html) feature, and then apply the patch of the MySQL lock-free tuning feature.
+6. Apply the patch of the [MySQL fine-grained lock tuning](https://www.hikunpeng.com/document/detail/en/boostdb/mysql/lock_atomic_var_opt/docs/en/mysql_fine_grained_lock_tuning_feature_guide.md) feature, and then apply the patch of the MySQL lock-free tuning feature.
 
     This feature is based on MySQL fine-grained lock tuning. Therefore, the MySQL fine-grained lock tuning feature must be incorporated in advance.
 
