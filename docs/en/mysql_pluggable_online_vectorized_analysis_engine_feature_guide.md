@@ -19,11 +19,11 @@ The parallel acceleration technology provided by KOVAE improves the query perfor
 
 **Related Concepts<a name="section184141303214"></a>**
 
-KAE is a hardware acceleration solution based on the Kunpeng 920 processor. It includes KAE encryption and decryption as well as KAEzip. KAEzip is the compression module of KAE. It implements the deflate algorithm and works with the lossless user-space driver framework to provide high-performance gzip or zlib interfaces. For more information about KAEzip, see [Kunpeng Accelerator Engine User Guide](https://www.hikunpeng.com/document/detail/en/kunpengaccel/kae/usermanual/kunpengaccel_16_0002.html).
+KAE is a hardware acceleration solution based on the Kunpeng 920 processor. It includes KAE encryption and decryption as well as KAEzip. KAEzip is the compression module of KAE. It implements the deflate algorithm and works with the lossless user-space driver framework to provide high-performance gzip or zlib interfaces. For more information about KAEzip, see [Kunpeng Accelerator Engine User Guide](https://www.hikunpeng.com/document/detail/en/kunpengaccel/kae/kae/README.md).
 
 **Compatibility<a name="section65704516331"></a>**
 
-This feature is compatible with other features. For details about the compatibility between MySQL features, see [Compatibility Between Features](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html).
+This feature is compatible with other features. For details about the compatibility between MySQL features, see [Compatibility Between Features](https://www.hikunpeng.com/document/detail/en/boostdb/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html).
 
 ### Software Architecture<a name="EN-US_TOPIC_0000002550183951"></a>
 
@@ -97,14 +97,14 @@ export_options
 |[STRAIGHT_JOIN]|Serves for the optimizer and does not affect the execution result set.|This keyword applies to the MySQL optimizer and does not affect KOVAE's execution or judgment.|
 |[SQL_SMALL_RESULT] [SQL_BIG_RESULT] [SQL_BUFFER_RESULT]|Serves for the optimizer and does not affect the execution result set.|This keyword applies to the MySQL optimizer and does not affect KOVAE's execution or judgment.|
 |[SQL_NO_CACHE] [SQL_CALC_FOUND_ROWS]|Serves for the optimizer and does not affect the execution result set.|This keyword applies to the MySQL optimizer and does not affect KOVAE's execution or judgment.|
-|select_expr [, select_expr] ...|Indicates the expression of the SELECT list. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/kovae/kunpengkovae_20_008.html).|
+|select_expr [, select_expr] ...|Indicates the expression of the SELECT list. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](#supported-item-types).|
 |[into_option]|Indicates that the result set is written to files on the server.|Not supported. This is not a common scenario.|
 |[FROM table_references[PARTITION partition_list]]|Indicates the SQL-related tables and their <code>JOIN</code> relationship.|Some table access types are supported. For details, see [**Table 3**](#supported-table-access-types). Only non-temporary tables are supported. Only InnoDB tables are supported. Full-text indexes are not supported. Partitioned tables are not supported.|
-|[WHERE where_condition]|Indicates the expression of the <code>WHERE</code> condition. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/kovae/kunpengkovae_20_008.html).|
-|[GROUP BY {col_name \| expr \| position}, ... [WITH ROLLUP]]|Indicates the <code>GROUP BY</code> clause. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/kovae/kunpengkovae_20_008.html).|
-|[HAVING where_condition]|Indicates the expression of the <code>HAVING</code> condition. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/kovae/kunpengkovae_20_008.html).|
+|[WHERE where_condition]|Indicates the expression of the <code>WHERE</code> condition. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](#supported-item-types).|
+|[GROUP BY {col_name \| expr \| position}, ... [WITH ROLLUP]]|Indicates the <code>GROUP BY</code> clause. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](#supported-item-types).|
+|[HAVING where_condition]|Indicates the expression of the <code>HAVING</code> condition. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](#supported-item-types).|
 |[WINDOW window_name AS (window_spec) [, window_name AS (window_spec)] ...]|Indicates window functions.|Not supported.|
-|[ORDER BY {col_name \| expr \| position}[ASC \| DESC], ... [WITH ROLLUP]]|Indicates the <code>ORDER BY</code> clause. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/kovae/kunpengkovae_20_008.html).|
+|[ORDER BY {col_name \| expr \| position}[ASC \| DESC], ... [WITH ROLLUP]]|Indicates the <code>ORDER BY</code> clause. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](#supported-item-types).|
 |[LIMIT {[offset,] row_count \| row_count OFFSET offset}]|Indicates the <code>LIMIT</code> clause.|Supported.|
 |[into_option]|Indicates that the result set is written to files on the server.|Not supported. This is not a common scenario.|
 |[FOR {UPDATE \| SHARE}[OF tbl_name [, tbl_name] ...]<br>[NOWAIT \| SKIP LOCKED]<br>\| LOCK IN SHARE MODE]|Indicates that locking reads are performed on the queried data.|Not supported.|
@@ -377,7 +377,7 @@ Install KAEzip to reduce the drive space required by the system.
 
 1. Install KAEzip.
 
-    The KAE source package contains the KAEzip module. You can install all KAE modules in one-click mode or install the KAEzip module separately. For details, see [Kunpeng Accelerator Engine User Guide](https://www.hikunpeng.com/document/detail/en/kunpengaccel/kae/usermanual/kunpengaccel_16_0002.html). Strictly follow the operations in this guide. Before installing KAEzip, prepare for the installation such as preparing for the installation environment and obtaining the KAE license.
+    The KAE source package contains the KAEzip module. You can install all KAE modules in one-click mode or install the KAEzip module separately. For details, see [Kunpeng Accelerator Engine User Guide](https://www.hikunpeng.com/document/detail/en/kunpengaccel/kae/kae/README.md). Strictly follow the operations in this guide. Before installing KAEzip, prepare for the installation such as preparing for the installation environment and obtaining the KAE license.
 
 2. Create a symbolic link.
 
