@@ -10,7 +10,7 @@ The Linux kernel contains the C language implementation of the CRC32 algorithm, 
 
 **Compatibility<a name="section65704516331"></a>**
 
-This feature is compatible with other features. For details about the compatibility between MySQL features, see [Compatibility Between Features](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html).
+This feature is compatible with other features. For details about the compatibility between MySQL features, see [Compatibility Between Features](https://www.hikunpeng.com/document/detail/en/boostdb/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html).
 
 ### Principles<a name="EN-US_TOPIC_0000002550180079"></a>
 

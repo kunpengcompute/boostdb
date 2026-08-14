@@ -10,7 +10,7 @@ Linux内核中虽然包含了CRC32算法的C语言实现，但是由于性能较
 
 **兼容性<a name="section65704516331"></a>**
 
-与其他特性兼容。关于MySQL特性之间的兼容性信息，请参见[特性之间的兼容性](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/appAccelFeatures/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html)。
+与其他特性兼容。关于MySQL特性之间的兼容性信息，请参见[特性之间的兼容性](https://www.hikunpeng.com/document/detail/zh/boostdb/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html)。
 
 在鲲鹏处理器内，CRC32指令优化特性使用鲲鹏CRC32硬件指令替换CRC32算法的软件实现，减小了CRC32的计算开销。本文以MySQL为例介绍如何在使用openEuler操作系统的鲲鹏服务器上使用CRC32指令优化特性，其他场景也可参考本文的方法进行适配优化。
 
