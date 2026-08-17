@@ -10,7 +10,7 @@ Linux内核中虽然包含了CRC32算法的C语言实现，但是由于性能较
 
 **兼容性<a name="section65704516331"></a>**
 
-与其他特性兼容。关于MySQL特性之间的兼容性信息，请参见[特性之间的兼容性](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/appAccelFeatures/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html)。
+与其他特性兼容。关于MySQL特性之间的兼容性信息，请参见[特性之间的兼容性](https://www.hikunpeng.com/document/detail/zh/boostdb/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html)。
 
 在鲲鹏处理器内，CRC32指令优化特性使用鲲鹏CRC32硬件指令替换CRC32算法的软件实现，减小了CRC32的计算开销。本文以MySQL为例介绍如何在使用openEuler操作系统的鲲鹏服务器上使用CRC32指令优化特性，其他场景也可参考本文的方法进行适配优化。
 
@@ -22,7 +22,7 @@ Linux内核中虽然包含了CRC32算法的C语言实现，但是由于性能较
 
 可通过如下命令查看CPU是否支持CRC32硬件指令优化。
 
-```shell
+```bash
 cat /proc/cpuinfo
 ```
 
@@ -90,7 +90,7 @@ MySQL源码文件中，CMakeLists.txt文件中使用“-march=armv8-a+lse”编�
 
 3. 在源码根目录，使用git初始化命令来建立git管理信息。
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -99,20 +99,20 @@ MySQL源码文件中，CMakeLists.txt文件中使用“-march=armv8-a+lse”编�
     >![](public_sys-resources/icon_note.gif) **说明：** 
     >- 一般情况下，系统自带git，若需要安装git，请先参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中配置Yum源相关内容，再执行如下命令安装git。
     >
-    > ```shell
+    > ```bash
     > yum install git
     >    ```
     >
     >- 若未配置git的提交用户信息，git commit前需要先配置用户邮件及用户名称信息。
     >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
 
 4. 在MySQL安装目录下执行以下命令，合入CRC32指令优化特性补丁。
 
-    ```shell
+    ```bash
     # 查看补丁文件的统计信息
     git apply --stat 0001-CRC32-AARCH64.patch
     # 检查补丁文件是否能够成功应用到当前的代码库中
@@ -126,7 +126,7 @@ MySQL源码文件中，CMakeLists.txt文件中使用“-march=armv8-a+lse”编�
 5. 编译安装MySQL。请参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》。
 6. 执行如下命令，返回如下crc32cb反汇编信息，表示CRC32指令优化特性已使能成功。
 
-    ```shell
+    ```bash
     objdump -d ./bin/mysqld | grep crc32cb
     ```
 

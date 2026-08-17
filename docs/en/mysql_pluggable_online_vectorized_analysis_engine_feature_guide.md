@@ -19,11 +19,11 @@ The parallel acceleration technology provided by KOVAE improves the query perfor
 
 **Related Concepts<a name="section184141303214"></a>**
 
-KAE is a hardware acceleration solution based on the Kunpeng 920 processor. It includes KAE encryption and decryption as well as KAEzip. KAEzip is the compression module of KAE. It implements the deflate algorithm and works with the lossless user-space driver framework to provide high-performance gzip or zlib interfaces. For more information about KAEzip, see [Kunpeng Accelerator Engine User Guide](https://www.hikunpeng.com/document/detail/en/kunpengaccel/kae/usermanual/kunpengaccel_16_0002.html).
+KAE is a hardware acceleration solution based on the Kunpeng 920 processor. It includes KAE encryption and decryption as well as KAEzip. KAEzip is the compression module of KAE. It implements the deflate algorithm and works with the lossless user-space driver framework to provide high-performance gzip or zlib interfaces. For more information about KAEzip, see [Kunpeng Accelerator Engine User Guide](https://www.hikunpeng.com/document/detail/en/kunpengaccel/kae/kae/README.md).
 
 **Compatibility<a name="section65704516331"></a>**
 
-This feature is compatible with other features. For details about the compatibility between MySQL features, see [Compatibility Between Features](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html).
+This feature is compatible with other features. For details about the compatibility between MySQL features, see [Compatibility Between Features](https://www.hikunpeng.com/document/detail/en/boostdb/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html).
 
 ### Software Architecture<a name="EN-US_TOPIC_0000002550183951"></a>
 
@@ -97,14 +97,14 @@ export_options
 |[STRAIGHT_JOIN]|Serves for the optimizer and does not affect the execution result set.|This keyword applies to the MySQL optimizer and does not affect KOVAE's execution or judgment.|
 |[SQL_SMALL_RESULT] [SQL_BIG_RESULT] [SQL_BUFFER_RESULT]|Serves for the optimizer and does not affect the execution result set.|This keyword applies to the MySQL optimizer and does not affect KOVAE's execution or judgment.|
 |[SQL_NO_CACHE] [SQL_CALC_FOUND_ROWS]|Serves for the optimizer and does not affect the execution result set.|This keyword applies to the MySQL optimizer and does not affect KOVAE's execution or judgment.|
-|select_expr [, select_expr] ...|Indicates the expression of the SELECT list. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/kovae/kunpengkovae_20_008.html).|
+|select_expr [, select_expr] ...|Indicates the expression of the SELECT list. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](#supported-item-types).|
 |[into_option]|Indicates that the result set is written to files on the server.|Not supported. This is not a common scenario.|
 |[FROM table_references[PARTITION partition_list]]|Indicates the SQL-related tables and their <code>JOIN</code> relationship.|Some table access types are supported. For details, see [**Table 3**](#supported-table-access-types). Only non-temporary tables are supported. Only InnoDB tables are supported. Full-text indexes are not supported. Partitioned tables are not supported.|
-|[WHERE where_condition]|Indicates the expression of the <code>WHERE</code> condition. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/kovae/kunpengkovae_20_008.html).|
-|[GROUP BY {col_name \| expr \| position}, ... [WITH ROLLUP]]|Indicates the <code>GROUP BY</code> clause. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/kovae/kunpengkovae_20_008.html).|
-|[HAVING where_condition]|Indicates the expression of the <code>HAVING</code> condition. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/kovae/kunpengkovae_20_008.html).|
+|[WHERE where_condition]|Indicates the expression of the <code>WHERE</code> condition. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](#supported-item-types).|
+|[GROUP BY {col_name \| expr \| position}, ... [WITH ROLLUP]]|Indicates the <code>GROUP BY</code> clause. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](#supported-item-types).|
+|[HAVING where_condition]|Indicates the expression of the <code>HAVING</code> condition. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](#supported-item-types).|
 |[WINDOW window_name AS (window_spec) [, window_name AS (window_spec)] ...]|Indicates window functions.|Not supported.|
-|[ORDER BY {col_name \| expr \| position}[ASC \| DESC], ... [WITH ROLLUP]]|Indicates the <code>ORDER BY</code> clause. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/kovae/kunpengkovae_20_008.html).|
+|[ORDER BY {col_name \| expr \| position}[ASC \| DESC], ... [WITH ROLLUP]]|Indicates the <code>ORDER BY</code> clause. KOVAE judges the type of each item and parameter, and performs recursive judgment on each parameter.|Some are supported. For details, see [Support for Item Types](#supported-item-types).|
 |[LIMIT {[offset,] row_count \| row_count OFFSET offset}]|Indicates the <code>LIMIT</code> clause.|Supported.|
 |[into_option]|Indicates that the result set is written to files on the server.|Not supported. This is not a common scenario.|
 |[FOR {UPDATE \| SHARE}[OF tbl_name [, tbl_name] ...]<br>[NOWAIT \| SKIP LOCKED]<br>\| LOCK IN SHARE MODE]|Indicates that locking reads are performed on the queried data.|Not supported.|
@@ -377,17 +377,17 @@ Install KAEzip to reduce the drive space required by the system.
 
 1. Install KAEzip.
 
-    The KAE source package contains the KAEzip module. You can install all KAE modules in one-click mode or install the KAEzip module separately. For details, see [Kunpeng Accelerator Engine User Guide](https://www.hikunpeng.com/document/detail/en/kunpengaccel/kae/usermanual/kunpengaccel_16_0002.html). Strictly follow the operations in this guide. Before installing KAEzip, prepare for the installation such as preparing for the installation environment and obtaining the KAE license.
+    The KAE source package contains the KAEzip module. You can install all KAE modules in one-click mode or install the KAEzip module separately. For details, see [Kunpeng Accelerator Engine User Guide](https://www.hikunpeng.com/document/detail/en/kunpengaccel/kae/kae/README.md). Strictly follow the operations in this guide. Before installing KAEzip, prepare for the installation such as preparing for the installation environment and obtaining the KAE license.
 
 2. Create a symbolic link.
 
-    ```shell
+    ```bash
     ln -s /usr/local/kaezip/lib/libz.so.1.2.11 /usr/local/kaezip/lib/libzkae.so
     ```
 
 3. Set the path for loading the dynamic library.
 
-    ```shell
+    ```bash
     export LD_LIBRARY_PATH=/usr/local/kaezip/lib:/usr/local/lib:$LD_LIBRARY_PATH
     ```
 
@@ -424,7 +424,7 @@ KOVAE can be loaded to the MySQL service by modifying the `my.cnf` configuration
     2. After copying the file, use a terminal tool such as SSH to log in to the server.
     3. On the SSH terminal, run the following command to check `ha_kovae.so` in the path specified by `plugin_dir`:
 
-        ```shell
+        ```bash
         ls /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
         ```
 
@@ -436,13 +436,13 @@ KOVAE can be loaded to the MySQL service by modifying the `my.cnf` configuration
 
 5. Grant the execute permission on `ha_kovae.so`.
 
-    ```shell
+    ```bash
     chmod 755 /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
     ```
 
     Check the configured permission on `ha_kovae.so`.
 
-    ```shell
+    ```bash
     ll /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
     ```
 
@@ -460,7 +460,7 @@ KOVAE can be loaded to the MySQL service by modifying the `my.cnf` configuration
     >To prevent buffer overflow attacks, you are advised to use the address space layout randomization (ASLR) technology to randomize the layout of linear areas such as the heap, stack, and shared library mapping to make it more difficult for attackers to predict target addresses and locate code. This technology can be applied to heaps, stacks, and memory mapping areas (mmap base addresses, shared libraries, and vDSO pages).
     >Run the following command to enable ASLR:
 >
-    >```shell
+    >```bash
     >echo 2 > /proc/sys/kernel/randomize_va_space
     >```
 
@@ -474,7 +474,7 @@ KOVAE can be loaded to the MySQL service by modifying the `my.cnf` configuration
         1. Log in to the MySQL service through the MySQL client.
         2. Install the `ha_kovae.so` plugin.
 
-            ```shell
+            ```bash
             install plugin kovae soname "ha_kovae.so";
             ```
 
@@ -492,7 +492,7 @@ After KOVAE is installed, you need to enable KOVAE in the database and ensure th
 
 1. Log in to the MySQL service through the MySQL client. For example:
 
-    ```shell
+    ```bash
     mysql -uroot -p -S /data/mysql/run/mysql.sock
     ```
 
@@ -702,7 +702,7 @@ For details about the configuration and operation of standard MySQL plugins, see
 
 4. Execute the following statement to uninstall KOVAE:
 
-    ```shell
+    ```bash
     uninstall plugin kovae;
     ```
 
@@ -817,7 +817,7 @@ For an SQL statement, add hints to force the SQL statement to access the seconda
 
     For example, in the following SELECT statement, `cost` in the statement is `0.35`. After `secondary_engine_cost_threshold` is set to a value less than `0.35` (for example, `0.1`), the statement can access KOVAE to be filtered by the allowlist and be executed in KOVAE if it passes the filtering.
 
-    ```shell
+    ```bash
     explain format=tree select * from t1;
     ```
 
@@ -1219,7 +1219,7 @@ Multiple files need to be created when they are flushed to drives. If the number
 
 1. Execute the following statement to modify the limit:
 
-    ```shell
+    ```bash
     ulimit -SHn 1000000000
     ```
 

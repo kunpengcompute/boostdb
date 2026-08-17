@@ -190,7 +190,7 @@ The following steps apply only to Percona-Server 8.0.43-34.
 
 Address space layout randomization (ASLR) is a security technology against buffer overflow. It randomizes the layout of linear areas such as heap, stack, and shared library mapping to make it difficult for attackers to predict target addresses and directly locate code, thereby preventing overflow attacks.
 
-```shell
+```bash
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 

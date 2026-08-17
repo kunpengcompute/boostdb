@@ -53,7 +53,7 @@ Obtain the MySQL source code, integrate the patch package of the MySQL KAEzstd p
 
 2. Decompress the MySQL source package and go to the source code directory.
 
-    ```shell
+    ```bash
     tar -xzvf mysql-boost-8.0.25.tar.gz
     cd mysql-8.0.25
     ```
@@ -64,7 +64,7 @@ Obtain the MySQL source code, integrate the patch package of the MySQL KAEzstd p
 
 4. In the root directory of the MySQL source code, use the  **git**  command to create management information.
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -72,7 +72,7 @@ Obtain the MySQL source code, integrate the patch package of the MySQL KAEzstd p
 
 5. Integrate the MySQL KAEzstd page compression and decompression optimization feature patch package.
 
-    ```shell
+    ```bash
     dos2unix /home/0001-zstd-for-page-compress.patch
     git apply --check -p1 < /home/0001-zstd-for-page-compress.patch
     git apply  --whitespace=nowarn -p1 < /home/0001-zstd-for-page-compress.patch
@@ -84,14 +84,14 @@ Obtain the MySQL source code, integrate the patch package of the MySQL KAEzstd p
 
     Follow instructions in  [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0003.html)  to compile and install MySQL. During the operation, add the  **-DWITH\_ZSTD=system**  parameter to the following commands from the section  [Compiling and Installing MySQL](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0008.html).
 
-    ```shell
+    ```bash
     cd build
     cmake .. -DBUILD_CONFIG=mysql_release -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/data/mysql/data -DWITH_BOOST=/home/mysql-8.0.25/boost/boost_1_73_0
     ```
 
     That is, change the preceding commands as follows:
 
-    ```shell
+    ```bash
     cd build
     cmake .. -DBUILD_CONFIG=mysql_release -DWITH_ZSTD=system -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/data/mysql/data -DWITH_BOOST=/home/mysql-8.0.25/boost/boost_1_73_0
     ```
@@ -111,7 +111,7 @@ Install, enable, and verify KAEzstd in MySQL, and use sysbench to assess the sto
 2. Enable KAEzstd.
     1. Configure the environment variable  **LD\_LIBRARY\_PATH**  so that the MySQL database can find and use the KAEzstd library during running.
 
-        ```shell
+        ```bash
         export LD_LIBRARY_PATH=/usr/local/kaezstd/lib:$LD_LIBRARY_PATH
         ```
 
@@ -119,13 +119,13 @@ Install, enable, and verify KAEzstd in MySQL, and use sysbench to assess the sto
 
         The  **KAE\_ZSTD\_COMP\_TYPE**  parameter sets the compression level. Its value can be  **8**  or  **9**. The default value is  **8**.
 
-        ```shell
+        ```bash
         export KAE_ZSTD_COMP_TYPE=9
         ```
 
         The  **KAE\_ZSTD\_WINTYPE**  parameter sets the window length. Its value can be  **4**,  **8**,  **16**, or  **32**. The default value is  **32**.
 
-        ```shell
+        ```bash
         export KAE_ZSTD_WINTYPE=8
         ```
 
@@ -133,7 +133,7 @@ Install, enable, and verify KAEzstd in MySQL, and use sysbench to assess the sto
 
     Monitor the number of instance queues.
 
-    ```shell
+    ```bash
     watch -n 0.2 cat /sys/class/uacce/hisi_zip*/available_instances
     ```
 
@@ -144,7 +144,7 @@ Install, enable, and verify KAEzstd in MySQL, and use sysbench to assess the sto
     >![](public_sys-resources/icon_notice.gif) **NOTICE:** 
     >When sysbench is used to import data, add the following command to the table creation statement in the sysbench script  **oltp\_common.lua**:
 >
-    >```shell
+    >```bash
     >COMPRESSION = 'zstd'
     >```
 
@@ -176,12 +176,12 @@ The zstd-devel dependency is not installed during MySQL installation.
 
 1. Install the zstd-devel dependency.
 
-    ```shell
+    ```bash
     yum install zstd-devel
     ```
 
 2. Run the  **cmake**  command again.
 
-    ```shell
+    ```bash
     cmake .. -DBUILD_CONFIG=mysql_release -DWITH_ZSTD=system -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/data/mysql/data -DWITH_BOOST=/home/mysql-8.0.25/boost/boost_1_73_0
     ```

@@ -31,7 +31,7 @@ MySQL hash\_table\_locks优化特性以Patch补丁文件形式提供，该补丁
 
 1. 下载[MySQL 8.0.20源码](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.20.tar.gz)，上传源码至服务器“/home”目录下后，解压源码包并进入MySQL源码的根目录。
 
-    ```shell
+    ```bash
     cd /home
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
@@ -40,7 +40,7 @@ MySQL hash\_table\_locks优化特性以Patch补丁文件形式提供，该补丁
 2. 下载[hash\_table\_locks优化补丁文件](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)，解压后将0001-HASH-TABLE-LOCKS-OPT.patch上传至MySQL源码的根目录。
 3. 在源码根目录，使用git初始化命令来建立git管理信息。
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -49,20 +49,20 @@ MySQL hash\_table\_locks优化特性以Patch补丁文件形式提供，该补丁
     >![](public_sys-resources/icon_note.gif) **说明：** 
     >- 一般情况下，系统自带git，若需要安装git，请先参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中配置Yum源相关内容，再执行如下命令安装git。
 >
-    > ```shell
+    > ```bash
     > yum install git
     >    ```
 >
     >- 若未配置git的提交用户信息，git commit前需要先配置用户邮件及用户名称信息。
 >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
 
 4. 合入hash\_table\_locks优化补丁。
 
-    ```shell
+    ```bash
     git am --quiet --whitespace=nowarn 0001-HASH-TABLE-LOCKS-OPT.patch
     ```
 
@@ -126,7 +126,7 @@ MySQL undo\_spaces\_lock优化特性以Patch补丁文件形式提供，该补丁
 
 1. 下载[MySQL 8.0.20源码](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.20.tar.gz)，上传源码至服务器“/home”目录下后，解压源码包并进入MySQL源码的根目录。
 
-    ```shell
+    ```bash
     cd /home
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
@@ -134,14 +134,14 @@ MySQL undo\_spaces\_lock优化特性以Patch补丁文件形式提供，该补丁
 
 2. 解压源码包并进入MySQL源码目录。
 
-    ```shell
+    ```bash
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
     ```
 
 3. 在源码根目录，使用git初始化命令来建立git管理信息。
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -150,13 +150,13 @@ MySQL undo\_spaces\_lock优化特性以Patch补丁文件形式提供，该补丁
     >![](public_sys-resources/icon_note.gif) **说明：** 
     >- 一般情况下，系统自带git，若需要安装git，请先参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中配置Yum源相关内容，再执行如下命令安装git。
 >
-    > ```shell
+    > ```bash
     > yum install git
     >    ```
 >
     >- 若未配置git的提交用户信息，git commit前需要先配置用户邮件及用户名称信息。
 >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
@@ -164,7 +164,7 @@ MySQL undo\_spaces\_lock优化特性以Patch补丁文件形式提供，该补丁
 4. 合入补丁。
     - 如果本特性不和[MySQL NUMA调度优化](https://www.hikunpeng.com/document/detail/zh/boostdb/mysql/basic_computation_opt/docs/zh/mysql_numa_schedule_optimization_feature_guide.md)特性共同使用，则下载[undo\_spaces\_lock优化补丁文件](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)，解压后将0001-UNDO-SPACES-LOCK-OPT.patch补丁文件放到MySQL源码的根目录，执行以下命令生效补丁。
 
-        ```shell
+        ```bash
         git am --quiet --whitespace=nowarn 0001-UNDO-SPACES-LOCK-OPT.patch
         ```
 
@@ -174,7 +174,7 @@ MySQL undo\_spaces\_lock优化特性以Patch补丁文件形式提供，该补丁
 
         下载[NUMA调度特性补丁文件和undo\_spaces\_lock优化补丁文件](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)，解压后将0001-SCHED-AFFINITY.patch和0002-UNDO-SPACES-LOCK-OPT.AFTER-SCHED-AFFINITY.patch补丁文件放到MySQL源码的根目录，执行以下命令使NUMA调度优化特性补丁和undo\_spaces\_lock优化补丁生效。
 
-        ```shell
+        ```bash
         git am --quiet --whitespace=nowarn 0001-SCHED-AFFINITY.patch 0002-UNDO-SPACES-LOCK-OPT.AFTER-SCHED-AFFINITY.patch
         ```
 
@@ -246,7 +246,7 @@ MySQL线程计数器优化特性以Patch补丁文件形式提供，该补丁基�
 
 1. 下载[MySQL 8.0.20源码](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.20.tar.gz)，上传源码至服务器“/home”目录下后，解压源码包并进入MySQL源码的根目录。
 
-    ```shell
+    ```bash
     cd /home
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
@@ -254,7 +254,7 @@ MySQL线程计数器优化特性以Patch补丁文件形式提供，该补丁基�
 
 2. 在源码根目录，使用git初始化命令来建立git管理信息。
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -263,13 +263,13 @@ MySQL线程计数器优化特性以Patch补丁文件形式提供，该补丁基�
     >![](public_sys-resources/icon_note.gif) **说明：** 
     >- 一般情况下，系统自带git，若需要安装git，请先参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中配置Yum源相关内容，再执行如下命令安装git。
     >
-    > ```shell
+    > ```bash
     > yum install git
     >    ```
     >
     >- 若未配置git的提交用户信息，git commit前需要先配置用户邮件及用户名称信息。
     >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
@@ -278,7 +278,7 @@ MySQL线程计数器优化特性以Patch补丁文件形式提供，该补丁基�
 
 4. 查看当前本地git状态。
 
-    ```shell
+    ```bash
     git status
     ```
 
@@ -296,7 +296,7 @@ MySQL线程计数器优化特性以Patch补丁文件形式提供，该补丁基�
 
 5. 检查补丁文件与MySQL源码是否冲突。
 
-    ```shell
+    ```bash
     dos2unix 0001-THREAD_COUNTER_OPT.patch
     git apply --check 0001-THREAD_COUNTER_OPT.patch
     ```
@@ -305,7 +305,7 @@ MySQL线程计数器优化特性以Patch补丁文件形式提供，该补丁基�
 
 6. 应用线程计数器补丁文件。
 
-    ```shell
+    ```bash
     git apply --whitespace=nowarn 0001-THREAD_COUNTER_OPT.patch
     ```
 

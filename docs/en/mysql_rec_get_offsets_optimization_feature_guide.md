@@ -43,7 +43,7 @@ The following uses Percona-Server 5.7.44-53 as an example to describe how to ins
 2. Download the Percona-Server 5.7.44-53 RPM package described in [**Table 2**](#os-and-software-requirements) and save the package to the target path, for example, `/home`.
 3. Run the following commands to install the RPM package. The default installation directory is `/usr/local/mysql`.
 
-   ```shell
+   ```bash
    cd /home
    rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm
    ```
@@ -51,7 +51,7 @@ The following uses Percona-Server 5.7.44-53 as an example to describe how to ins
    > ![](public_sys-resources/icon_note.gif) **NOTE:**
    > If dependency packages have been installed but the RPM-related check fails, run the following command to skip the dependency check (using `--nodeps`):
    >
-   > ```shell
+   > ```bash
    > rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm --nodeps
    > ```
    >
@@ -65,7 +65,7 @@ The following uses Percona-Server 5.7.44-53 as an example to describe how to ins
 
 Address space layout randomization (ASLR) is a security technology against buffer overflow. It randomizes the layout of linear areas such as heap, stack, and shared library mapping to make it difficult for attackers to predict target addresses and directly locate code, thereby preventing overflow attacks.
 
-```shell
+```bash
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 

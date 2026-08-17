@@ -62,7 +62,7 @@ MySQL NUMA调度优化特性以Patch补丁文件形式提供，该补丁基于My
 3. 可选：如果没有配置Yum源，请配置Yum源，详细信息请参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0013.html)》。
 4. 该特性实现依赖libnuma，以CentOS为例，编译MySQL前，需安装如下依赖。
 
-    ```shell
+    ```bash
     yum install -y numactl numactl-devel numactl-libs
     ```
 
@@ -71,7 +71,7 @@ MySQL NUMA调度优化特性以Patch补丁文件形式提供，该补丁基于My
 
 5. 以基于MySQL 8.0.20版本应用该特性为例，上传MySQL源码至“/home”目录下后，解压MySQL源码包并进入MySQL源码根目录。
 
-    ```shell
+    ```bash
     cd /home
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
@@ -79,7 +79,7 @@ MySQL NUMA调度优化特性以Patch补丁文件形式提供，该补丁基于My
 
 6. 在源码根目录，使用git初始化命令来建立git管理信息。
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -88,26 +88,26 @@ MySQL NUMA调度优化特性以Patch补丁文件形式提供，该补丁基于My
     >![](public_sys-resources/icon_note.gif) **说明：**
     >- 一般情况下，系统自带git，若需要安装git，请先参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中配置Yum源相关内容，再执行如下命令安装git。
     >
-     > ```shell
+     > ```bash
      > yum install git
      >  ```
     >
     >- 若未配置git的提交用户信息，git commit前需要先配置用户邮件及用户名称信息。
     >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >  ```
 
 7. 可选：如果没有安装dos2unix，请执行如下命令安装dos2unix。
 
-    ```shell
+    ```bash
     yum install dos2unix
     ```
 
 8. 合入NUMA调度优化特性补丁。
 
-    ```shell
+    ```bash
     dos2unix 0001-SCHED-AFFINITY.patch
     git apply --check 0001-SCHED-AFFINITY.patch
     git apply --whitespace=nowarn 0001-SCHED-AFFINITY.patch
@@ -154,7 +154,7 @@ MySQL NUMA调度优化特性以Patch补丁文件形式提供，该补丁基于My
          >![](public_sys-resources/icon_note.gif) **说明：**
          > 数据库的配置文件默认路径为“/etc/my.cnf”。也可以通过以下命令行指定defaults-file选项，其中“/tmp/myconfig.txt”表示指定配置文件的路径。
          >
-         > ```shell
+         > ```bash
          > mysqld --defaults-file=/tmp/myconfig.txt
          > ```
 
@@ -163,7 +163,7 @@ MySQL NUMA调度优化特性以Patch补丁文件形式提供，该补丁基于My
     - **方式二：修改数据库的启动参数。**
       1. 启动数据库时，在启动命令中增加系统变量的配置。此种方法需要重启数据库方可生效。示例：
 
-         ```shell
+         ```bash
          mysqld --defaults-file=/etc/my.cnf \
          --sched_affinity_numa_aware=ON \
          --sched_affinity_foreground_thread=0-29 \

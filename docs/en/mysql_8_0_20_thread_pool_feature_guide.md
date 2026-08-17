@@ -57,7 +57,7 @@ For details about the function configuration, see [Parameters](#parameters).
 
 1. Download and decompress the MySQL 8.0.20 source package, and go to the MySQL source code directory.
 
-    ```shell
+    ```bash
     cd /home
     wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.20.tar.gz --no-check-certificate
     tar -zxvf mysql-boost-8.0.20.tar.gz
@@ -69,7 +69,7 @@ For details about the function configuration, see [Parameters](#parameters).
 
 2. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -78,32 +78,32 @@ For details about the function configuration, see [Parameters](#parameters).
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
 >
-    > ```shell
+    > ```bash
     > yum install git
     >    ```
 >
     >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
 >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
 
 3. Download the patch file and upload it to the root directory of the MySQL source code.
 
-    ```shell
+    ```bash
     wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip --no-check-certificate
     ```
 
 4. Check whether the content is modified.
 
-    ```shell
+    ```bash
     git status
     ```
 
     The following shows that a `0001-THREAD_POOL_8.patch` file is added.
 
-    ```shell
+    ```bash
     # On branch master
     # Untracked files:
     #   (use "git add <file>..." to include in what will be committed)
@@ -114,7 +114,7 @@ For details about the function configuration, see [Parameters](#parameters).
 
 5. Apply the patch file.
 
-    ```shell
+    ```bash
     git apply --check 0001-THREAD_POOL_8.patch
     git apply --whitespace=nowarn 0001-THREAD_POOL_8.patch
     ```
@@ -140,13 +140,13 @@ There are two ways to use configuration parameters:
 
 - CLI. Example:
 
-    ```shell
+    ```bash
     mysqld --thread_handling=pool-of-threads
     ```
 
 - Configuration file. Add your parameter settings to the `my.cnf` file:
 
-    ```shell
+    ```bash
     thread_handling=pool-of-threads
     ```
 

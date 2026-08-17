@@ -59,14 +59,14 @@ The following steps are applicable to both Percona-Server 5.7.44-53 and Percona-
 
     - Percona-Server 5.7.44-53:
 
-    ```shell
+    ```bash
     cd /home
     rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm
     ```
 
     - Percona-Server 8.0.43-34:
 
-    ```shell
+    ```bash
     cd /home
     rpm -ivh BoostDB-Percona-8.0.43-34.aarch64.rpm
     ```
@@ -74,7 +74,7 @@ The following steps are applicable to both Percona-Server 5.7.44-53 and Percona-
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >If dependency packages have been installed but the RPM-related check fails, run the following command to skip the dependency check (using `--nodeps`):
 >
-    >```shell
+    >```bash
     >rpm -ivh BoostDB-Percona-5.7.44-53.aarch64.rpm --nodeps
     >rpm -ivh BoostDB-Percona-8.0.43-34.aarch64.rpm --nodeps
     >```
@@ -95,27 +95,27 @@ The `libstdc++.so.6` version of the system is too early, and GLIBCXX_3.4.29 is m
 
 1. Download GCC 12.3.1 (GCC for openEuler 3.0.3).
 
-    ```shell
+    ```bash
     cd /home
     wget https://mirrors.huaweicloud.com/kunpeng/archive/compiler/kunpeng_gcc/gcc-12.3.1-2024.12-aarch64-linux.tar.gz
     ```
 
 2. Decompress the installation package.
 
-    ```shell
+    ```bash
     tar zxvf gcc-12.3.1-2024.12-aarch64-linux.tar.gz
     ```
 
 3. Temporarily specify `libstdc++.so.6` of a later version only in the current terminal session. Do not replace the system library.
 
-    ```shell
+    ```bash
     export GCC_HOME=/home/gcc-12.3.1-2024.12-aarch64-linux
     export LD_LIBRARY_PATH=$GCC_HOME/lib64:$LD_LIBRARY_PATH
     ```
 
 4. Check whether the library used by the current session contains GLIBCXX_3.4.29. If any output is displayed, the requirement is met.
 
-    ```shell
+    ```bash
     strings $GCC_HOME/lib64/libstdc++.so.6 | grep GLIBCXX_3.4.29
     ```
 
@@ -128,7 +128,7 @@ The `libstdc++.so.6` version of the system is too early, and GLIBCXX_3.4.29 is m
 
 Address space layout randomization (ASLR) is a security technology against buffer overflow. It randomizes the layout of linear areas such as heap, stack, and shared library mapping to make it difficult for attackers to predict target addresses and directly locate code, thereby preventing overflow attacks.
 
-```shell
+```bash
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 

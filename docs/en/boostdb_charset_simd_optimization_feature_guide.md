@@ -54,7 +54,7 @@ The following uses Percona-Server 5.7.44-53 as an example to describe how to ins
 2. Add the collation configuration to the MySQL configuration file `/etc/my.cnf`.
     1. Open the `/etc/my.cnf` file.
 
-        ```shell
+        ```bash
         vi /etc/my.cnf
         ```
 
@@ -138,7 +138,7 @@ The following uses Percona-Server 5.7.44-53 as an example to describe how to ins
 
 Address space layout randomization (ASLR) is a security technology against buffer overflow. It randomizes the layout of linear areas such as heap, stack, and shared library mapping to make it difficult for attackers to predict target addresses and directly locate code, thereby preventing overflow attacks.
 
-```shell
+```bash
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 

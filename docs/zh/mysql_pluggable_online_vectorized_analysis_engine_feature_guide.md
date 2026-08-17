@@ -23,7 +23,7 @@ KAE（Kunpeng Accelerator Engine）是基于鲲鹏920处理器提供的硬件加
 
 **兼容性<a name="section65704516331"></a>**
 
-与其他特性兼容。关于MySQL特性之间的兼容性信息，请参见[特性之间的兼容性](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/appAccelFeatures/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html)。
+与其他特性兼容。关于MySQL特性之间的兼容性信息，请参见[特性之间的兼容性](https://www.hikunpeng.com/document/detail/zh/boostdb/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html)。
 
 ### 软件架构<a name="ZH-CN_TOPIC_0000002550183951"></a>
 
@@ -97,14 +97,14 @@ select语句每个元素项的支持情况如[**表 1** select语句的支持情
 |[STRAIGHT_JOIN]|优化器使用，不影响执行结果集。|该关键字作用于MySQL优化器，不影响KOVAE执行或判断。|
 |[SQL_SMALL_RESULT] [SQL_BIG_RESULT] [SQL_BUFFER_RESULT]|优化器使用，不影响执行结果集。|该关键字作用于MySQL优化器，不影响KOVAE执行或判断。|
 |[SQL_NO_CACHE] [SQL_CALC_FOUND_ROWS]|优化器使用，不影响执行结果集。|该关键字作用于MySQL优化器，不影响KOVAE执行或判断。|
-|select_expr [, select_expr] …|表示select列表的表达式。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[item类型的支持](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/appAccelFeatures/kovae/kunpengkovae_20_008.html)。|
+|select_expr [, select_expr] …|表示select列表的表达式。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[item类型的支持](#item支持列表)。|
 |[into_option]|表示将结果集写入到服务端文件中。|不支持，不是常用场景。|
 |[FROM table_references[PARTITION partition_list]]|表示SQL相关的表和JOIN的关系。|支持部分表访问类型，详细信息请参见[**表 3** 表访问类型的支持情况](#表访问类型的支持情况)。仅支持非临时表。仅支持InnoDB表。不支持全文索引。不支持分区表。|
-|[WHERE where_condition]|表示where条件的表达式。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[item类型的支持](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/appAccelFeatures/kovae/kunpengkovae_20_008.html)。|
-|[GROUP BY {col_name \| expr \| position}, ... [WITH ROLLUP]]|表示group by子句。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[item类型的支持](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/appAccelFeatures/kovae/kunpengkovae_20_008.html)。|
-|[HAVING where_condition]|表示having条件的表达式。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[item类型的支持](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/appAccelFeatures/kovae/kunpengkovae_20_008.html)。|
+|[WHERE where_condition]|表示where条件的表达式。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[item类型的支持](#item支持列表)。|
+|[GROUP BY {col_name \| expr \| position}, ... [WITH ROLLUP]]|表示group by子句。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[item类型的支持](#item支持列表)。|
+|[HAVING where_condition]|表示having条件的表达式。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[item类型的支持](#item支持列表)。|
 |[WINDOW window_name AS (window_spec) [, window_name AS (window_spec)] ...]|表示窗口函数。|不支持。|
-|[ORDER BY {col_name \| expr \| position}[ASC \| DESC], ... [WITH ROLLUP]]|表示order by子句。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[item类型的支持](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/appAccelFeatures/kovae/kunpengkovae_20_008.html)。|
+|[ORDER BY {col_name \| expr \| position}[ASC \| DESC], ... [WITH ROLLUP]]|表示order by子句。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[item类型的支持](#item支持列表)。|
 |[LIMIT {[offset,] row_count \| row_count OFFSET offset}]|表示limit子句。|支持。|
 |[into_option]|表示将结果集写入到服务端文件中。|不支持，不是常用场景。|
 |[FOR {UPDATE \| SHARE}[OF tbl_name [, tbl_name] ...]<br>[NOWAIT \| SKIP LOCKED]<br>\| LOCK IN SHARE MODE]|表示对查询的数据进行锁定读取。|不支持。|
@@ -358,7 +358,7 @@ MySQL 8.0.25编译安装方法，请参见《[MySQL 移植指南](https://www.hi
 |CMake|3.11.4（openEuler 22.03）|openEuler 22.03默认自带CMake 3.11.4|
 |GCC|7.3.0（openEuler 20.03）|[获取链接](https://mirrors.tuna.tsinghua.edu.cn/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.gz)|
 |GCC|10.3.1（openEuler 22.03）|openEuler 22.03默认自带GCC 10.3.1|
-|KAE|KAE1.0：使用kae1版本，仅支持内核版本为4.19的操作系统|[获取链接](https://gitee.com/kunpengcompute/KAE/tree/kae1/)|
+|KAE|KAE1.0：使用kae1版本，仅支持内核版本为4.19的操作系统|[获取链接](https://gitcode.com/boostkit/KAE/tree/kae1)|
 |KAE|KAE2.0：使用kae2版本，仅支持内核版本为5.10的操作系统|KAE2.0源码包中包含了KAEzip模块，可以选择一键安装KAE的所有模块，或者单独安装KAEzip。<br>[获取链接](https://gitcode.com/boostkit/KAE/tree/kae2)|
 |BoostKit_Kovae_1.0.0.zip|1.0.0|下载[BoostKit_Kovae_1.0.0.zip](https://kunpeng-repo.obs.cn-north-4.myhuaweicloud.com/Kunpeng%20BoostKit/Kunpeng%20BoostKit%2024.0.0/BoostKit_Kovae_1.0.0.zip)文件并解压，得到ha_kovae.so文件。<br>使用软件包前请先阅读《[鲲鹏应用使能套件BoostKit用户许可协议 2.0](https://www.hikunpeng.com/zh/developer/boostkit/software/protocol)》，如确认继续使用，则默认同意协议的条款和条件。|
 |MySQL|8.0.25|[获取链接](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.gz)
@@ -385,13 +385,13 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
 
 2. 创建软链接。
 
-    ```shell
+    ```bash
     ln -s /usr/local/kaezip/lib/libz.so.1.2.11 /usr/local/kaezip/lib/libzkae.so
     ```
 
 3. 设置动态库加载路径。
 
-    ```shell
+    ```bash
     export LD_LIBRARY_PATH=/usr/local/kaezip/lib:/usr/local/lib:$LD_LIBRARY_PATH
     ```
 
@@ -428,25 +428,25 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
     2. 复制完成后，使用SSH等终端工具登录服务器。
     3. 在SSH终端上执行如下命令，查看plugin\_dir目录下的ha\_kovae.so文件。
 
-        ```shell
+        ```bash
         ls /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
         ```
 
         返回ha\_kovae.so文件信息如下。
 
-        ```shell
+        ```bash
         /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
         ```
 
 5. 将ha\_kovae.so赋予可执行权限。
 
-    ```shell
+    ```bash
     chmod 755 /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
     ```
 
     查看已设置ha\_kovae.so文件的权限。
 
-    ```shell
+    ```bash
     ll /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
     ```
 
@@ -464,13 +464,13 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
     >为阻止缓冲区溢出攻击，建议使用ASLR（Address space layout randomization）技术，通过堆、栈、共享库映射等线性区布局的随机化，增加攻击者预测目的地址的难度，防止攻击者直接定位攻击代码位置。该技术可作用于堆、栈、内存映射区（mmap基址、shared libraries、vdso页）。
     >开启ASLR的命令如下：
 >
-    >```shell
+    >```bash
     >echo 2 > /proc/sys/kernel/randomize_va_space
     >```
 
     - 方法一：自动加载安装插件。在my.cnf文件中的\[mysqld\]配置段下增加配置行，此方式需要重启数据库后才能生效。例如：
 
-        ```shell
+        ```bash
         plugin-load-add=ha_kovae.so
         ```
 
@@ -478,7 +478,7 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
         1. 通过MySQL客户端登录MySQL服务。
         2. 安装ha\_kovae.so插件。
 
-            ```shell
+            ```bash
             install plugin kovae soname "ha_kovae.so";
             ```
 
@@ -496,7 +496,7 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
 
 1. 通过MySQL客户端登录MySQL服务。例如：
 
-    ```shell
+    ```bash
     mysql -uroot -p -S /data/mysql/run/mysql.sock
     ```
 
@@ -504,7 +504,7 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
 
 2. 在MySQL客户端执行如下语句，将目标表的第二引擎设置为KOVAE。每个表只需操作一次，重启MySQL服务后不需要重新设置。t1为目标表的名称，请根据实际情况填写。
 
-    ```shell
+    ```bash
     ALTER TABLE t1 SECONDARY_ENGINE = kovae;
     ```
 
@@ -706,7 +706,7 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
 
 4. 执行如下语句，卸载KOVAE。
 
-    ```shell
+    ```bash
     uninstall plugin kovae;
     ```
 
@@ -1203,7 +1203,7 @@ performance_schema_events_waits_history_long_size=1048576
 
 若查询锁等待事件发现返回结果包含某些预期不产生的等待事件，则可能是由于events\_waits\_history\_long表中包含了历史SQL的等待事件记录。可执行如下命令，以清除历史SQL产生的等待事件记录，然后重新执行SQL、查询等待事件。
 
-```shell
+```bash
 TRUNCATE table performance_schema.events_waits_history_long;
 ```
 
@@ -1223,7 +1223,7 @@ PFS中其他性能事件记录与锁等待事件类似，可通过对相应表�
 
 1. 执行如下语句可以修改限制。
 
-    ```shell
+    ```bash
     ulimit -SHn 1000000000
     ```
 

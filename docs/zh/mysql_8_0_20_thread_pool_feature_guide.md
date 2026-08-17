@@ -57,7 +57,7 @@
 
 1. 下载和解压MySQL 8.0.20源码包，并进入MySQL源码目录。
 
-    ```shell
+    ```bash
     cd /home
     wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.20.tar.gz --no-check-certificate
     tar -zxvf mysql-boost-8.0.20.tar.gz
@@ -69,7 +69,7 @@
 
 2. 在源码根目录，使用git初始化命令来建立git管理信息。
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -78,27 +78,27 @@
     >![](public_sys-resources/icon_note.gif) **说明：** 
     >- 一般情况下，系统自带git，若需要安装git，请先参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中配置Yum源相关内容，再执行如下命令安装git。
 >
-    > ```shell
+    > ```bash
     > yum install git
     >    ```
 >
     >- 若未配置git的提交用户信息，git commit前需要先配置用户邮件及用户名称信息。
 >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
 
 3. 下载并解压补丁文件，并上传至MySQL源码的根目录。
 
-    ```shell
+    ```bash
     wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip --no-check-certificate
     unzip boostdb-patch-release-20260330.zip
     ```
 
 4. 查看提交之后是否有内容修改。
 
-    ```shell
+    ```bash
     git status
     ```
 
@@ -141,7 +141,7 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
 
 - 通过命令行指定参数的方式。例如：
 
-    ```shell
+    ```bash
     mysqld --thread_handling=pool-of-threads
     ```
 
