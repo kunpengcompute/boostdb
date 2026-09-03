@@ -6,7 +6,7 @@ This document describes how to integrate the patch package of the MySQL KAEzstd 
 
 MySQL is a relational database management system \(RDBMS\) developed by the Swedish company MySQL AB. It is a popular RDBMS in the industry, especially in web applications. Relational databases deliver high efficiency and flexibility because data is stored in different tables instead of in a large data warehouse. MySQL is optimal for small- and medium-sized websites thanks to its small size, fast speed, low cost, and especially the open source code. It uses the Structured Query Language \(SQL\), the most common standard language for accessing databases. Adopting dual-licensing distribution, MySQL is available in community and commercial editions. For more information, visit  [MySQL official website](https://www.mysql.com/).
 
-KAEzstd is the compression module of Kunpeng Accelerator Engine \(KAE\). It uses the Kunpeng hardware acceleration module to implement the lz77\_zstd algorithm and provides the standard zstd library interface. KAE can improve application performance in different scenarios and significantly enhances compression efficiency. For more information, see  [Kunpeng Accelerator Engine Development Guide \(KAEzip\)](https://support.huawei.com/enterprise/en/doc/EDOC1100433049).
+KAEzstd is the compression module of Kunpeng Accelerator Engine \(KAE\). It uses the Kunpeng hardware acceleration module to implement the lz77\_zstd algorithm and provides the standard zstd library interface. KAE can improve application performance in different scenarios and significantly enhances compression efficiency. For more information, see  [KAE Kunpeng Accelerator Engine](https://www.hikunpeng.com/document/detail/zh/kunpengaccel/kae/kae/README.md).
 
 MySQL transparent page compression is a data compression technology provided by the MySQL InnoDB storage engine. It can compress data at the page level to save drive space. This technology is employed by the MySQL KAEzstd page compression and decompression optimization feature, which uses KAEzstd of KAE to compress data pages, reducing drive usage. For example, in sysbench tests, 64 10-million-row tables are used to test the feature. After the MySQL KAEzstd page compression and decompression optimization solution is applied, the drive usage is reduced by about half. In addition, the transactions per second \(TPS\) deteriorate by no more than 15% in high-concurrency and heavy-load scenarios.
 
@@ -107,7 +107,7 @@ Obtain the MySQL source code, integrate the patch package of the MySQL KAEzstd p
 
 Install, enable, and verify KAEzstd in MySQL, and use sysbench to assess the storage performance optimization effect before and after KAEzstd is enabled.
 
-1. Install KAEzstd. Follow instructions in  [Kunpeng Accelerator Engine Developer Guide \(KAEzip\)](https://support.huawei.com/enterprise/en/doc/EDOC1100433049). Before installing KAEzstd, prepare for the installation such as preparing the installation environment and obtaining the KAE license.
+1. Install KAEzstd. Follow instructions in  [KAE Kunpeng Accelerator Engine](https://www.hikunpeng.com/document/detail/zh/kunpengaccel/kae/kae/README.md). Before installing KAEzstd, prepare for the installation such as preparing the installation environment and obtaining the KAE license.
 2. Enable KAEzstd.
     1. Configure the environment variable  **LD\_LIBRARY\_PATH**  so that the MySQL database can find and use the KAEzstd library during running.
 

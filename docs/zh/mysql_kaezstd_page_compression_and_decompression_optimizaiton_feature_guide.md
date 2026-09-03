@@ -6,7 +6,7 @@
 
 MySQL是一个关系型数据库管理系统，由瑞典MySQL AB公司开发，是业界最流行的RDBMS（Relational Database Management System）之一，尤其在Web应用方面。关系型数据库是将数据保存在不同的表中，而非将所有数据放在一个大仓库内，这样就加快了速度并提高了灵活性。由于其体积小、速度快、总体拥有成本低，尤其是开放源码这一特点，一般中小型网站的开发都选择MySQL作为网站数据库。MySQL所使用的SQL语言是用于访问数据库的最常用标准化语言。MySQL软件采用了双授权模式，分为社区版和商业版。关于MySQL的更多信息请访问[<u>MySQL官网</u>](https://www.mysql.com/)。
 
-KAEZstd是鲲鹏加速引擎KAE（Kunpeng Accelerator Engine）的压缩模块，使用鲲鹏硬加速模块实现lz77\_zstd算法，提供ZSTD库标准接口。通过加速引擎可以实现不同场景下应用性能的提升，压缩效率有显著提升。关于KAEZstd的更多详细信息，请参见《[<u>鲲鹏加速引擎 开发指南（KAEzip）</u>](https://support.huawei.com/enterprise/zh/doc/EDOC1100433052)》。
+KAEZstd是鲲鹏加速引擎KAE（Kunpeng Accelerator Engine）的压缩模块，使用鲲鹏硬加速模块实现lz77\_zstd算法，提供ZSTD库标准接口。通过加速引擎可以实现不同场景下应用性能的提升，压缩效率有显著提升。关于KAEZstd的更多详细信息，请参见《[<u>KAE鲲鹏加速引擎<u>](https://www.hikunpeng.com/document/detail/zh/kunpengaccel/kae/kae/README.md)》。
 
 MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术，它能够在页面级别对数据进行压缩，从而节省磁盘空间。在MySQL KAEZstd页压缩解压缩优化特性中，MySQL透明页压缩利用鲲鹏加速引擎中的KAEZstd来压缩数据页，从而有效节省磁盘空间。以Sysbench测试场景下测试64张1000万行表为例，使用MySQL KAEZstd页压缩解压缩优化特性方案后，减少大约一半的磁盘占用空间，并且在高负载并发的情况下，TPS（Transactions Per Second）劣化程度不超过15%。
 
@@ -101,7 +101,7 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
 
 安装、使能并验证KAEZstd在MySQL中的使用，以及通过Sysbench测试评估使能KAEZstd前后的存储优化效果和性能影响。
 
-1. 安装KAEZstd。详细操作步骤请参见《[鲲鹏加速引擎开发指南（KAEzip）](https://support.huawei.com/enterprise/zh/doc/EDOC1100433052)》，请严格按照该文档的操作指导，先完成安装前准备（准备安装环境和获取KAE的License），再安装KAEZstd。
+1. 安装KAEZstd。详细操作步骤请参见《[KAE鲲鹏加速引擎](https://www.hikunpeng.com/document/detail/zh/kunpengaccel/kae/kae/README.md)》，请严格按照该文档的操作指导，先完成安装前准备（准备安装环境和获取KAE的License），再安装KAEZstd。
 2. 使能KAEZstd。
     1. 执行如下命令设置环境变量**LD\_LIBRARY\_PATH**，以便MySQL数据库在运行时能够找到并使用KAEZstd库。
 
