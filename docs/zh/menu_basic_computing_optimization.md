@@ -10,3 +10,4 @@
 - [MySQL表锁队列检查优化 特性指南](./mysql_table_lock_queue_check_optimization_feature_guide.md)
 - [MySQL Read View版本跟踪优化 特性指南](./mysql_readview_version_tracking_optimization_feature_guide.md)
 - [MySQL KAEzstd页压缩解压缩优化 特性指南](./mysql_kaezstd_page_compression_and_decompression_optimizaiton_feature_guide.md)
+- [MySQL Plan Cache特性指南](./boostdb_plan_cache_optimization_feature_guide.md)

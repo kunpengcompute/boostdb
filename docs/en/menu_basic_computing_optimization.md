@@ -21,3 +21,5 @@
 - [MySQL ReadView Version Tracking Feature Guide](./mysql_readview_version_tracking_optimization_feature_guide.md)
 
 - [MySQL KAEZstd Page Compression and Decompression Optimization Feature Guide](./mysql_kaezstd_page_compression_and_decompression_optimization_feature_guide.md)
+
+- [MySQL Plan Cache Feature Guide](./boostdb_plan_cache_optimization_feature_guide.md)
