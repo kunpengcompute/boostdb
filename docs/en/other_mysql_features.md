@@ -1,10 +1,12 @@
 # Other MySQL Features
 
+<!-- md-trans-meta sourceCommit=89a5feea132c67495433ed3d65133a52ddc08216 translatedAt=2026-08-03T06:48:26.554Z pushedAt=2026-08-05T08:55:59.329Z -->
+
 ## hash_table_locks Tuning<a name="EN-US_TOPIC_0000002550145295"></a>
 
 ### Principles<a name="EN-US_TOPIC_0000002518545550"></a>
 
-In the case of high throughput, `rw_lock_s_lock_func` contention is caused by `Buf_fetch_normal::get` in MySQL. The key calling path is `buf_page_get_gen`->`Buf_fetch::single_page`->`Buf_fetch_normal::get`. `Buf_fetch_normal::get` obtains the pointer to the data block of the target data page in the buffer pool. That is, obtain `buf_block_t*` by querying `space_id` and `page_no` to read and write the page content. The mapping is maintained by a hash table called `page_hash` and protected by `hash_table_locks`. The contention on `rw_lock_s_lock_func` is caused by adding read locks using `hash_table_locks`.
+In the case of high throughput, `rw_lock_s_lock_func` contention is caused by `Buf_fetch_normal::get` in MySQL. The key calling path is `buf_page_get_gen` -> `Buf_fetch::single_page` -> `Buf_fetch_normal::get`. `Buf_fetch_normal::get` obtains the pointer to the data block of the target data page in the buffer pool. That is, obtain `buf_block_t*` by querying `space_id` and `page_no` to read and write the page content. The mapping is maintained by a hash table called `page_hash` and protected by `hash_table_locks`. The contention on `rw_lock_s_lock_func` is caused by adding read locks using `hash_table_locks`.
 
 ![](figures/420.png)
 
@@ -21,7 +23,7 @@ Fix vulnerabilities as soon as possible based on the Common Vulnerabilities and 
 
 **Application Scenarios<a name="section14995152615441"></a>**
 
-In an OLTP workload, no matter whether a read or write operation (select, update, insert, or delete) is performed, a data page mapping table needs to be accessed to quickly locate the target data page, and `hash_table_locks` in MySQL is involved. If the Performance Schema shows that there is contention on `hash_table_locks` while the CPU usage is high, this feature can be used to alleviate resource contention and improve the system throughput.
+In an OLTP workload, no matter whether a read or write operation (SELECT, UPDATE, INSERT, or DELETE) is performed, a data page mapping table needs to be accessed to quickly locate the target data page, and `hash_table_locks` in MySQL is involved. If the Performance Schema shows that there is contention on `hash_table_locks` while the CPU usage is high, this feature can be used to alleviate resource contention and improve the system throughput.
 
 After the patch is applied, recompile the MySQL database and configure system variables for the patch to take effect. For details, see [Adding System Variables](#section1982871514452).
 
@@ -31,49 +33,51 @@ The MySQL hash_table_locks tuning feature is provided as a patch file. This patc
 
 1. Download the [MySQL 8.0.20 source code](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.20.tar.gz), upload it to the `/home` directory on the server and decompress it, and then go to the root directory of the MySQL source code.
 
-    ```bash
+    ```shell
     cd /home
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
     ```
 
-2. Download the [hash_table_locks tuning patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip) and upload it to the root directory of the MySQL source code.
+2. Download the [hash_table_locks optimization patch file](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip), decompress the package, and upload `0001-HASH-TABLE-LOCKS-OPT.patch` to the root directory of the MySQL source code.
+
 3. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```bash
+    ```shell
     git init
     git add -A
     git commit -m "Initial commit"
     ```
 
-    >![](./public_sys-resources/icon_note.gif) **NOTE:**
+    >![](public_sys-resources/icon_note.gif) **NOTE**
     >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
-    >
-    > ```bash
+>
+    > ```shell
     > yum install git
     >    ```
-    >
+>
     >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
-    >
-    > ```bash
+>
+    > ```shell
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
 
 4. Apply the hash_table_locks tuning patch.
 
-    ```bash
+    ```shell
     git am --quiet --whitespace=nowarn 0001-HASH-TABLE-LOCKS-OPT.patch
     ```
 
     If no error information is displayed, the patch is successfully applied.
 
 5. Compile and install the MySQL source code. For details, see [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html).
+
 6. After recompiling MySQL, configure system variables in the configuration file or boot parameters or during system running for the recompilation to take effect. For details, see [Adding System Variables](#section1982871514452).
 
 **Adding System Variables<a name="section1982871514452" id="section1982871514452"></a>**
 
-This feature adds a static system variable `page_hash_locks` to allow you to configure the number of hash_table_locks shards as required. The maximum value of `page_hash_locks` is `1048576`, and the default value is `16`. A larger value alleviates better the contention on `hash_table_locks` but consumes more memory resources. It is recommended that the value be no more than `1024`.
+This feature adds a static system variable `page_hash_locks` to allow you to configure the number of `hash_table_locks` shards as required. The maximum value of `page_hash_locks` is `1048576`, and the default value is `16`. A larger value better alleviates the contention on `hash_table_locks` but consumes more memory resources. It is recommended that the value be no more than `1024`.
 
 ![](figures/422.png)
 
@@ -83,14 +87,16 @@ This feature adds a static system variable `page_hash_locks` to allow you to con
 
 ### Principles<a name="EN-US_TOPIC_0000002550185303"></a>
 
-When an undo tablespace truncation occurs in the MySQL database and the target undo tablespace is large, `undo_spaces_lock` is contended for.
+When an undo tablespace truncation occurs in the MySQL database and the target undo tablespace is large, `undo_spaces_lock` is contended for, as shown below.
 
 ![](figures/424.png)
 
 `undo_spaces_lock` protects concurrent access to the following data:
 
 - undo::spaces::m_spaces
+
 - undo::space_id_bank
+
 - undo truncation log
 
 When the purge coordinator thread holds the `undo_spaces_lock` write lock, the DML foreground thread is blocked. The system throughput decreases.
@@ -107,7 +113,7 @@ The tuning idea of this feature is as follows: After the purge coordinator obtai
 
 ### Usage Description<a name="EN-US_TOPIC_0000002518545546"></a>
 
-Fix vulnerabilities as soon as possible based on the Common Vulnerabilities and Exposures (CVE) of MySQL 8.0.20 on the official website.
+Fix vulnerabilities as soon as possible based on the CVE of MySQL 8.0.20 on the official website.
 
 **Application Scenarios<a name="section4599204444318"></a>**
 
@@ -119,14 +125,14 @@ After the patch is applied, recompile the MySQL database and configure system va
 
 The MySQL undo_spaces_lock tuning feature is provided as a patch file. This patch is developed based on MySQL 8.0.20 and is open-sourced in the Gitee community. Before using this feature, apply the patch to the MySQL source code, and then compile and install MySQL. The detailed procedure is as follows:
 
->![](./public_sys-resources/icon_note.gif) **NOTE:**
+>![](public_sys-resources/icon_note.gif) **NOTE:**
 >
->- The feature used for optimization is provided in a patch. Apply the patch in the MySQL source code, and then compile and install the MySQL database.
+>- The optimization feature is provided in a patch. Apply the patch in the MySQL source code, and then compile and install the MySQL database.
 >- The patch is developed for MySQL 8.0.20.
 
 1. Download the [MySQL 8.0.20 source code](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.20.tar.gz), upload it to the `/home` directory on the server and decompress it, and then go to the root directory of the MySQL source code.
 
-    ```bash
+    ```shell
     cd /home
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
@@ -134,37 +140,38 @@ The MySQL undo_spaces_lock tuning feature is provided as a patch file. This patc
 
 2. Decompress the source package and go to the MySQL source code directory.
 
-    ```bash
+    ```shell
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
     ```
 
 3. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```bash
+    ```shell
     git init
     git add -A
     git commit -m "Initial commit"
     ```
 
-    >![](./public_sys-resources/icon_note.gif) **NOTE:**
+    >![](public_sys-resources/icon_note.gif) **NOTE:**
     >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
-    >
-    > ```bash
+>
+    > ```shell
     > yum install git
     >    ```
-    >
+>
     >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
-    >
-    > ```bash
+>
+    > ```shell
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
 
 4. Apply the patch.
-    - If this feature is not used together with the [MySQL NUMA scheduling tuning](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/numastf/kunpengdbsmysqlnuma_20_0001.html) feature, download the [undo_spaces_lock tuning patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip), place it to the root directory of the MySQL source code, and run the following command to make the patch take effect:
 
-        ```bash
+    - If this feature is not used together with the [MySQL NUMA scheduling tuning](https://www.hikunpeng.com/document/detail/en/boostdb/mysql/basic_computation_opt/docs/en/mysql_numa_schedule_optimization_feature_guide.md) feature, download the [undo_spaces_lock tuning patch file](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip), decompress the package, and place `0001-UNDO-SPACES-LOCK-OPT.patch` in the root directory of the MySQL source code. Then, run the following command to make the patch take effect.
+
+        ```shell
         git am --quiet --whitespace=nowarn 0001-UNDO-SPACES-LOCK-OPT.patch
         ```
 
@@ -172,9 +179,9 @@ The MySQL undo_spaces_lock tuning feature is provided as a patch file. This patc
 
     - If this feature needs to be used together with the MySQL NUMA scheduling tuning feature, the MySQL NUMA scheduling tuning feature must be incorporated before this feature.
 
-        Download the [NUMA scheduling feature patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip) and [undo_spaces_lock tuning patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip), and place them to the root directory of the MySQL source code. Then run the following command to make the patches take effect:
+        Download the [patch files for NUMA scheduling tuning and undo_spaces_lock tuning](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip), decompress the package, and place `0001-SCHED-AFFINITY.patch` and `0002-UNDO-SPACES-LOCK-OPT.AFTER-SCHED-AFFINITY.patch` in the root directory of the MySQL source code. Then, run the following command to make the patches take effect.
 
-        ```bash
+        ```shell
         git am --quiet --whitespace=nowarn 0001-SCHED-AFFINITY.patch 0002-UNDO-SPACES-LOCK-OPT.AFTER-SCHED-AFFINITY.patch
         ```
 
@@ -199,11 +206,14 @@ Three InnoDB monitors are added to facilitate `innodb_undo_spaces_snapshot_ticke
 `innodb_undo_spaces_snapshot_tickets` controls the maximum number of times that the undo tablespaces snapshot generated during a single undo tablespace truncation process can be queried. For example, to alleviate the contention on `undo_spaces_lock`, set `innodb_undo_spaces_snapshot_tickets` to a large value, for example, `100000`, run the load again, and observe the InnoDB monitors.
 
 - `undo_truncate_snapshot_ticket_grant_count` indicates the number of times that the DML thread successfully reads the snapshot. This many transactions would be blocked by the purge coordinator before tuning.
+
 - `undo_truncate_snapshot_ticket_try_count` indicates the contention status when multiple DML threads read the snapshot. In most cases, the value of `undo_truncate_snapshot_ticket_try_count` is equal to or slightly greater than that of `undo_truncate_snapshot_ticket_grant_count`, indicating no contention.
+
 - If the value of `undo_truncate_snapshot_ticket_wait_count` is small (close to 0) in most cases, the time in the critical region of the purge coordinator is not affected. In this case, if the value of `undo_truncate_snapshot_ticket_grant_count` is close to that of `innodb_undo_spaces_snapshot_tickets`, increase the value of `innodb_undo_spaces_snapshot_tickets`.
+
 - If the value of `undo_truncate_snapshot_ticket_wait_count` is large (over 1,000 in this example), decrease the value of `innodb_undo_spaces_snapshot_tickets` to balance the gains of the DML thread and the consumption of the purge coordinator.
 
-## Thread Counter Tuning<a name="EN-US_TOPIC_0000002550185301"></a>
+## Thread Counter Tuning<a id="EN-US_TOPIC_0000002550185301"></a>
 
 ### Principles<a name="EN-US_TOPIC_0000002518545548"></a>
 
@@ -234,7 +244,7 @@ In the previous counting and query process, the number of running threads is inc
 
 ### Usage Description<a name="EN-US_TOPIC_0000002518705456"></a>
 
-Fix vulnerabilities as soon as possible based on the Common Vulnerabilities and Exposures (CVE) of MySQL 8.0.20 on the official website.
+Fix vulnerabilities as soon as possible based on the CVE of MySQL 8.0.20 on the official website.
 
 **Application Scenarios<a name="section4599204444318"></a>**
 
@@ -246,7 +256,7 @@ The MySQL thread counter tuning feature is provided as a patch file. This patch 
 
 1. Download the [MySQL 8.0.20 source code](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.20.tar.gz), upload it to the `/home` directory on the server and decompress it, and then go to the root directory of the MySQL source code.
 
-    ```bash
+    ```shell
     cd /home
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
@@ -254,35 +264,31 @@ The MySQL thread counter tuning feature is provided as a patch file. This patch 
 
 2. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```bash
+    ```shell
     git init
     git add -A
     git commit -m "Initial commit"
     ```
 
-    >![](./public_sys-resources/icon_note.gif) **NOTE:**
+    >![](public_sys-resources/icon_note.gif) **NOTE:**
     >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
     >
-    > ```bash
+    > ```shell
     > yum install git
     >    ```
     >
     >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
     >
-    > ```bash
+    > ```shell
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
 
-3. Download the MySQL thread counter tuning patch and upload it to the root directory of the MySQL source code.
-
-    ```bash
-    wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip --no-check-certificate
-    ```
+3. Download the [thread counter patch file](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip), decompress the package, and upload `0001-THREAD_COUNTER_OPT.patch` to the root directory of MySQL source code.
 
 4. Query the status of the local Git.
 
-    ```bash
+    ```shell
     git status
     ```
 
@@ -300,7 +306,7 @@ The MySQL thread counter tuning feature is provided as a patch file. This patch 
 
 5. Check whether the patch file conflicts with the MySQL source code.
 
-    ```bash
+    ```shell
     dos2unix 0001-THREAD_COUNTER_OPT.patch
     git apply --check 0001-THREAD_COUNTER_OPT.patch
     ```
@@ -309,7 +315,7 @@ The MySQL thread counter tuning feature is provided as a patch file. This patch 
 
 6. Apply the thread counter patch file.
 
-    ```bash
+    ```shell
     git apply --whitespace=nowarn 0001-THREAD_COUNTER_OPT.patch
     ```
 
@@ -321,6 +327,6 @@ The MySQL thread counter tuning feature is provided as a patch file. This patch 
 
 |Date|Description|
 |--|--|
-|2023-07-25|This issue is the third official release. Optimized the operation procedure in the "Usage Description" section of each feature.|
-|2021-12-30|This issue is the second official release. Added section "Thread Counter Tuning".|
-|2020-07-13|This issue is the first official release.|
+|2023-07-25|This is the third official release. Optimized the operation procedure in the "Usage Description" section of each feature.|
+|2021-12-30|This is the second official release. Added [Thread Counter Tuning](#EN-US_TOPIC_0000002550185301).|
+|2020-07-13|This is the first official release.|
