@@ -76,7 +76,7 @@ For details about the function configuration, see [Parameters](#parameters).
 
 2. Use the `root` account to log in to the server, and download and decompress the MySQL 5.7.27 source package.
 
-    ```shell
+    ```bash
     cd /home
     wget https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-boost-5.7.27.tar.gz --no-check-certificate
     tar -zxvf mysql-boost-5.7.27.tar.gz
@@ -88,7 +88,7 @@ For details about the function configuration, see [Parameters](#parameters).
 
 3. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -98,27 +98,27 @@ For details about the function configuration, see [Parameters](#parameters).
     >- If an error is reported when you run the `git add -A` command, run the `git config --global --add safe.directory /home/mysql-5.7.27` command as prompted.
     >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
 >
-    > ```shell
+    > ```bash
     > yum install git
     >    ```
 >
     >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
 >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
 
 4. Download and decompress the patch file.
 
-    ```shell
+    ```bash
     wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip --no-check-certificate
     unzip boostdb-patch-release-20260330.zip
     ```
 
 5. Check whether the content is modified.
 
-    ```shell
+    ```bash
     git status
     ```
 
@@ -135,7 +135,7 @@ For details about the function configuration, see [Parameters](#parameters).
 
 6. Apply the patch file.
 
-    ```shell
+    ```bash
     git apply --check boostdb-patch-release-20260330/0001-THREAD_POOL_5.patch
     git apply --whitespace=nowarn boostdb-patch-release-20260330/0001-THREAD_POOL_5.patch
     ```
@@ -154,7 +154,7 @@ There are two ways to use configuration parameters:
 
 - CLI, for example:
 
-    ```shell
+    ```bash
     mysqld --thread_handling=pool-of-threads
     ```
 
@@ -384,20 +384,20 @@ This parameter is used to specify an extra port to listen on. The specified port
 
 Run the following command to connect to the extra port (similar to the method of using the `port` parameter, whose value defaults to `3306`):
 
-```shell
+```bash
 mysql --port='extra-port-number' --protocol=tcp
 ```
 
 >![](public_sys-resources/icon_note.gif) **NOTE:**
 >If this parameter is set to `0` and new connections cannot be established because all worker threads are busy or locked when the thread pool feature is enabled, you can use the local connection for access on the system where the MySQL service is running.
 >
->```shell
+>```bash
 >mysql -uroot -S xxxxx.sock -p
 >```
 >
 >Or
 >
->```shell
+>```bash
 >mysql -uroot -h localhost -P3306 -p
 >```
 

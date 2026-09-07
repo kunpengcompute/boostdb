@@ -24,7 +24,7 @@ In the Kunpeng processor, the CRC32 instruction optimization feature uses Kunpen
 
 Run the following command to check whether the CPU supports CRC32 hardware instructions:
 
-```shell
+```bash
 cat /proc/cpuinfo
 ```
 
@@ -92,7 +92,7 @@ The CRC32 instruction optimization feature is provided as a patch file for MySQL
 
 3. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -101,20 +101,20 @@ The CRC32 instruction optimization feature is provided as a patch file for MySQL
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
     >
-    > ```shell
+    > ```bash
     > yum install git
     >    ```
     >
     >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
     >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
 
 4. Run the following commands in the MySQL installation directory to apply the patch file of the CRC32 instruction optimization feature:
 
-    ```shell
+    ```bash
     # View patch file statistics.
     git apply --stat 0001-CRC32-AARCH64.patch
     # Check whether the patch file can be successfully applied to the current code repository.
@@ -129,7 +129,7 @@ The CRC32 instruction optimization feature is provided as a patch file for MySQL
 
 6. Run the following command. If crc32cb disassembly information in the figure is displayed, the CRC32 instruction optimization feature is successfully enabled.
 
-    ```shell
+    ```bash
     objdump -d ./bin/mysqld | grep crc32cb
     ```
 

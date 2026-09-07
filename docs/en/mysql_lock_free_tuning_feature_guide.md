@@ -92,7 +92,7 @@ The MySQL lock-free tuning feature is provided as a patch file. This patch is de
 
 1. Download the [MySQL 8.0.20 source code](https://github.com/mysql/mysql-server/archive/mysql-8.0.20.tar.gz), upload it to the `/home` directory on the server and decompress it, and then go to the root directory of the MySQL source code.
 
-    ```shell
+    ```bash
     cd /home
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
@@ -102,7 +102,7 @@ The MySQL lock-free tuning feature is provided as a patch file. This patch is de
 
 3. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -111,13 +111,13 @@ The MySQL lock-free tuning feature is provided as a patch file. This patch is de
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
     >
-    > ```shell
+    > ```bash
     > yum install git
     >    ```
     >
     >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
     >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
@@ -126,7 +126,7 @@ The MySQL lock-free tuning feature is provided as a patch file. This patch is de
 
 5. If dos2unix is not installed, run the following command to install it:
 
-    ```shell
+    ```bash
     yum install dos2unix
     ```
 
@@ -136,7 +136,7 @@ The MySQL lock-free tuning feature is provided as a patch file. This patch is de
 
     Make the fine-grained lock tuning patch and lock-free tuning patch take effect.
 
-    ```shell
+    ```bash
     dos2unix 0001-SHARDED-LOCK-SYS.patch
     git apply --check 0001-SHARDED-LOCK-SYS.patch
     git apply --whitespace=nowarn 0001-SHARDED-LOCK-SYS.patch

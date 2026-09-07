@@ -149,7 +149,7 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
 
     For MySQL 8.0.25, run the following commands:
 
-    ```shell
+    ```bash
     cd /home
     tar -zxvf mysql-boost-8.0.25.tar.gz
     cd mysql-8.0.25
@@ -157,7 +157,7 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
 
     For MySQL 8.0.30, run the following commands:
 
-    ```shell
+    ```bash
     cd /home
     tar -zxvf mysql-boost-8.0.30.tar.gz
     cd mysql-8.0.30
@@ -165,7 +165,7 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
 
     For MySQL 8.0.35, run the following commands:
 
-    ```shell
+    ```bash
     cd /home
     tar -zxvf mysql-boost-8.0.35.tar.gz
     cd mysql-8.0.35
@@ -175,28 +175,28 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
     >You can also run the following commands to download the MySQL source code.
     >For MySQL 8.0.25:
 >
-    >```shell
+    >```bash
     >wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.25.tar.gz --no-check-certificate
     >tar -zxvf mysql-boost-8.0.25.tar.gz
     >```
 >
     >For MySQL 8.0.30:
 >
-    >```shell
+    >```bash
     >wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.30.tar.gz --no-check-certificate
     >tar -zxvf mysql-boost-8.0.30.tar.gz
     >```
 >
     >For MySQL 8.0.35:
 >
-    >```shell
+    >```bash
     >wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.35.tar.gz --no-check-certificate
     >tar -zxvf mysql-boost-8.0.35.tar.gz
     >```
 
 2. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -205,13 +205,13 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
 >
-    > ```shell
+    > ```bash
     > yum install git
     >    ```
 >
     >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
 >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
@@ -221,14 +221,14 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >You can also run the following commands to download the MySQL thread pool feature patch.
 >
-    >```shell
+    >```bash
     >wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip --no-check-certificate
     >unzip boostdb-patch-release-20260330.zip
     >```
 
 4. Check whether the content is modified.
 
-    ```shell
+    ```bash
     git status
     ```
 
@@ -246,14 +246,14 @@ This document provides guidance based on the Kunpeng server and openEuler OS. Th
 
 5. Apply the patch file.
 
-    ```shell
+    ```bash
     git apply --check boostdb-patch-release-20260330/code-threadpool-for-MySQL-8.0.patch
     git apply --whitespace=nowarn boostdb-patch-release-20260330/code-threadpool-for-MySQL-8.0.patch
     ```
 
 6. After the patch file is successfully applied, you can check the new `thread_pool` directory and the new source code files in the `mysql-8.0.25`, `mysql-8.0.30`, or `mysql-8.0.35` directory.
 
-    ```shell
+    ```bash
     ll ./plugin/thread_pool/
     ```
 
@@ -304,13 +304,13 @@ MySQL parameters are also called system variables, which are used to set service
         >![](public_sys-resources/icon_notice.gif) **NOTICE:**
         >After installing the thread pool plugin in this method, restart the database for the installation to take effect.
 
-        ```shell
+        ```bash
         plugin-load-add=thread_pool.so
         ```
 
         After the installation is complete, you can run the following SQL statement to check whether the installation is successful:
 
-        ```shell
+        ```bash
         show plugins;
         ```
 
@@ -323,7 +323,7 @@ MySQL parameters are also called system variables, which are used to set service
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >The default path to the database configuration file is `/etc/my.cnf`. If you want to use a configuration file in another path, you can use the `--defaults-file` option to specify the configuration file, for example, `/tmp/myconfig.txt`.
 >
-    >```shell
+    >```bash
     >mysqld --defaults-file=/tmp/myconfig.txt
     >```
 
@@ -350,7 +350,7 @@ MySQL parameters are also called system variables, which are used to set service
 
     - Method 1: Run the `UNINSTALL` command.
 
-        ```shell
+        ```bash
         UNINSTALL PLUGIN THREAD_POOL_GROUPS;
         UNINSTALL PLUGIN THREAD_POOL_QUEUES;
         UNINSTALL PLUGIN THREAD_POOL_STATS;
@@ -367,13 +367,13 @@ MySQL parameters are also called system variables, which are used to set service
         >![](public_sys-resources/icon_notice.gif) **NOTICE:**
         >After uninstalling the thread pool plugin in this method, restart the database for the uninstallation to take effect.
 
-        ```shell
+        ```bash
         plugin-load-add=thread_pool.so
         ```
 
 2. Check whether the thread pool plugin has been successfully uninstalled:
 
-    ```shell
+    ```bash
     show plugins;
     ```
 

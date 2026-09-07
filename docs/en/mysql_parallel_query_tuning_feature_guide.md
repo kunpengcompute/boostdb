@@ -22,7 +22,7 @@ In addition to single tables, simple parallel query of multiple tables is allowe
 
 - Single-table trustlist:
 
-    ```shell
+    ```bash
     select {<Column_name>| Aggregate } from table where {=|>| < |>= |<= |like |between…and| in} group by {<Column_name>} having {<Column_name>}order by {<Column_name>| Aggregate } limit x
     ```
 
@@ -32,7 +32,7 @@ In addition to single tables, simple parallel query of multiple tables is allowe
 
 - Multi-table trustlist:
 
-    ```shell
+    ```bash
     select {<Column_name>| Aggregate } from table1 table2 …  where {=|>| < |>= |<= |like |between…and| in} group by {<Column_name>} having {<Column_name>}order by {<Column_name>} limit x
     ```
 
@@ -133,14 +133,14 @@ The detailed procedure is as follows:
 
 3. Decompress the source package and go to the MySQL source code directory.
 
-    ```shell
+    ```bash
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
     ```
 
 4. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```shell
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
@@ -149,20 +149,20 @@ The detailed procedure is as follows:
     >![](public_sys-resources/icon_note.gif) **NOTE**
     >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengdbs_02_0002.html) and then install Git.
 >
-    > ```shell
+    > ```bash
     > yum install git
     >    ```
 >
     >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
 >
-    > ```shell
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
 
 5. Apply the patches of the MySQL parallel query tuning feature.
 
-    ```shell
+    ```bash
     git apply --whitespace=nowarn -p1 < mtr-pq.patch
     git apply  --whitespace=nowarn -p1 < code-pq.patch
     ```
