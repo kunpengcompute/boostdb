@@ -1,5 +1,7 @@
 # MySQL 8.0.20 Thread Pool Feature Guide
 
+<!-- md-trans-meta sourceCommit=c3a1e9ac928170720f87d62a7d1444823b964e37 translatedAt=2026-08-03T06:47:21.990Z pushedAt=2026-08-06T03:00:21.788Z -->
+
 ## Introduction<a name="EN-US_TOPIC_0000002550142771"></a>
 
 ### Overview<a name="EN-US_TOPIC_0000002550182787"></a>
@@ -9,14 +11,16 @@ The default MySQL connector allocates a thread to each connection. As the number
 ### Application Scenarios<a name="EN-US_TOPIC_0000002550182781"></a>
 
 - OLTP short queries with a large number of connections
+
 - Read-only short queries with a large number of connections
+
 - A large number of long query connections (You can set a small number of thread groups in the thread pool configuration to prevent performance deterioration due to long queries.)
 
 This feature is implemented using a patch file. For details about how to use the patch file, see [Installation Description](#installation-description).
 
 ### Principles<a name="EN-US_TOPIC_0000002518543040"></a>
 
-When a thread pool connector module is used, as shown in [**Figure 1**](#working-principle-of-the-mysql-thread-pool), it takes over the connection establishment and scheduling. With a dynamically scalable and multi-group thread pool, the server can have no performance loss even when there are a large number of client connections. In the thread pool solution, the listener thread in each group listens to network tasks and allocates triggered tasks to a high-priority or low-priority queue. Then idle worker threads obtain tasks from the queue based on priorities. Each CPU can process a limited number of tasks at the same time. Generally, two to five tasks can be processed concurrently while maintaining stable service performance.
+When a thread pool connector module is used, as shown in [**Figure 1**](#working-principle-of-the-mysql-thread-pool), it takes over the connection establishment and scheduling. With a dynamically scalable and multi-group thread pool, the server can have no performance loss even when there are a large number of client connections. In the thread pool solution, the listener thread in each group listens on network tasks and allocates triggered tasks to a high-priority or low-priority queue. Then idle worker threads obtain tasks from the queue based on priorities. Each CPU can process a limited number of tasks at the same time. Generally, two to five tasks can be processed concurrently while maintaining stable service performance.
 
 **Figure 1** Working principle of the MySQL thread pool<a name="fig11588201933612"></a><a id="working-principle-of-the-mysql-thread-pool"></a><br>
 ![](figures/mysql_thread_pool_working_principle_8_0_20.png "Working principle of the MySQL thread pool")
@@ -29,11 +33,17 @@ A thread pool consists of multiple thread groups and one timer thread. The numbe
 Each thread group in a thread pool contains:
 
 - A `pollfd`, which is the poll descriptor returned by `epoll_create`.
+
 - Zero or one listener thread. `epoll_wait` waits for network readable events.
+
 - A common queue that stores connection objects (including TCP connection information and SQL execution context status) with network readable events to be processed by worker threads.
-- A priority queue that stores connection objects that have network readable events and are in the middle of a transaction. Such connections will be processed by the worker threads first.
+
+- A priority queue storing connection objects that have network readable events and are in the middle of a transaction. Such connections will be processed by the worker threads first.
+
 - Zero or more worker threads that obtain connection objects with network readable events, process login verification of connections, receive and execute SQL statements, and return results. If there is no listener thread in a thread group, the first idle worker thread that enters the sleep state becomes a listener thread.
+
 - A waiting queue. When a worker thread has no task to process, it enters the waiting state and is placed in the waiting queue. After the thread is woken up by an external signal or is automatically woken up due to waiting timeout, the thread status is re-marked as active to process tasks or the thread just exits.
+
 - A mutex that protects resources in a thread group from being simultaneously accessed by multiple threads.
 
 All thread groups share one timer thread. A timer thread detects whether a task in a thread group is suspended, that is, whether no new task is generated in a period of time or no task is consumed when the task queue is not empty.
@@ -41,10 +51,15 @@ All thread groups share one timer thread. A timer thread detects whether a task 
 A thread pool supports the following functions:
 
 - The number of thread groups can be system-defined or user-defined.
-- For better performance, priority and common queues process transaction connections, lock connections, and common query statement connections separately. For details, see [thread_pool_high_prio_mode](#thread_pool_high_prio_mode) and [thread_pool_high_prio_tickets](#thread_pool_high_prio_tickets).
+
+- For better performance, priority and common queues process transaction connections, lock connections, and common query statement connections separately. For details, see [thread\_pool\_high\_prio\_mode](#thread_pool_high_prio_mode) and [thread\_pool\_high\_prio\_tickets](#thread_pool_high_prio_tickets).
+
 - The number of worker threads is dynamically scaled to ensure that the number of running threads is within a proper range for efficient processing.
+
 - Thread pool lockups or starvation is prevented.
+
 - An extra connector is used for local UNIX socket connections.
+
 - Four status information tables are added to `information_schema` to monitor the thread pool status in real time.
 
 For details about the function configuration, see [Parameters](#parameters).
@@ -52,7 +67,9 @@ For details about the function configuration, see [Parameters](#parameters).
 ## Installation Description<a name="EN-US_TOPIC_0000002518702940"></a>
 
 - The MySQL thread pool feature is provided in a patch. Apply the patch in the MySQL source code, and then compile and install the MySQL database.
+
 - The patch is developed for MySQL 8.0.20.
+
 - For details about the environment requirements for using the patch, see [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html).
 
 1. Download and decompress the MySQL 8.0.20 source package, and go to the MySQL source code directory.
@@ -89,10 +106,11 @@ For details about the function configuration, see [Parameters](#parameters).
     > git config user.name "123"
     >    ```
 
-3. Download the patch file and upload it to the root directory of the MySQL source code.
+3. Download and decompress the patch file, and upload it to the root directory of the MySQL source code.
 
     ```bash
     wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip --no-check-certificate
+    unzip boostdb-patch-release-20260330.zip
     ```
 
 4. Check whether the content is modified.
@@ -101,33 +119,36 @@ For details about the function configuration, see [Parameters](#parameters).
     git status
     ```
 
-    The following shows that a `0001-THREAD_POOL_8.patch` file is added.
+    A directory named `boostdb-patch-release-20260330` containing the optimization patch is added, as shown below.
 
-    ```bash
+    ```txt
     # On branch master
     # Untracked files:
     #   (use "git add <file>..." to include in what will be committed)
     #
-    #       0001-THREAD_POOL_8.patch
+    #       boostdb-patch-release-20260330/0001-THREAD_POOL_8.patch
     nothing added to commit but untracked files present (use "git add" to track)
     ```
 
 5. Apply the patch file.
 
-    ```bash
-    git apply --check 0001-THREAD_POOL_8.patch
-    git apply --whitespace=nowarn 0001-THREAD_POOL_8.patch
+    ```
+    git apply --check boostdb-patch-release-20260330/0001-THREAD_POOL_8.patch
+    git apply --whitespace=nowarn boostdb-patch-release-20260330/0001-THREAD_POOL_8.patch
     ```
 
 6. Compile and install the MySQL source code. For details, see [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html).
-7. After MySQL is compiled and installed successfully, log in to MySQL to check the new `information_schema` table in the thread pool to ensure that the patch has taken effect. For details, see [New information_schema Tables](#new-information-schema-tables).
+
+7. After MySQL is compiled and installed successfully, log in to MySQL to check the new `information_schema` tables in the thread pool to ensure that the patch has taken effect. For details, see [New information_schema Tables](#new-information_schema-tables).
 
 ## Usage Description<a name="EN-US_TOPIC_0000002550142773"></a>
 
 ### Configuration Description<a name="EN-US_TOPIC_0000002518702934"></a>
 
 - MySQL uses one thread per connection by default. To enable the thread pool feature, set `thread_handling` to `pool-of-threads`. For details, see [thread_handling](#thread_handling).
-- After a thread pool is configured, you are advised to retain the default values of the parameters (except `thread_handling`) listed in [Parameters](#parameters) in OLTP scenarios. You can adjust the value of `thread_pool_size` to optimize the peak performance. For details, see [thread_pool_size](#thread_pool_size).
+
+- After a thread pool is configured, you are advised to retain the default values of the parameters (except `thread_handling`) listed in [Parameters](#parameters) in OLTP scenarios. You can adjust the value of `thread_pool_size` to optimize the peak performance. For details, see [thread\_pool\_size](#thread_pool_size).
+
 - For scenarios with long query connections, read-only operations, or mixed read and write operations, you are advised to configure a small number of thread groups. For details, see [Setting thread_pool_size to a Small Value](#setting-thread_pool_size-to-a-small-value).
 
 MySQL parameters are also called system variables, which are used to set service functions and performance of MySQL. For details, see the official MySQL document [Server System Variables](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html).
@@ -138,25 +159,25 @@ MySQL parameters are also called system variables, which are used to set service
 
 There are two ways to use configuration parameters:
 
-- CLI. Example:
+- CLI, for example:
 
     ```bash
     mysqld --thread_handling=pool-of-threads
     ```
 
-- Configuration file. Add your parameter settings to the `my.cnf` file:
+- Configuration file: Add your parameter settings to the `my.cnf` file. For example:
 
-    ```bash
+    ```txt
     thread_handling=pool-of-threads
     ```
 
 #### thread_handling<a name="EN-US_TOPIC_0000002518543038" id="thread_handling"></a>
 
-Support CLI: Yes
+Support for CLI: yes
 
-Support configuration file: Yes
+Support for configuration file: yes
 
-Support dynamic modification: No
+Support for dynamic modification: no
 
 Scope: global
 
@@ -168,17 +189,19 @@ Possible values: `one-thread-per-connection`, `pool-of-threads`, and `no-threads
 
 This parameter specifies how the server handles threads for client connections. The options are described as follows:
 
-- `one-thread-per-connection`: A thread is allocated to each connection to handle the requests of the connection. This mode applies to scenarios with a small number of connections.
+- `one-thread-per-connection`: A thread is allocated to each connection to handle the requests of the connections. This mode applies to scenarios with a small number of connections.
+
 - `pool-of-threads`: The thread pool is used to handle all requests of all connections. This mode applies to short queries with a large number of connections.
+
 - `no-threads`: The main thread is used to process all connections. This mode is generally used for debugging.
 
-#### thread_pool_size<a name="EN-US_TOPIC_0000002550182779" id="thread_pool_size"></a>
+#### thread\_pool\_size<a name="EN-US_TOPIC_0000002550182779" id="thread_pool_size"></a>
 
-Support CLI: Yes
+Support for CLI: yes
 
-Support configuration file: Yes
+Support for configuration file: yes
 
-Support dynamic modification: Yes
+Support for dynamic modification: yes
 
 Scope: global
 
@@ -192,11 +215,11 @@ This parameter specifies the number of thread groups in a thread pool. The defau
 
 #### thread_pool_max_threads<a name="EN-US_TOPIC_0000002550142775"></a>
 
-Support CLI: Yes
+Support for CLI: yes
 
-Support configuration file: Yes
+Support for configuration file: yes
 
-Support dynamic modification: Yes
+Support for dynamic modification: yes
 
 Scope: global
 
@@ -210,11 +233,11 @@ This parameter specifies the maximum number of threads in a thread pool. When th
 
 #### thread_pool_stall_limit<a name="EN-US_TOPIC_0000002550182783"></a>
 
-Support CLI: Yes
+Support for CLI: yes
 
-Support configuration file: Yes
+Support for configuration file: yes
 
-Support dynamic modification: Yes
+Support for dynamic modification: yes
 
 Scope: global
 
@@ -228,11 +251,11 @@ This parameter specifies the interval for the timer thread to check the status o
 
 #### thread_pool_idle_timeout<a name="EN-US_TOPIC_0000002518543044"></a>
 
-Support CLI: Yes
+Support for CLI: yes
 
-Support configuration file: Yes
+Support for configuration file: yes
 
-Support dynamic modification: Yes
+Support for dynamic modification: yes
 
 Scope: global
 
@@ -244,13 +267,13 @@ Value range: 1–4294967295
 
 This parameter specifies the waiting time of an idle thread after the worker thread enters the idle state. If the idle thread is not woken up by a new task after the period specified by this parameter, the idle thread exits.
 
-#### thread_pool_oversubscribe<a name="EN-US_TOPIC_0000002518543036"></a>
+#### thread\_pool\_oversubscribe<a name="EN-US_TOPIC_0000002518543036"></a>
 
-Support CLI: Yes
+Support for CLI: yes
 
-Support configuration file: Yes
+Support for configuration file: yes
 
-Support dynamic modification: Yes
+Support for dynamic modification: yes
 
 Scope: global
 
@@ -260,15 +283,15 @@ Default value: `3`
 
 Value range: 1–1000
 
-This parameter specifies the oversubscribing number of threads in each thread group. If it is set to the default value, it indicates the oversubscribing number of threads of each CPU core. The default value is `3`, which is an empirical value that can fully utilize CPU resources. If this parameter is set to a value smaller than `3`, more sleep and wake-up events may occur. If the number of active worker threads in a thread group exceeds the value of this parameter, the system considers that there are too many active worker threads and you need to reduce this number.
+This parameter specifies the oversubscribing number of threads in each thread group. If it is set to the default value, it indicates the oversubscribing number of threads of each CPU core. The default value is `3`, which is an empirical value that can allow CPU resources to be fully utilized. If this parameter is set to a value smaller than `3`, more sleep and wake-up events may occur. If the number of active worker threads in a thread group exceeds the value of this parameter, the system considers that there are too many active worker threads and you need to reduce this number.
 
-#### thread_pool_toobusy<a name="EN-US_TOPIC_0000002518702938"></a>
+#### thread\_pool\_toobusy<a name="EN-US_TOPIC_0000002518702938"></a>
 
-Support CLI: Yes
+Support for CLI: yes
 
-Support configuration file: Yes
+Support for configuration file: yes
 
-Support dynamic modification: Yes
+Support for dynamic modification: yes
 
 Scope: global
 
@@ -280,13 +303,13 @@ Value range: 1–1000
 
 This parameter specifies the threshold number of worker threads for determining whether a thread group is busy. If (*Number of active worker threads in a thread group* + *Number of worker threads in lock or I/O waiting*) > (`thread_pool_toobusy` + 1), the thread group is busy and does not handle low-priority tasks until the thread group returns to a non-busy state. Instead, the thread group waits for the ongoing tasks and high-priority tasks to be handled.
 
-#### thread_pool_high_prio_mode<a name="EN-US_TOPIC_0000002518543034" id="thread_pool_high_prio_mode"></a>
+#### thread\_pool\_high\_prio\_mode<a name="EN-US_TOPIC_0000002518543034" id="thread_pool_high_prio_mode"></a>
 
-Support CLI: Yes
+Support for CLI: yes
 
-Support configuration file: Yes
+Support for configuration file: yes
 
-Support dynamic modification: Yes
+Support for dynamic modification: yes
 
 Scope: global, session
 
@@ -298,24 +321,25 @@ Possible values: `transactions`, `statements`, and `none`
 
 This parameter is used to provide finer-grained control over high-priority scheduling either global or per-connection.
 
-- `transactions`: Only statements from started transactions can enter the high-priority queue, depending on the number of high-priority tickets currently available in the connection. For details, see [thread_pool_high_prio_tickets](#thread_pool_high_prio_tickets).
+- `transactions`: Only statements from started transactions can enter the high-priority queue, depending on the number of high-priority tickets currently available in the connection. For details, see [thread\_pool\_high\_prio\_tickets](#thread_pool_high_prio_tickets).
+
 - `statements`: All individual statements enter the high-priority queue, regardless of the transaction status of the connection or the number of available high-priority tickets. This option can be used to prioritize sessions for specific connections.
 
     >![](public_sys-resources/icon_notice.gif) **NOTICE:**
     >Setting this parameter to `statements` globally essentially disables high-priority scheduling, since in this case all statements from all connections have the same priority.
 
-- `none`: The high-priority queue of a connection is disabled. Some connections (for example, the monitoring connection) are insensitive to execution latency and never occupy any server resources that would otherwise impact performance in other connections. Such connections do not really require high-priority scheduling. You can set their priority to `none` in the session scope.
+- `none`: The high-priority queue of a connection is disabled. Some connections (for example, the monitoring connection) may be insensitive to execution latency and may never occupy any server resources; otherwise, they would impact performance of other connections. Such connections do not really require high-priority scheduling. You can set their priority to `none` in the session scope.
 
     >![](public_sys-resources/icon_notice.gif) **NOTICE:**
     >Setting this parameter to `none` globally essentially disables high-priority scheduling, since in this case all statements from all connections have the same priority.
 
-#### thread_pool_high_prio_tickets<a name="EN-US_TOPIC_0000002518702942" id="thread_pool_high_prio_tickets"></a>
+#### thread\_pool\_high\_prio\_tickets<a name="EN-US_TOPIC_0000002518702942" id="thread_pool_high_prio_tickets"></a>
 
-Support CLI: Yes
+Support for CLI: yes
 
-Support configuration file: Yes
+Support for configuration file: yes
 
-Support dynamic modification: Yes
+Support for dynamic modification: yes
 
 Scope: global, session
 
@@ -325,15 +349,15 @@ Default value: `4294967295`
 
 Value range: 0–4294967295
 
-This parameter controls the high-priority queue policy. Each new connection is assigned this many tickets to enter the high-priority queue. Setting this parameter to `0` disables the high-priority queue. The number of tickets is decremented by 1 each time a connection is put into the high-priority queue. If the number of tickets decreases to 0, connections enter the low-priority queue instead. When a connection enters a low-priority queue, the number of tickets held by the connection is reset to the `thread_pool_high_prio_tickets` preset value of the session of the connection. The goal is to prevent worker threads from being occupied by a large number of high-priority connections for a long time, so that low-priority connections can be processed.
+This parameter controls the high-priority queue policy. Each new connection is assigned this many tickets to enter the high-priority queue. Setting this parameter to `0` disables the high-priority queue. The number of tickets is decremented by 1 each time a connection is put into the high-priority queue. If the number of tickets decreases to 0, connections enter the low-priority queue instead. When a connection enters a low-priority queue, the number of tickets held by the connection is reset to the preset value of `thread_pool_high_prio_tickets` for the connection session. The goal is to prevent worker threads from being occupied by a large number of high-priority connections for a long time, so that low-priority connections can be processed.
 
 #### thread_pool_dedicated_listener<a name="EN-US_TOPIC_0000002518702944"></a>
 
-Support CLI: Yes
+Support for CLI: yes
 
-Support configuration file: Yes
+Support for configuration file: yes
 
-Support dynamic modification: Yes
+Support for dynamic modification: yes
 
 Scope: global
 

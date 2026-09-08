@@ -1,4 +1,6 @@
-# MySQL Parallel Query Tuning Feature Guide 
+# MySQL Parallel Query Tuning Feature Guide
+
+<!-- md-trans-meta sourceCommit=c3a1e9ac928170720f87d62a7d1444823b964e37 translatedAt=2026-08-03T06:47:18.128Z pushedAt=2026-08-05T07:14:38.039Z -->
 
 ## Introduction<a name="EN-US_TOPIC_0000002518704730"></a>
 
@@ -8,16 +10,19 @@ MySQL parallel query tuning is mainly used in online analytical processing (OLAP
 
 The MySQL parallel query tuning feature enables parallel data read, and allows executing an SQL statement by using multiple cores and threads, and therefore accelerates the execution of query statements. This feature is mainly used in service scenarios such as data analysis, BI report, and decision-making support. The following types of single-table scan queries can be performed in parallel:
 
-- JT_ALL
-- JT_INDEX_SCAN
-- JT_REF
-- JT_RANGE
+- JT\_ALL
+
+- JT\_INDEX\_SCAN
+
+- JT\_REF
+
+- JT\_RANGE
 
 In addition to single tables, simple parallel query of multiple tables is allowed. Subquery is not supported. Semi join is supported in some scenarios. The solution works in trustlist mode. The details are as follows.
 
 - Single-table trustlist:
 
-    ```sql
+    ```bash
     select {<Column_name>| Aggregate } from table where {=|>| < |>= |<= |like |between…and| in} group by {<Column_name>} having {<Column_name>}order by {<Column_name>| Aggregate } limit x
     ```
 
@@ -27,7 +32,7 @@ In addition to single tables, simple parallel query of multiple tables is allowe
 
 - Multi-table trustlist:
 
-    ```sql
+    ```bash
     select {<Column_name>| Aggregate } from table1 table2 …  where {=|>| < |>= |<= |like |between…and| in} group by {<Column_name>} having {<Column_name>}order by {<Column_name>} limit x
     ```
 
@@ -79,11 +84,11 @@ The `make_pq_leader_plan` function of the leader thread determines whether state
 
 - Init
 
-    In the init process, the leader thread calls the `add_scan` table that can be executed in parallel to split the table into multiple data shards and put all shards in the same queue. Then, `mysql_thread_create` is called to create multiple worker threads. The worker threads cyclically obtain shards from the queue until all shards are executed.
+    In the init process, the leader thread calls `add_scan` to split tables that can be executed in parallel into multiple data shards and put all shards in the same queue. Then, `mysql_thread_create` is called to create multiple worker threads. The worker threads cyclically obtain shards from the queue until all shards are executed.
 
 - Read
 
-    During the read process, the leader thread invokes the gather module to obtain data from the message queue. If necessary, you can perform additional operations, such as count and sum aggregate operations. Finally, the data is transmitted to the upper layer and then to the client.
+    During the read process, the leader thread invokes the gather module to obtain data from the message queue. If necessary, additional operations can be performed, such as count and sum aggregate operations. Finally, the data is transmitted to the upper layer and then to the client.
 
 - End
 
@@ -101,58 +106,63 @@ The detailed procedure is as follows:
 
     **Table 1** Download URLs for different MySQL versions<a id="download-urls-for-different-mysql-versions"></a>
 
-   |Version|Download URL|
-   |--|--|
-   |MySQL 8.0.20|[Link](https://github.com/mysql/mysql-server/archive/mysql-8.0.20.tar.gz)|
-   |MySQL 8.0.25|[Link](https://github.com/mysql/mysql-server/archive/mysql-8.0.25.tar.gz)|
+    |Version|Download URL|
+    |--|--|
+    |MySQL 8.0.20|[Link](https://github.com/mysql/mysql-server/archive/mysql-8.0.20.tar.gz)|
+    |MySQL 8.0.25|[Link](https://github.com/mysql/mysql-server/archive/mysql-8.0.25.tar.gz)|
 
-     ![](public_sys-resources/icon_notice.gif) **NOTICE:**
+    ![](public_sys-resources/icon_notice.gif) **NOTICE:**
     The code downloaded from GitHub does not contain the `boost` folder. You can download the source code containing `boost` from the MySQL official website and obtain the `boost` folder from the source code. The path to the `boost` folder will be used during compilation.
 
 2. Download the patch packages of the MySQL parallel query tuning feature based on [**Table 2**](#patch-packages-for-different-mysql-versions).
 
     **Table 2** Patch packages for different MySQL versions<a id="patch-packages-for-different-mysql-versions"></a>
 
-|Supported Version|Patch Package|Description|
-|--|--|--|
-|MySQL 8.0.20|[code-pq.patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|Source code patch, which contains all the code required by parallel query.|
-|MySQL 8.0.20|[mtr-pq.patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|Patch for MTR tests in mysql-test, which ensures that all MTR tests are passed.|
-|MySQL 8.0.25|[code-pq-for-MySQL-8.0.25.patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|Source code patch, which contains all the code required by parallel query.|
-|MySQL 8.0.25|[mtr-pq-for-MySQL-8.0.25.patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|Patch for MTR tests in mysql-test, which ensures that all MTR tests are passed.|
+    |Supported Version|Patch Package|Description|
+    |--|--|--|
+    |MySQL 8.0.20|[boostdb-patch-release-20260330](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)/code-pq.patch|Source code patch, which contains all the code required by parallel query.|
+    |MySQL 8.0.20|[boostdb-patch-release-20260330](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)/mtr-pq.patch|Patch for MTR tests in mysql-test, which ensures that all MTR tests are passed.|
+    |MySQL 8.0.25|[boostdb-patch-release-20260330](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)/code-pq-for-MySQL-8.0.25.patch|Source code patch, which contains all the code required by parallel query.|
+    |MySQL 8.0.25|[boostdb-patch-release-20260330](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)/mtr-pq-for-MySQL-8.0.25.patch|Patch for MTR tests in mysql-test, which ensures that all MTR tests are passed.|
 
     - The patch packages are generated based on MySQL 8.0.20 and 8.0.25 in the Gitee community.
+
     - The patch packages have been verified on the AArch64 Linux platform.
+
     - The patch packages do not support the x86 hardware platform.
 
 3. Decompress the source package and go to the MySQL source code directory.
 
-    ```
+    ```bash
     tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
     ```
 
 4. In the root directory of the source code, run the `git init` command to create Git management information.
 
-    ```
+    ```bash
     git init
     git add -A
     git commit -m "Initial commit"
     ```
 
-    >![](public_sys-resources/icon_note.gif) **NOTE:**
-    >-   Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengdbs_02_0002.html) and then install Git.
+    >![](public_sys-resources/icon_note.gif) **NOTE**
+    >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengdbs_02_0002.html) and then install Git.
+>
+    > ```bash
+    > yum install git
     >    ```
-    >    yum install git
-    >    ```
-    >-   If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
-    >    ```
-    >    git config user.email "123@example.com"
-    >    git config user.name "123"
+>
+    >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
+>
+    > ```bash
+    > git config user.email "123@example.com"
+    > git config user.name "123"
     >    ```
 
 5. Apply the patches of the MySQL parallel query tuning feature.
 
-    ```
+    ```bash
     git apply --whitespace=nowarn -p1 < mtr-pq.patch
     git apply  --whitespace=nowarn -p1 < code-pq.patch
     ```
@@ -199,7 +209,7 @@ You can use the parallel query tuning feature in either of the following ways:
 
     For example, if you want to enable parallel execution and the number of parallel threads is 4, run the following commands:
 
-    ```bash
+    ```text
     force_parallel_execute=on;
     parallel_default_dop=4;
     ```
@@ -214,7 +224,9 @@ You can use the parallel query tuning feature in either of the following ways:
     The hint syntax can be used to control whether a single statement is executed in parallel. If parallel execution is disabled by default, the hint syntax can be used to accelerate a specific SQL statement. The degree of parallelism specified in the hint cannot be greater than `parallel_max_threads`. Otherwise, parallel query of SQL statements cannot be enabled. You can also restrict certain types of SQL statements from being executed in parallel.
 
     - `SELECT /*+ PQ */ … FROM …`: Use the default 4 threads to perform parallel queries.
+
     - `SELECT /*+ PQ(8) */ … FROM …`: Use 8 threads to perform parallel queries.
+
     - `SELECT /*+ NO_PQ */ … FROM …`: Do not use parallel queries.
 
 Perform a TPC-H test to obtain the performance improvement data after the MySQL parallel query tuning feature is used. For details about the test procedure, see [TPC-H Test Guide (for MySQL)](https://www.hikunpeng.com/document/detail/en/kunpengdbs/testguide/tstg/kunpengtpch_02_0001.html).
@@ -233,13 +245,13 @@ The parallel execution result may be incompatible with the serial execution resu
 
 - The precision is incorrect.
 
-    During parallel execution, intermediate results may be generated. If the intermediate results are of the floating-point type, the floating-point data may have precision deviation. As a result, the final result may be slightly different.
+    Unlike serial execution, parallel execution may save intermediate results. If the intermediate results are of the floating-point type, the floating-point data may have precision deviation. As a result, the final result may be slightly different.
 
-- Sequences of the result sets are different.
+- The sequence of the result set is different.
 
-    When multiple worker threads execute the query, the returned result set may have a different sequence from the serial execution sequence. If the `GROUP BY` statement exists, the sequence in the group after grouping may be different from the serial execution sequence. If the `LIMIT` statement exists, it is more likely that the parallel execution result is different from the serial execution result.
+    When multiple worker threads execute the query, the returned result set may have a different sequence from the serial execution sequence. If the `GROUP BY` statement exists, the sequence in the group after grouping may be different from the serial execution sequence. If the `LIMIT` statement exists, it is more likely that the sequence of the parallel execution result is different from that of the serial execution result.
 
-## Constraints<a name="EN-US_TOPIC_0000002550184563"></a>
+## Constraints<a id="EN-US_TOPIC_0000002550184563"></a>
 
 [**Table 1**](#query-statements-that-cannot-be-executed-in-parallel) describes the query statements that cannot be executed in parallel.
 
@@ -253,9 +265,9 @@ The parallel execution result may be incompatible with the serial execution resu
 |Function|Window functions<br>with rollup<br>Spatial functions (such as <code>SP_WITHIN_FUNC</code>)<br>distinct<br>User-defined functions<br>GROUP_CONCAT<br>JSON functions<br>XML functions<br>STD/STDDEV/STDDEV_POP<br>VARIANCE/VAR_POP/VAR_SAMP<br>BIT_AND, BIT_OR, BIT_XOR<br>randst_distance<br>get_lock<br>is_free_lock, is_used_lock, release_lock, release_all_locks<br>sleep<br>weight_string<br>SHA, SHA1, SHA2, MD5<br>row_count<br>round<br>VARIANCE|
 |Others|Subqueries<br>union<br>Stored procedure<br>Triggers<br>Lock queries, such as the serializable isolation level and "for update/share lock"<br>Prepared Statements<br>generated column<br>Not compliant with the <code>only_full_group_by</code> condition<br>No line of data returned in the execution result (The execution plan displays Zero limit, Impossible WHERE, Impossible HAVING, No matching min/max row, Select tables optimized away, Impossible HAVING noticed after reading const tables, no matching row in const table, etc.)|
 
-## FAQs<a name="EN-US_TOPIC_0000002518704728"></a>
+## FAQs<a id="EN-US_TOPIC_0000002518704728"></a>
 
-[**Table 1**](#faqs-about-mysql-parallel-query-tuning) lists the frequently asked questions in the application scenarios of MySQL parallel query tuning.
+[**Table 1**](#faqs-about-mysql-parallel-query-tuning) lists the frequently asked questions (FAQs) in the application scenarios of MySQL parallel query tuning.
 
 **Table 1** FAQs about MySQL parallel query tuning<a id="faqs-about-mysql-parallel-query-tuning"></a>
 
@@ -276,7 +288,7 @@ The parallel execution result may be incompatible with the serial execution resu
 
 |Date|Description|
 |--|--|
-|2024-11-28|This issue is the fourth official release. Added FAQs about MySQL parallel query tuning.|
-|2023-07-04|This issue is the third official release. Added section "Constraints".|
-|2022-07-07|This issue is the second official release. Adapted to MySQL 8.0.25.|
-|2021-03-30|This issue is the first official release.|
+|2024-11-28|This is the fourth official release. Added [FAQs](#EN-US_TOPIC_0000002518704728) about MySQL parallel query tuning.|
+|2023-07-04|This is the third official release. Added [Constraints](#EN-US_TOPIC_0000002550184563).|
+|2022-07-07|This is the second official release. Adapted to MySQL 8.0.25.|
+|2021-03-30|This is the first official release.|

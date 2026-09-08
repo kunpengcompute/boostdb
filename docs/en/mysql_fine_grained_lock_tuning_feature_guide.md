@@ -1,5 +1,7 @@
 # MySQL Fine-Grained Lock Tuning Feature Guide
 
+<!-- md-trans-meta sourceCommit=7f1ebfd491fb57877a0d4fd342b49e344f7ae84d translatedAt=2026-08-03T06:48:46.074Z pushedAt=2026-08-04T11:02:39.446Z -->
+
 ## Principles<a name="EN-US_TOPIC_0000002550144937"></a>
 
 In MySQL online transaction processing (OLTP) applications, a large number of data manipulation language (DML) statements (INSERT, UPDATE, and DELETE) are concurrently executed on the key data structures in the lock_sys->mutex global lock, causing severe lock contention and performance deterioration. To solve this problem, Kunpeng BoostKit provides fine-grained hash bucket locks to replace the global lock, which reduces lock conflicts and improves concurrency.
@@ -11,9 +13,10 @@ The Lock-sys maintains a separate queue for each resource. When a request for a 
 In a database, the concepts of lock and latch are different.
 
 - A lock is used to lock database objects, such as tables and rows.
+
 - A latch is used to protect the memory data structure.
 
-Access to all queues is managed by a latch. This means that even if only one queue is accessed, all other queues are locked. This implementation mode is inefficient in high-concurrency scenarios. To solve this problem, a fine-grained latch is introduced.
+In the past, access to all queues was managed by a latch. This means that even if only one queue is accessed, all other queues are locked. This implementation mode is inefficient in high-concurrency scenarios. To solve this problem, a fine-grained latch is introduced.
 
 The queues are divided into a fixed number of shards based on the original global latch. Each shard is protected by its own mutex. To efficiently latch all shards, the global latch in the new feature is designed as a read/write latch. Before a queue is accessed, the shared global latch and then the mutex of the corresponding shard must be obtained. This implementation is similar to the process for accessing a MySQL database record, where an intent lock is added to the table and then the record is locked. In certain special scenarios where all queues need to be latched, only the exclusive global latch needs to be obtained. The general idea is that one or two Lock-sys queues are involved in most operations and are independent of other queues. The following figure shows the relationship between the global latch and its managed objects.
 
@@ -26,20 +29,24 @@ The following figure shows how the new latching mode improves efficiency. The le
 Accessing two queues to obtain two records involves the following steps:
 
 1. S-latch the global latch.
+
 2. Identify the two pages to which the records belong.
+
 3. Identify the two hash buckets which contain the queues for the given pages.
+
 4. Identify the IDs of the shards which contain these two buckets.
+
 5. Latch mutexes for the two shards in the order of their addresses.
 
 All of the preceding steps (except step 2, as we usually know the page already) are accomplished by using the following code:
 
-```c++
+```C++
 locksys::Shard_latches_guard guard{*block_a, *block_b};
 ```
 
 For the "stop the world" operation, x-latch the global latch by using the following code:
 
-```c++
+```C++
 locksys::Exclusive_global_latch_guard guard{};
 ```
 
@@ -94,6 +101,7 @@ To use friend guard classes, like Shard_latches_guard, this class does not expos
     The lock_trx_release_read_locks() function is mostly used in group replication appliers to release read gap locks. In testing, it turned out to be a bottleneck if the exclusive global latch is used to iterate over transaction locks. Similar to the lock_release() function, we should instead acquire a shared global latch, and latch shards one by one when we iterate. The problem is that other threads can modify the lock list concurrently (for example, because of implicit-to-explicit conversion, or B-tree reorganization), and we cannot simply compare the current lock with the tail because we are not removing all locks, but a subset of them. Therefore, the trick with operating only at the tail of the list is insufficient. To notice such situations (and restart iteration), we will introduce "uint64_t trx->lock.trx_locks_version", which is incremented each time a lock is added to or removed from the trx lock list. After several failed restarts, we can switch back to the old lock_trx_release_read_locks_in_x_mode().
 
 - **Other changes:**
+
     - Separate the whole latching logic to the dedicated class locksys::Latches and document extensively the design in its header.
 
     - All new functions will be in the locksys namespace.
@@ -113,16 +121,24 @@ To use friend guard classes, like Shard_latches_guard, this class does not expos
     - Add lock_sys_table_mutex to PSI.
 
     - All places where we use the exclusive global latch will be documented to specify the remaining reasons we have to resort to such strong synchronization.
+
     - The `table->autoinc_trx` field should be atomic as it is "peeked" without any latch, and confusing or wrong comments and assertions around it have to be cleaned up, to clarify why it is correct.
+
     - lock_rec_expl_exist_on_page() should return a "bool" instead of a potentially dangling pointer to a "lock_t".
+
     - lock_print_info_summary and the logic inside srv_printf_innodb_monitor() in general need at least some small refactoring so that the latch guards can be used.
+
     - The lock_mutex_own() debug predicate would have to be replaced with more specific owns_exclusive_global_latch(), owns_shared_global_latch(), owners_page_shard(page), owners_page_shard(table), and so on.
+
     - bool Sharded_rw_lock::try_x_lock needs to be implemented.
+
     - The control flow of lock_rec_insert_check_and_lock() (and its copy lock_prdt_insert_check_and_lock) can be simplified by removing code duplication, before we can use latch guards.
+
     - The code around lock_rec_queue_validate() could be simplified by removing code duplication, and using more structured latching.
+
     - Update sync0debug so it has proper rules for latching order.
 
-## Usage Description<a name="EN-US_TOPIC_0000002518545196"></a>
+## Usage Description<a id="EN-US_TOPIC_0000002518545196"></a>
 
 Fix vulnerabilities as soon as possible based on the Common Vulnerabilities and Exposures (CVE) of MySQL 8.0.20 on the [MySQL official website](https://www.mysql.com/).
 
@@ -148,7 +164,8 @@ The MySQL fine-grained lock tuning feature is provided as a patch file. This pat
     cd mysql-8.0.20
     ```
 
-2. Download the [MySQL fine-grained lock tuning patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip) and upload it to the root directory of the MySQL source code.
+2. Download the [MySQL fine-grained lock tuning patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip), decompress the package, and upload `0001-SHARDED-LOCK-SYS.patch` to the root directory of the MySQL source code.
+
 3. Decompress the source package and go to the MySQL source code directory.
 
     ```bash
@@ -166,19 +183,20 @@ The MySQL fine-grained lock tuning feature is provided as a patch file. This pat
 
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
->
+    >
     > ```bash
     > yum install git
     >    ```
->
+    >
     >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
->
+    >
     > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
 
 5. (Optional) If the Yum repository is not configured, configure it. For details, see [Configuring the Yum Repository](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0013.html).
+
 6. (Optional) If dos2unix is not installed, run the following command to install it:
 
     ```bash
@@ -196,6 +214,7 @@ The MySQL fine-grained lock tuning feature is provided as a patch file. This pat
     If no error information is displayed, the patch is successfully applied.
 
 8. Compile and install the MySQL source code. For details, see [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html).
+
 9. (Optional) Perform a TPC-C test to obtain the performance improvement data after the MySQL fine-grained lock tuning feature is used. For details about the test procedure, see [BenchmarkSQL Test Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/testguide/tstg/kunpengbenchmarksql_06_0001.html).
 
     This feature improves the comprehensive TPC-C performance by 10%.
@@ -207,5 +226,5 @@ The MySQL fine-grained lock tuning feature is provided as a patch file. This pat
 
 |Date|Description|
 |--|--|
-|2023-07-25|This issue is the second official release. Updated the commands for applying the patch of the MySQL fine-grained lock tuning feature in section "Usage Description".|
-|2020-07-13|This issue is the first official release.|
+|2023-07-25|This is the second official release. Updated the commands for applying the patch of the MySQL fine-grained lock tuning feature in section [Usage Description](#EN-US_TOPIC_0000002518545196).|
+|2020-07-13|This is the first official release.|

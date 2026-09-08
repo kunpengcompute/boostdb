@@ -36,9 +36,9 @@ By reducing repeated scanning, this optimization can reduce the overhead of tabl
 
 **ReadView Version Tracking<a name="section_read_view_version"></a>**
 
-In read/write mixed scenarios, the MVCC frequently creates, closes, and reuses ReadView. In the original implementation, ReadView management is closely dependent on the global status of the transaction system, and the conditions for view reuse are conservative. Therefore, the overhead on the `trx_sys->mutex` path is high in high-concurrency scenarios.
+In read/write mixed scenarios, the MVCC frequently creates, closes, and reuses ReadViews. In the original implementation, ReadView management is closely dependent on the global status of the transaction system, and the conditions for view reuse are conservative. Therefore, the overhead on the `trx_sys->mutex` path is high in high-concurrency scenarios.
 
-This feature adds a version tracking mechanism to ReadView. When the transaction system status that affects the view content changes, the version information is updated synchronously. In this way, when ReadView is opened again, the system can determine whether the existing view is still valid based on the version. If the status corresponding to the view does not change, the existing view is directly reused, and no additional removal, rebuilding, or locking operation is required.
+This feature adds a version tracking mechanism to ReadViews. When the transaction system status that affects the view content changes, the version information is updated synchronously. In this way, when a ReadView is opened again, the system can determine whether the existing view is still valid based on the version. If the status corresponding to the view does not change, the existing view is directly reused, and no additional removal, rebuilding, or locking operation is required.
 
 This optimization reduces repeated work during ReadView management and is applicable to read/write hybrid workloads where views are frequently created and closed under isolation levels such as `READ COMMITTED`.
 

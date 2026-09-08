@@ -1,16 +1,20 @@
 # CRC32 Instruction Optimization Feature Guide
 
+<!-- md-trans-meta sourceCommit=7f1ebfd491fb57877a0d4fd342b49e344f7ae84d translatedAt=2026-08-03T06:46:46.966Z pushedAt=2026-08-04T01:24:34.642Z -->
+
 ## Feature Description<a name="EN-US_TOPIC_0000002550140085"></a>
 
-### Introduction<a name="EN-US_TOPIC_0000002550140083"></a>
+### Overview<a name="EN-US_TOPIC_0000002550140083"></a>
 
 In the Kunpeng processor, the CRC32 instruction optimization feature uses Kunpeng CRC32 hardware instructions to replace the CRC32 software algorithm, lowering the CRC32 calculation overhead. This document uses MySQL as an example to describe how to use the CRC32 instruction optimization feature on a Kunpeng server running the openEuler OS. For other databases, you can refer to this document to perform adaptation and optimization.
 
-The Linux kernel contains the C language implementation of the CRC32 algorithm, but the performance is low and may become a system performance bottleneck. This problem is more obvious when the proportion of CRC32 function calls in kernel space is high. To solve this problem, you can use Kunpeng CRC32 hardware instructions to replace the software implementation of the CRC32 algorithm, thereby improving system performance. This feature improves the MySQL sysbench write performance by 5%.
+The Linux kernel contains the C language-based implementation of the CRC32 algorithm, but the performance is low and may become a system performance bottleneck. This problem is more obvious when the proportion of CRC32 function calls in kernel space is high. To solve this problem, you can use Kunpeng CRC32 hardware instructions to replace the software implementation of the CRC32 algorithm, thereby improving system performance. This feature improves the MySQL sysbench write performance by 5%.
 
 **Compatibility<a name="section65704516331"></a>**
 
-This feature is compatible with other features. For details about the compatibility between MySQL features, see [Compatibility Between Features](https://www.hikunpeng.com/document/detail/en/boostdb/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html).
+This feature is compatible with other features. For details about the compatibility between MySQL features, see [Compatibility Between Features](https://www.hikunpeng.com/document/detail/en/kunpengdbs/appAccelFeatures/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html).
+
+In the Kunpeng processor, the CRC32 instruction optimization feature uses Kunpeng CRC32 hardware instructions to replace the CRC32 software algorithm, lowering the CRC32 calculation overhead. This document uses MySQL as an example to describe how to use the CRC32 instruction optimization feature on a Kunpeng server running the openEuler OS. For other databases, you can refer to this document to perform adaptation and optimization.
 
 ### Principles<a name="EN-US_TOPIC_0000002550180079"></a>
 
@@ -82,9 +86,9 @@ The CRC32 instruction optimization feature is provided as a patch file for MySQL
 
     For details about how to obtain the package, see [**Table 2**](#os-and-software-requirements).
 
-2. Download the `0001-CRC32-AARCH64.patch` package of the CRC32 instruction optimization feature and decompress it. Extract and upload the patch file to the MySQL installation directory.
+2. Obtain and decompress the patch package, and upload the patch file `0001-CRC32-AARCH64.patch` of the CRC32 instruction optimization feature to the MySQL installation directory.
 
-    For details about how to obtain the package, see [**Table 2**](#os-and-software-requirements).
+    For details about how to obtain the patch, see [**Table 2**](#os-and-software-requirements).
 
 3. In the root directory of the source code, run the `git init` command to create Git management information.
 
@@ -96,35 +100,36 @@ The CRC32 instruction optimization feature is provided as a patch file for MySQL
 
     >![](public_sys-resources/icon_note.gif) **NOTE:**
     >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
->
-    > ```
+    >
+    > ```bash
     > yum install git
     >    ```
->
+    >
     >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
->
-    > ```
+    >
+    > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
     >    ```
 
 4. Run the following commands in the MySQL installation directory to apply the patch file of the CRC32 instruction optimization feature:
 
-    ```
-    # Display patch file statistics.
+    ```bash
+    # View patch file statistics.
     git apply --stat 0001-CRC32-AARCH64.patch
     # Check whether the patch file can be successfully applied to the current code repository.
     git apply --check 0001-CRC32-AARCH64.patch
-    # Apply the patch file to the current code repository, modify relevant files, and generate a new commit.
+    # Apply the patch file to the current code repository, modify the corresponding files, and generate a new commit record.
     git apply 0001-CRC32-AARCH64.patch
     ```
 
     ![](figures/en-us_image_0000002550180085.png)
 
 5. Compile and install MySQL. For details, see [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html).
-6. Run the following command. If crc32cb dissembling information in the figure is displayed, the CRC32 instruction optimization feature is successfully enabled.
 
-    ```
+6. Run the following command. If crc32cb disassembly information in the figure is displayed, the CRC32 instruction optimization feature is successfully enabled.
+
+    ```bash
     objdump -d ./bin/mysqld | grep crc32cb
     ```
 
@@ -148,7 +153,9 @@ Periodically scan clusters for viruses. This protects clusters from viruses, mal
 To ensure the security of the production environment and reduce the risk of attacks, periodically fix the following vulnerabilities:
 
 - OS vulnerabilities
+
 - OpenSSL vulnerabilities
+
 - Vulnerabilities in other components
 
 ## Acronyms and Abbreviations<a name="EN-US_TOPIC_0000002518700244"></a>
@@ -161,4 +168,4 @@ To ensure the security of the production environment and reduce the risk of atta
 
 |Date|Description|
 |--|--|
-|2024-03-30|This issue is the first official release.|
+|2024-03-30|This is the first official release.|
