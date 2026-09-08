@@ -156,21 +156,21 @@
     >![](public_sys-resources/icon_note.gif) **说明：** 
     >您也可以通过如下命令下载MySQL源码。
     >MySQL 8.0.25版本：
->
+    >
     >```bash
     >wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.25.tar.gz --no-check-certificate
     >tar -zxvf mysql-boost-8.0.25.tar.gz
     >```
->
+    >
     >MySQL 8.0.30版本：
->
+    >
     >```bash
     >wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.30.tar.gz --no-check-certificate
     >tar -zxvf mysql-boost-8.0.30.tar.gz
     >```
->
+    >
     >MySQL 8.0.35版本：
->
+    >
     >```bash
     >wget https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.35.tar.gz --no-check-certificate
     >tar -zxvf mysql-boost-8.0.35.tar.gz
@@ -186,13 +186,13 @@
 
     >![](public_sys-resources/icon_note.gif) **说明：** 
     >- 一般情况下，系统自带git，若需要安装git，请先参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中配置Yum源相关内容，再执行如下命令安装git。
->
+    >
     > ```bash
     > yum install git
     >    ```
->
+    >
     >- 若未配置git的提交用户信息，git commit前需要先配置用户邮件及用户名称信息。
->
+    >
     > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
@@ -202,7 +202,7 @@
 
     >![](public_sys-resources/icon_note.gif) **说明：** 
     >您也可以通过如下命令下载MySQL线程池特性patch。
->
+    >
     >```bash
     >wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip --no-check-certificate
     >unzip boostdb-patch-release-20260330.zip
@@ -304,7 +304,7 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
 
     >![](public_sys-resources/icon_note.gif) **说明：** 
     >数据库的配置文件默认路径为“/etc/my.cnf”。如果想要使用自定义的其他路径下的配置文件，可以通过--defaults-file选项指定，例如指定“/tmp/myconfig.txt”文件。
->
+    >
     >```bash
     >mysqld --defaults-file=/tmp/myconfig.txt
     >```
