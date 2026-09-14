@@ -1,4 +1,4 @@
-# boostdb
+# BoostDB
 
 鲲鹏BoostKit数据库套件BoostDB旨在基于鲲鹏提供数据库加速能力，聚焦应用加速、基础加速、系统加速全栈优化提升鲲鹏数据库性能，提供极致的数据库解决方案。当前为BoostKit数据库解决方案主页仓，应用仓如下表所示。
 
@@ -26,7 +26,7 @@ BoostKit数据库解决方案mysql仓，包含Kunpeng MySQL，提供包含NEON�
 
 本特性主要从BInlog预分配、Binlog拆锁优化和Binlog writeset_history数据结构优化三个部分进行优化来提高系统性能。Binlog日志文件的动态增长会带来额外的元数据开销，Binlog预分配通过在Binlog文件创建时将其大小预分配为max_binlog_size，避免写入过程中因文件动态增长所引入的元数据操作，从而降低I/O开销并提高系统性能。在事务组提交过程中，处于FLUSH/SYNC、COMMIT阶段的所有follower会共享同一把锁和条件变量，通过Binlog拆锁优化，让处于不同阶段的follower等待不同的锁，降低等待锁的开销。Binlog writeset_history数据结构优化使用hash_map数据结构替换std::map，提高效率。本特性在Sysbench只写场景性能提升13%。
 
-#### 1.2.2 编译器优化
+#### 1.2.3 编译器优化
 
 GCC for openEuler编译器是面向鲲鹏和openEuler生态的优选高性能编译器，基于开源GCC（GNU Compiler Collection，GNU编译器套装）开发和全场景优化，生态成熟度高。GCC for openEuler反馈编译组件在不改变程序功能的前提下，可以收集程序的执行路径、函数调用次数、变量的使用情况等信息，并将这些信息反馈给编译器。编译器利用这些信息进行更精细的代码优化，以获得性能更优的目标程序。在整机场景下，此优化可使数据库TPC-C综合性能提升10%；在8U32GB场景下，Sysbench综合性能（最优性能）提升30%。
 
