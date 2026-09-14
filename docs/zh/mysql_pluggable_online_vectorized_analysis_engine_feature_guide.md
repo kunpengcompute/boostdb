@@ -463,7 +463,7 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
     >![](public_sys-resources/icon_note.gif) **说明：**
     >为阻止缓冲区溢出攻击，建议使用ASLR（Address space layout randomization）技术，通过堆、栈、共享库映射等线性区布局的随机化，增加攻击者预测目的地址的难度，防止攻击者直接定位攻击代码位置。该技术可作用于堆、栈、内存映射区（mmap基址、shared libraries、vdso页）。
     >开启ASLR的命令如下：
->
+    >
     >```bash
     >echo 2 > /proc/sys/kernel/randomize_va_space
     >```

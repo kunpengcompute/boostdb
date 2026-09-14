@@ -141,7 +141,6 @@ For details about the function configuration, see [Parameters](#parameters).
     ```
 
 7. Compile and install the MySQL source code. For details, see [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html).
-
 8. After MySQL is compiled and installed successfully, log in to MySQL to check the new `information_schema` tables in the thread pool to ensure that the patch has taken effect. For details, see [New information_schema Tables](#new-information_schema-tables).
 
 ## Parameters<a name="EN-US_TOPIC_0000002550182393" id="parameters"></a>

@@ -51,13 +51,13 @@ The MySQL hash_table_locks tuning feature is provided as a patch file. This patc
 
     >![](public_sys-resources/icon_note.gif) **NOTE**
     >- Generally, Git is provided by the system. If not, configure the Yum repository by following instructions in [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html) and then install Git.
->
+    >
     > ```bash
     > yum install git
     >    ```
->
+    >
     >- If the Git commit user information is not configured, configure the user email and user name before running the `git commit` command.
->
+    >
     > ```bash
     > git config user.email "123@example.com"
     > git config user.name "123"
@@ -72,7 +72,6 @@ The MySQL hash_table_locks tuning feature is provided as a patch file. This patc
     If no error information is displayed, the patch is successfully applied.
 
 5. Compile and install the MySQL source code. For details, see [MySQL Porting Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html).
-
 6. After recompiling MySQL, configure system variables in the configuration file or boot parameters or during system running for the recompilation to take effect. For details, see [Adding System Variables](#section1982871514452).
 
 **Adding System Variables<a name="section1982871514452" id="section1982871514452"></a>**
