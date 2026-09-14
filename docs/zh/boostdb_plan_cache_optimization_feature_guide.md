@@ -76,8 +76,9 @@ BoostDB-Percona优化版本已默认集成MySQL Plan Cache特性，无需单独�
    若能够查询到上述变量，则说明已成功使能MySQL Plan Cache特性。
 3. （可选）通过Sysbench测试可以得到使能本特性前后的性能提升效果，详细测试步骤请参见《[Sysbench 0.5&1.0测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)》。MySQL Plan Cache特性可以使Percona-Server 8.0.43-34在Sysbench只读场景中获得10%的性能提升，优化前后对比效果如[**图 2** MySQL Plan Cache特性优化前后性能对比](#mysql-plan-cache-perf-compare)所示。
 
-   **图 2** MySQL Plan Cache特性优化前后性能对比<a name="fig937192253920"></a><a id="mysql-plan-cache-perf-compare"></a><br>
-   ![MySQL Plan Cache特性优化前后性能对比](figures/mysql_plan_cache_perf_compare.svg "MySQL Plan Cache特性优化前后性能对比")
+   **图 2** MySQL Plan Cache特性优化前后性能对比<a name="fig937192253920"></a><a id="mysql-plan-cache-perf-compare"></a>
+
+    <img src="figures/mysql_plan_cache_perf_compare.png"/>
 
 ## 使用特性<a id="ZH-CN_TOPIC_0000002295815685"></a>
 
