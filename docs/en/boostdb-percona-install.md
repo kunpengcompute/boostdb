@@ -49,6 +49,40 @@ This document provides guidance based on specific environments. Before performin
 |Percona|Percona-Server 5.7.44-53|[Link](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v3/BoostDB-Percona-5.7.44-53.aarch64.rpm)|
 |Percona|Percona-Server 8.0.43-34|[Link](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v2/BoostDB-Percona-8.0.43-34.aarch64.rpm)|
 
+## Release Package Integrity Check
+
+> ![](./public_sys-resources/icon_note.gif) **NOTE:**
+>
+> This section uses the integrity verification of the AArch64 release package for version 5.7.44 as an example. The procedure for verifying other versions is the same.
+
+### Introduction
+
+To prevent the software package from being incompletely downloaded due to network or storage device faults during transmission, you need to verify the integrity of the software package after obtaining it. Only the software package that passes the verification can be installed.
+
+Compare the verification value recorded in the [Release Notes](https://gitcode.com/boostkit/boostdb/releases) with the RPM package verification value calculated manually to check whether the software package is intact. If the values are consistent, the RPM package file is intact. Otherwise, the integrity of the RPM package is compromised, and you need to obtain the RPM release package again.
+
+### Prerequisites
+
+Before verifying the integrity of the release package, prepare the following files:
+
+RPM release package:  **BoostDB-Percona-5.7.44-53.aarch64.rpm**
+
+### Procedures
+
+To verify the file integrity, perform the following operations:
+
+1. Calculate the SHA256 verification value of the file. Run the following command:
+
+    ```bash
+    sha256sum BoostDB-Percona-5.7.44-53.aarch64.rpm
+    ```
+
+    After the command is run, the verification value is displayed.
+
+2. Check whether the calculated value in step 1 is the same as the SHA256 value in the [Release Notes](https://gitcode.com/boostkit/boostdb/releases) .
+
+    If the verification values are consistent, the RPM release package is not damaged. If they are inconsistent, you can confirm that the file is damaged and you need to obtain the file again.
+
 ## BoostDB Feature Installation<a name="EN-US_TOPIC_0000002550177571"></a>
 
 The following steps are applicable to both Percona-Server 5.7.44-53 and Percona-Server 8.0.43-34. Use the corresponding branch commands based on the actual version.

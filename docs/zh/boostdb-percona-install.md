@@ -49,6 +49,45 @@ BoostDB-Percona-8.0.43-34.aarch64.rpm基于Percona-Server-8.0.43-34源码，结�
 |Percona|Percona-Server 5.7.44-53|[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v3/BoostDB-Percona-5.7.44-53.aarch64.rpm)|
 |Percona|Percona-Server 8.0.43-34|[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v2/BoostDB-Percona-8.0.43-34.aarch64.rpm)|
 
+## 发布包完整性校验
+
+>![](./public_sys-resources/icon_note.gif) **说明：**
+>本章节以AArch64架构的5.7.44发布包完整性校验为例，其他版本发布包完整性校验的操作方法相同。
+
+### 简介
+
+为了检查软件包在传输或存储过程中是否因网络或设备问题而不完整，在获取到软件包后，需要对软件包的完整性进行校验，通过了校验的软件包才能部署。
+
+这里通过对比[发布说明](https://gitcode.com/boostkit/boostdb/releases)中记录的校验值和手动方式计算的rpm包文件校验值，判断软件包是否完整。若两个值相同，说明rpm包文件完整，否则，rpm包完整性被破坏，请重新获取rpm发布包。
+
+### 前提条件
+
+在校验发布包完整性之前，需要准备如下文件：
+
+- rpm包：BoostDB-Percona-5.7.44-53.aarch64.rpm。
+
+### 操作指导
+
+文件完整性校验操作步骤如下：
+
+1. 计算文件的sha256校验值。linux执行命令如下：
+
+    ```bash
+    sha256sum BoostDB-Percona-5.7.44-53.aarch64.rpm
+    ```
+
+    windows执行命令如下：
+
+    ```bash
+    certutil -hashfile BoostDB-Percona-5.7.44-53.aarch64.rpm SHA256
+    ```
+
+    命令执行完成后，输出校验值。
+
+2. 对比步骤1计算的校验值与[发布说明](https://gitcode.com/boostkit/boostdb/releases)的SHA256值是否一致。
+
+    如果校验值一致说明rpm包文件完整，如果校验值不一致则可以确认文件完整性已被破坏，需要重新获取。
+
 ## 安装boostdb特性<a name="ZH-CN_TOPIC_0000002550177571"></a>
 
 以下步骤同时适用于Percona-Server 5.7.44-53和Percona-Server 8.0.43-34，请根据实际版本选择对应分支命令。
