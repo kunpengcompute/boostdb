@@ -53,11 +53,11 @@ MySQL的二进制日志（Binlog）是记录所有数据库数据变更操作（
     >```
 
 4. 启动数据库。启动数据库的操作请参见《MySQL移植指南》的[运行MySQL](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_03_0013.html)章节。
-5. （可选）通过Sysbench测试可以得到使能Binlog预分配优化特性前后的性能提升效果，详细测试步骤请参见《[Sysbench 0.5&1.0 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)》。
-<br>Binlog优化特性（三特性叠加）可以使Sysbench写场景性能提升13%，优化前后对比效果如[**图 1** Binlog优化特性（三特性叠加）优化前后性能对比](#Binlog优化特性优化前后性能对比)所示。
+5. （可选）通过Sysbench测试可以得到使能Binlog预分配优化特性前后的性能提升效果，详细测试步骤请参见《[Sysbench 0.5&1.0 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)》。Binlog优化特性（三特性叠加）可以使Sysbench写场景性能提升13%，优化前后对比效果如[**图 1** Binlog优化特性（三特性叠加）优化前后性能对比](#Binlog优化特性优化前后性能对比)所示。
 
-    **图 1** Binlog优化特性（三特性叠加）优化前后性能对比<a name="fig937192253919"></a><a id="Binlog优化特性优化前后性能对比"></a><br>
-    ![](figures/Binlog优化特性优化前后性能对比.png "Binlog预分配优化特性优化前后性能对比")
+    **图 1** Binlog优化特性（三特性叠加）优化前后性能对比<a name="fig937192253919"></a><a id="Binlog优化特性优化前后性能对比"></a>
+
+    <img src="figures/Binlog优化特性优化前后性能对比.png"/>
 
 ## 故障排除<a name="ZH-CN_TOPIC_0000002550177591"></a>
 
