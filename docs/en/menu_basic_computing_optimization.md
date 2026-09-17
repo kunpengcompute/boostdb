@@ -16,10 +16,6 @@
 
 - [MySQL rec_get_offsets Optimization Feature Guide](./mysql_rec_get_offsets_optimization_feature_guide.md)
 
-- [MySQL Table Lock Queue Check Optimization Feature Guide](./mysql_table_lock_queue_check_optimization_feature_guide.md)
-
-- [MySQL ReadView Version Tracking Feature Guide](./mysql_readview_version_tracking_optimization_feature_guide.md)
-
 - [MySQL KAEZstd Page Compression and Decompression Optimization Feature Guide](./mysql_kaezstd_page_compression_and_decompression_optimization_feature_guide.md)
 
 - [MySQL Plan Cache Feature Guide](./boostdb_plan_cache_optimization_feature_guide.md)

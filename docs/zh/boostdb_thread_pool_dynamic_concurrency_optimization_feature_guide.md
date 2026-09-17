@@ -67,7 +67,7 @@ Percona的组提交（ordered commit）的跟随线程（follower）等待领导
 |项目|名称|获取地址|
 |--|--|--|
 |操作系统|openEuler 22.03 LTS SP4|[获取链接](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
-|Percona|Percona-Server|8.0.43-34|请参见《[BoostDB-Percona 安装指南](./boostdb-percona-install.md)》|
+|Percona|Percona-Server|[8.0.43-34](./boostdb-percona-install.md)|
 
 ## 安装和使用特性<a name="ZH-CN_TOPIC_0000002602100306"></a>
 
