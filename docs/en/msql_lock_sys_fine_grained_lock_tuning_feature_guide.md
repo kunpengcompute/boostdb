@@ -47,7 +47,7 @@ The following uses Percona-Server 5.7.44-53 as an example to describe how to ins
 2. Start the database. For details, see [Running MySQL](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_03_0013.html) in the *MySQL Porting Guide*.
 3. (Optional) Perform the sysbench test to compare the performance before and after the optimization feature is enabled. For details about the test procedure, see [Sysbench 0.5 & 1.0 Test Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html). This feature improves performance by 5% in sysbench write-only scenarios. [Figure 1](#performance-comparison-before-and-after-lock-sys-fine-grained-lock-optimization) shows the performance before and after the optimization.
 
-    **Figure 1** Performance comparison before and after Lock-sys fine-grained lock optimization<a name="fig937192253919"></a><a id="performance-comparison-before-and-after-lock-sys-fine-grained-lock-optimization"></a><br>
+    **Figure 1** Performance comparison before and after Lock-sys fine-grained lock optimization<a name="fig937192253919"></a><a id="performance-comparison-before-and-after-lock-sys-fine-grained-lock-optimization"></a>
 
     ![](figures/performance_compare_lock_sys_fine_grained_lock_optimization.png "Performance comparison before and after Lock-sys fine-grained lock optimization")
 
@@ -59,4 +59,4 @@ Address space layout randomization (ASLR) is a security technology against buffe
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 
-![](figures/en-us_cn_image_0000002504021297.png)
+![](figures/en-us_image_0000002504021297.png)

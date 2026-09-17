@@ -61,4 +61,4 @@ Address space layout randomization (ASLR) is a security technology against buffe
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 
-![](figures/en-us_cn_image_0000002518697736.png)
+![](figures/en-us_image_0000002518697736.png)
