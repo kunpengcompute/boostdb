@@ -1,12 +1,12 @@
 # 版本说明书
 
-## 2026-06-30
+## 2026-09-30
 
 ### 修改记录
 
 | 文档版本 | 发布日期       | 修改说明                                                                                                                                 |
 | ---- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| 01   | 2026-03-30 |- 首次发布MySQL Plan Cache特性。<br>- 首次发布MySQL事务锁优化特性。<br>- 更新MySQL字符集处理SIMD优化特性。 |
+| 01   | 2026-09-30 |- 首次发布Percona Thread Pool动态并发调度优化特性。<br>- 首次发布MySQL redo文件复用优化特性。<br>- 首次发布MySQL container aware优化特性。 |
 
 ### 版本配套说明
 
@@ -14,7 +14,103 @@
 
 | 产品名称      | 产品版本     |
 | --------- | -------- |
-| BoostDB | 26.1.RC1 |
+| Kunpeng BoostKit | 26.2.RC1 |
+
+#### 软件版本配套说明
+
+|特性名称|软件类型|版本|
+|--|--|--|
+|Percona Thread Pool动态并发调度优化|OS|openEuler 22.03 LTS SP4|
+|Percona Thread Pool动态并发调度优化|Percona|Percona-Server 8.0.43-34|
+|Percona Thread Pool动态并发调度优化|Patch|0001-WL-16484-InnoDB-container-aware-cgroup-memory-limit.patch<br>0002-adjust-threadpool-concurrency-using-scheduler-statis.patch|
+|MySQL redo文件复用优化|OS|openEuler 22.03 LTS SP4、openEuler 24.03 LTS SP3|
+|MySQL redo文件复用优化|Percona|Percona-Server 8.0.43-34|
+|MySQL container aware优化|OS|openEuler 22.03 LTS SP4、openEuler 24.03 LTS SP3|
+|MySQL container aware优化|Percona|Percona-Server 8.0.43-34|
+
+#### 硬件版本配套说明
+
+| 特性名称  | 硬件项目| 要求说明  |
+| ------------- | ------------- | ---------- |
+|Percona Thread Pool动态并发调度优化、MySQL redo文件复用优化、MySQL container aware优化| 处理器 | 鲲鹏920处理器、鲲鹏920新型号处理器、鲲鹏950处理器|
+
+#### 病毒扫描结果
+
+不涉及软件包发布，不涉及病毒扫描。
+
+### 版本使用注意事项
+
+无
+
+### 版本说明
+
+#### 更新说明
+
+##### Percona Thread Pool动态并发调度优化
+
+Percona Server原有线程池不会根据进程CPU使用率和上下文切换频率调整工作线程数量。有序提交的follower线程等待leader线程完成flush或sync时仍计入线程组的活跃线程数，线程组达到并发上限后，同组队列中的请求需要等待现有工作线程继续处理。
+
+本版本增加Percona Thread Pool动态并发调度优化。线程池定时器周期性采集mysqld进程的CPU使用率和上下文切换频率，并更新全局活跃工作线程配额。有序提交的follower线程进入等待时，线程池根据全局配额、所属线程组的任务队列和并发上限决定是否唤醒或创建一个工作线程。
+
+本版本新增以下GLOBAL参数，均支持运行期修改，不需要重启实例：
+
+|参数|默认值|说明|
+|--|--|--|
+|thread_pool_commit_burst_threads|ON|控制有序提交等待期间是否允许按配额唤醒或创建工作线程。|
+|thread_pool_cpu_usage_threshold|90|设置进程CPU使用率阈值。|
+|thread_pool_nvcsw_freq_threshold|10000|设置主动上下文切换频率阈值。|
+|thread_pool_nivcsw_freq_threshold|4294967295|设置被动上下文切换频率阈值。|
+
+本版本不改变事务提交语义、磁盘格式、Binlog事件格式和客户端协议。将`thread_pool_commit_burst_threads`设置为`OFF`后，有序提交等待不再触发补线程操作，线程池沿用原有处理行为。
+
+##### MySQL redo文件复用优化
+
+优化InnoDB启动阶段对unused redo文件的处理逻辑。当`#innodb_redo`目录中已存在满足条件的unused redo文件时，系统可以直接复用这些文件，而不是先删除再重新创建。
+
+本次修改同时引入了只读启动参数`innodb_redo_log_reuse_unused_files`，默认开启。关闭该参数后，系统回退到原有的启动阶段清理逻辑。
+
+##### MySQL container aware优化
+
+优化InnoDB redo log后台线程在高CPU场景下的等待策略。在`log_should_wait_for_events_without_spinning()`中新增`srv_cpu_usage.utime_pct >= srv_log_spin_cpu_pct_hwm`判断：当实例用户态CPU百分比达到或超过高水位时，日志后台线程不再继续busy spin（忙等自旋），而是直接退回事件等待，以减少高CPU场景下额外的CPU消耗。
+
+为保证该判断在容器和其他cgroup受限场景下同样有效，本次修改同时补充了实例可用CPU和内存的获取逻辑，优先读取cgroup v2或cgroup v1的资源限制，在未检测到限制时继续使用原有系统接口。相关CPU数量结果会用于`srv_cpu_usage.utime_pct`的换算以及部分资源相关逻辑。
+
+#### 已解决的问题
+
+无
+
+#### 遗留问题
+
+无
+
+### 版本配套文档
+
+|文档名称|内容简介|交付形式|
+|--|--|--|
+|《Percona Thread Pool动态并发调度优化 特性指南》|提供当前特性的环境要求、特性使能指导。|开源仓|
+|《MySQL redo文件复用优化 特性指南》|提供当前特性的环境要求、特性使能指导。|开源仓|
+|《MySQL container aware特性指南》|提供当前特性的环境要求、特性使能指导。|开源仓|
+
+### 获取文档的方法<a name="ZH-CN_TOPIC_0000002544372643"></a>
+
+您可以通过访问[开源仓](https://gitcode.com/boostkit/boostdb/tree/master/docs)浏览和获取相关文档。
+
+
+## 2026-06-30
+
+### 修改记录
+
+| 文档版本 | 发布日期       | 修改说明                                                                                                                                 |
+| ---- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 01   | 2026-06-30 |- 首次发布MySQL Plan Cache特性。<br>- 首次发布MySQL事务锁优化特性。<br>- 更新MySQL字符集处理SIMD优化特性。 |
+
+### 版本配套说明
+
+#### 产品版本信息
+
+| 产品名称      | 产品版本     |
+| --------- | -------- |
+| Kunpeng BoostKit | 26.1.RC1 |
 
 #### 软件版本配套说明
 
@@ -96,14 +192,14 @@
 
 | 产品名称      | 产品版本     |
 | --------- | -------- |
-| BoostDB | 26.0.RC1 |
+| Kunpeng BoostKit | 26.0.RC1 |
 
 #### 软件版本配套说明
 
 |特性名称|软件类型|版本|
 |--|--|--|
 |MySQL LSE优化、MySQL rec_get_offsets优化|OS|openEuler 22.03 LTS SP4、openEuler 24.03 LTS SP3|
-|MySQL LSE优化、MySQL rec_get_offsets优化|Percona|Percona-Server 5.7.44-53、Percona-Server 8.0.43-34|                                                                             |
+|MySQL LSE优化、MySQL rec_get_offsets优化|Percona|Percona-Server 5.7.44-53、Percona-Server 8.0.43-34|
 
 #### 硬件版本配套说明
 
@@ -148,7 +244,7 @@
 
 ### 获取文档的方法<a name="ZH-CN_TOPIC_0000002544372643"></a>
 
-您可以通过访问[开源仓](https://gitcode.com/boostkit/boostdb/tree/master/docs/zh)浏览和获取相关文档。
+您可以通过访问[开源仓](https://gitcode.com/boostkit/Kunpeng BoostKit/tree/master/docs/zh)浏览和获取相关文档。
 
 ## 2025-12-30
 
@@ -164,7 +260,7 @@
 
 | 产品名称      | 产品版本     |
 | --------- | -------- |
-| BoostDB | 25.3.0 |
+| Kunpeng BoostKit | 25.3.0 |
 
 #### 软件版本配套说明
 
