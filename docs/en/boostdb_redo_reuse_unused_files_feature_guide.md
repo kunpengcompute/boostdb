@@ -58,7 +58,7 @@ The following uses Percona-Server 8.0.43-34 as an example to describe how to ins
 2. Start the database. For details, see [Running MySQL](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_03_0013.html) in the *MySQL Porting Guide*.
 3. (Optional) Perform the sysbench test to compare the performance before and after the optimization feature is enabled. For details about the test procedure, see [Sysbench 0.5 & 1.0 Test Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html). The redo file reuse feature can improve the sysbench write-only performance by 5% in a container with 32 vCPUs and 256 GB memory. [Figure 1](#performance-compare-redo-file-reuse) shows the performance comparison before and after the optimization.
 
-**Figure 1** Performance comparison in sysbench write scenarios<a name="fig937192253919"></a><a id="performance-compare-redo-file-reuse"></a><br>
+**Figure 1** Performance comparison in sysbench write scenarios<a name="fig937192253919"></a><a id="performance-compare-redo-file-reuse"></a>
 
 ![](figures/mysql_redo_file_reuse.png  "Performance comparison in sysbench write scenarios")
 
