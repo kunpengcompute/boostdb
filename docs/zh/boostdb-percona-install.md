@@ -7,7 +7,7 @@
 BoostDB-Percona-5.7.44-53.aarch64.rpm基于Percona-Server-5.7.44-53源码，结合鲲鹏处理器进行深度优化，集成以下性能优化补丁，覆盖硬件指令加速、存储引擎优化、查询优化等多个方面，显著增强了Percona-5.7在鲲鹏服务器上的运行性能。在此基础上运用了鲲鹏GCC CFGO（Continuous Feature Guided Optimization）反馈优化特性，在8U规格下，Sysbench综合性能提升25%以上。
 
 - 热点函数inline优化
-- 调整Cacheline大小到128B
+- 调整Cacheline大小到128字节
 - 使用硬件指令加速crc32
 - 使用NEON指令集向量化处理字符集
 - 使用NEON指令集优化字符串转换
@@ -30,6 +30,9 @@ BoostDB-Percona-8.0.43-34.aarch64.rpm基于Percona-Server-8.0.43-34源码，结�
 - 优化InnoDB元组比较的性能
 - binlog空间预分配
 - binlog拆锁优化
+- Percona Thread Pool动态并发调度优化
+- MySQL redo文件复用优化
+- MySQL container aware优化
 
 ## 环境要求<a name="ZH-CN_TOPIC_0000002518697732"></a>
 
