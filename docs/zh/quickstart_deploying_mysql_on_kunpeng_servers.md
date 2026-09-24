@@ -211,7 +211,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     >![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
     >
     > * 如果以root用户第一次执行`service mysql start`启动失败（提示缺少mysql.log文件），请先切换到mysql用户（`su - mysql`）启动数据库服务生成mysql.log，停止服务后再以root用户启动。
-    >* 如果netstat命令执行失败，需先执行`yum -y install net-tools`安装依赖包。
+    > * 如果netstat命令执行失败，需先执行`yum -y install net-tools`安装依赖包。
 
 4. 登录数据库并修改初始密码。
 

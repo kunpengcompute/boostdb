@@ -15,7 +15,6 @@ Linux内核中虽然包含了CRC32算法的C语言实现，但是由于性能较
 > * 本特性与其他MySQL加速特性兼容，特性之间的兼容性信息请参见《[特性之间的兼容性](https://www.hikunpeng.com/document/detail/zh/boostdb/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html)》。
 > * GCC编译时通过`-march=armv8-a+crc`编译选项指定ARM架构版本及扩展指令集，使能CRC32硬件指令。
 
-
 ## 快速安装
 
 ### 环境准备
@@ -189,10 +188,10 @@ objdump -d /usr/local/mysql/bin/mysqld | grep crc32cb
     ```txt
     -march=armv8-a+lse
     ```
+
 2. 安装。
 
     按照步骤重新编译安装MySQL，然后启动数据库并执行Sysbench压测。 
-
 
 #### 结果说明
 
@@ -231,6 +230,7 @@ objdump -d /usr/local/mysql/bin/mysqld | grep crc32cb
 * [MySQL 8.0.x 调优指南（数据库参数调优、操作系统调优）](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0013.html)
 
 ## 修订记录
+
 |文档版本 | 发布日期 | 修改说明 |
 | --------| -------- | -------- |
 |01| 2026-09-30 | 第一次正式发布。 |
