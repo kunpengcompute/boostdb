@@ -10,7 +10,7 @@ LSE（Large System Extensions，大系统扩展）是专为现代多核、高并
 
 本文以Percona\-Server 5.7.44\-53为例，指导用户通过"获取RPM 包 → 安装 → 启动数据库 → 性能对比验证"的流程，快速上手使用MySQL LSE优化特性。使能本特性后，Sysbench 8U16G规格下256并发综合性能（只读、读写、只写）可提升约 5%。
 
-> ![引出说明信息的图标](public_sys-resources\icon-note.gif)**说明**
+> ![引出说明信息的图标](public_sys-resources/icon-note.gif)**说明**
 >
 > * Percona Server是一款与MySQL完全兼容的独立数据库产品，本特性以BoostDB RPM包形式提供，安装后默认已使能LSE优化。
 > * 多核、原子锁争抢严重的场景下，也可在GCC编译选项中添加`-march=armv8-a+lse`选项，从源码层面使能LSE特性。
