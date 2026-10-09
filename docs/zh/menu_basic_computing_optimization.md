@@ -17,3 +17,9 @@
 - [MySQL KAEzstd页压缩解压缩优化 特性指南](./mysql_kaezstd_page_compression_and_decompression_optimizaiton_feature_guide.md)
 
 - [MySQL Plan Cache特性指南](./boostdb_plan_cache_optimization_feature_guide.md)
+
+- [MySQL container aware优化 特性指南](./boostdb_container_aware_resource_detection_feature_guide.md)
+
+- [MySQL redo文件复用优化 特性指南](./boostdb_redo_reuse_unused_files_feature_guide.md)
+
+- [Percona Thread Pool动态并发调度优化 特性指南](./boostdb_thread_pool_dynamic_concurrency_optimization_feature_guide.md)
