@@ -19,3 +19,9 @@
 - [MySQL KAEZstd Page Compression and Decompression Optimization Feature Guide](./mysql_kaezstd_page_compression_and_decompression_optimization_feature_guide.md)
 
 - [MySQL Plan Cache Feature Guide](./boostdb_plan_cache_optimization_feature_guide.md)
+
+- [MySQL Container-Aware Optimization Feature Guide](./boostdb_container_aware_resource_detection_feature_guide.md)
+
+- [MySQL Redo File Reuse Feature Guide](./boostdb_redo_reuse_unused_files_feature_guide.md)
+
+- [Percona Thread Pool Dynamic Concurrency Scheduling Optimization Feature Guide](./boostdb_thread_pool_dynamic_concurrency_optimization_feature_guide.md)
