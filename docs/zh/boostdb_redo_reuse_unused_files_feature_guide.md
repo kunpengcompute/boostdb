@@ -1,4 +1,4 @@
-﻿# MySQL redo文件复用优化 特性指南
+# MySQL redo文件复用优化 特性指南
 
 ## 特性描述<a name="ZH-CN_TOPIC_0000002605100002"></a>
 
