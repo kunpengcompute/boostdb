@@ -39,8 +39,10 @@ LSE（Large System Extensions，大系统扩展）是专为现代多核、高并
 
 |软件类型|必选/可选|软件包说明|软件包名称|获取链接|
 |---|---|---|---|---|
-|主要安装包|必选|已内置LSE优化特性的BoostDB Percona RPM包（aarch64）|BoostDB-Percona-5.7.44-53.aarch64.rpm|[Percona\-Server 5.7.44\-53](https://www.hikunpeng.com/link?target=https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v3/BoostDB-Percona-5.7.44-53.aarch64.rpm)|
-|主要安装包|可选（二选一）|8.0 版本RPM包|BoostDB-Percona-8.0.43-34.aarch64.rpm|[Percona\-Server 8.0.43\-34](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v2/BoostDB-Percona-8.0.43-34.aarch64.rpm)|
+|主要安装包|必选|已内置LSE优化特性的BoostDB Percona RPM包（aarch64）|BoostDB-Percona-5.7.44-53.aarch64.rpm|[Percona\-Server 5.7.44\-53](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/BoostDB-Percona-5.7.44-53.aarch64.rpm)|
+|基线安装包|必选（基线测试用）|未内置LSE优化特性的Percona Server5.7.44-53基线RPM包（aarch64），用于与BoostDB-Percona-5.7.44-53做基线对比|BoostDB-Percona-5.7.44-53.aarch64.rpm|[Percona\-Server 5.7.44\-53基线RPM](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v3/BoostDB-Percona-5.7.44-53.aarch64.rpm)|
+|主要安装包|可选（二选一）|8.0 版本RPM包|BoostDB-Percona-8.0.43-34.aarch64.rpm|[Percona\-Server 8.0.43\-34](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/BoostDB-Percona-8.0.43-34.aarch64.rpm)|
+|基线安装包|可选（二选一）|未内置LSE优化特性的Percona Server8.0.43-34基线RPM包（aarch64），用于与BoostDB-Percona-8.0.43-34做基线对比|BoostDB-Percona-8.0.43-34.aarch64.rpm|[Percona\-Server 8.0.43\-34基线RPM](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v2/BoostDB-Percona-8.0.43-34.aarch64.rpm)|
 
 #### 执行安装
 
