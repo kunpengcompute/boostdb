@@ -1,4 +1,4 @@
-﻿# MySQL container aware优化 特性指南
+# MySQL container aware优化 特性指南
 
 ## 特性描述<a name="ZH-CN_TOPIC_0000002604100002"></a>
 
