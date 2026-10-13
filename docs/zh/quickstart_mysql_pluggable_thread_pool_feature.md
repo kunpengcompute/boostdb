@@ -66,8 +66,11 @@ wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/
 2. 解压补丁包，并将`code-threadpool-for-MySQL-8.0.patch`放置在MySQL源码根目录下。
 
     ```bash
-   unzip boostdb-patch-release-20260330.zip
-   ```
+    cd /home
+    unzip boostdb-patch-release-20260330.zip
+    cp /home/boostdb-patch-release-20260330/code-threadpool-for-MySQL-8.0.patch /home/mysql-8.0.25/
+    cd /home/mysql-8.0.25
+    ```
 
 3. 在源码根目录，使用git初始化命令建立git管理信息。
 
@@ -89,8 +92,8 @@ wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/
 4. 合入线程池特性补丁。
 
     ```bash
-    git apply --check boostdb-patch-release-20260330/code-threadpool-for-MySQL-8.0.patch
-    git apply --whitespace=nowarn boostdb-patch-release-20260330/code-threadpool-for-MySQL-8.0.patch
+    git apply --check --whitespace=nowarn code-threadpool-for-MySQL-8.0.patch
+    git apply --whitespace=nowarn code-threadpool-for-MySQL-8.0.patch
     ```
 
 5. 确认补丁合入成功，查看新增的thread\_pool目录。
@@ -133,7 +136,14 @@ make -j 96 install
 4. 启动数据库服务。
 
    ```bash
-    service mysql start
+    /usr/local/mysql/bin/mysqld --defaults-file=/etc/my.cnf &
+    ```
+
+    查看数据库进程和监听端口，确认服务已正常启动：
+
+    ```bash
+    ps -ef | grep mysql
+    netstat -anpt | grep 3306
     ```
 
 #### 验证编译产物
@@ -156,13 +166,48 @@ ls $CMAKE_INSTALL_PREFIX/lib/plugin/thread_pool.so
 
 #### 操作步骤
 
-1. 登录数据库。
+1. 登录数据库并修改初始密码。
 
    ```bash
    mysql -uroot -p -S /data/mysql/run/mysql.sock
    ```
 
-2. 安装线程池插件。
+   提示输入密码时，输入步骤3生成的临时初始密码。登录成功后修改root用户密码并创建全域root用户（允许root从其他服务器访问）：
+
+   ```sql
+   alter user 'root'@'localhost' identified by '123456';
+   create user 'root'@'%' identified by '123456';
+   grant all privileges on *.* to 'root'@'%';
+   flush privileges;
+   ```
+
+   预期输出：
+
+   ```output
+   Query OK, 0 rows affected (0.01 sec)
+   ```
+
+   >![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
+   > 文档中的用户和密码只是参考，请根据客户实际情况进行配置。
+   > **安全提示**：`123456`仅为演示用弱密码，生产环境请务必使用强密码（建议12位以上，包含大小写字母、数字和特殊字符）；同时应避免在命令行参数中直接携带明文密码（如`mysql -uroot -p123456`），以防密码留存在shell命令历史中被泄露。
+
+2. 用新密码重新登录验证。
+
+   执行`exit`退出数据库，然后重新登录：
+
+   ```bash
+   mysql -uroot -p -S /data/mysql/run/mysql.sock
+   ```
+
+   预期输出（部分）：
+
+   ```output
+   Welcome to the MySQL monitor.  Commands end with ; or \g.
+   Your MySQL connection id is 8
+   Server version: 8.0.25
+   ```
+
+3. 安装线程池插件。
 
    thread\_pool.so 中包含 5 个插件：thread\_pool 是线程池连接器插件，THREAD\_POOL\_GROUPS、THREAD\_POOL\_QUEUES、THREAD\_POOL\_STATS、THREAD\_POOL\_WAITS 是线程池状态监管表插件。执行以下 SQL 语句安装，安装后立即生效：
 
@@ -180,7 +225,7 @@ ls $CMAKE_INSTALL_PREFIX/lib/plugin/thread_pool.so
    Query OK, 0 rows affected (0.01 sec)
    ```
 
-3. 验证插件安装结果。
+4. 验证插件安装结果。
 
    ```sql
    show plugins;
@@ -188,7 +233,7 @@ ls $CMAKE_INSTALL_PREFIX/lib/plugin/thread_pool.so
 
    预期输出：回显信息中thread\_pool插件状态为"ACTIVE"，表示插件已安装成功。
 
-4. 查看线程池运行状态。
+5. 查看线程池运行状态。
 
    通过 information\_schema 中新增的状态表实时监管线程池状态，例如查看线程组信息。
 
