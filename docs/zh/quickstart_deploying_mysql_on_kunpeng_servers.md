@@ -175,7 +175,20 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     >![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
     > 其中文件路径（包括软件安装路径basedir、数据路径datadir等）请根据实际情况修改。`user=mysql`指操作系统层的用户，即2.2.2章节创建的用户。如需进行性能调测，请参考《数据库参数调优》修改my.cnf中的配置参数。
 
-2. 初始化数据库。
+2. 配置MySQL环境变量。
+
+    ```bash
+    echo 'export PATH=$PATH:/usr/local/mysql/bin' >> /etc/profile
+    source /etc/profile
+    ```
+
+    通过以下命令确认环境变量已生效：
+
+    ```bash
+    mysql --version
+    ```
+
+3. 初始化数据库。
 
     ```bash
     chmod 755 /data/mysql/data/
@@ -192,10 +205,10 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
 
     >![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
     >
-    > * 初始化回显`root@localhost:`后面有生成的临时初始密码，请注意保存，步骤4中会用到。
+    > * 初始化回显`root@localhost:`后面有生成的临时初始密码，请注意保存，步骤5中会用到。
     > * 如果初始化失败，提示"\-\-initialize specified but the data directory has files in it."，则执行`ls /data/mysql/data`确认后，执行`rm -rf /data/mysql/data/*`删除数据并重新初始化。
 
-3. 启动数据库。
+4. 启动数据库。
 
     ```bash
     /usr/local/mysql/bin/mysqld --defaults-file=/etc/my.cnf &
@@ -213,16 +226,16 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     > * 如果以root用户第一次执行`service mysql start`启动失败（提示缺少mysql.log文件），请先切换到mysql用户（`su - mysql`）启动数据库服务生成mysql.log，停止服务后再以root用户启动。
     > * 如果netstat命令执行失败，需先执行`yum -y install net-tools`安装依赖包。
 
-4. 登录数据库并修改初始密码。
+5. 登录数据库并修改初始密码。
 
     ```bash
     mysql -uroot -p -S /data/mysql/run/mysql.sock
     ```
 
-    提示输入密码时，输入步骤2生成的临时初始密码。登录成功后修改root用户密码并创建全域root用户（允许root从其他服务器访问）：
+    提示输入密码时，输入步骤3生成的临时初始密码。登录成功后修改root用户密码并创建全域root用户（允许root从其他服务器访问）：
 
     ```sql
-    alteruser 'root'@'localhost' identified by '123456';
+    alter user 'root'@'localhost' identified by '123456';
     create user 'root'@'%' identified by '123456';
     grant all privileges on *.* to 'root'@'%';
     flush privileges;
@@ -238,7 +251,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     > 文档中的用户和密码只是参考，请根据客户实际情况进行配置。
     > **安全提示**：`123456`仅为演示用弱密码，生产环境请务必使用强密码（建议12位以上，包含大小写字母、数字和特殊字符）；同时应避免在命令行参数中直接携带明文密码（如`mysql -uroot -p123456`），以防密码留存在shell命令历史中被泄露。
 
-5. 用新密码重新登录验证。
+6. 用新密码重新登录验证。
 
     执行`exit`退出数据库，然后重新登录：
 
