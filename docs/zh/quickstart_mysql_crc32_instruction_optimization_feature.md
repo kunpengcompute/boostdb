@@ -78,11 +78,11 @@ Linux内核中虽然包含了CRC32算法的C语言实现，但是由于性能较
 
     ```bash
     # 查看补丁文件的统计信息
-    git apply --stat 0001-CRC32-AARCH64.patch
+    git apply --ignore-whitespace --stat 0001-CRC32-AARCH64.patch
     # 检查补丁文件是否能够成功应用到当前的代码库中
-    git apply --check 0001-CRC32-AARCH64.patch
+    git apply --ignore-whitespace --check 0001-CRC32-AARCH64.patch
     # 将补丁文件应用到当前的代码库中
-    git apply 0001-CRC32-AARCH64.patch
+    git apply --ignore-whitespace 0001-CRC32-AARCH64.patch
     ```
 
     预期输出如下。
@@ -100,7 +100,7 @@ Linux内核中虽然包含了CRC32算法的C语言实现，但是由于性能较
 cd /home/mysql-8.0.25
 mkdir build
 cd build
-cmake .. -DBUILD_CONFIG=mysql_release -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/data/mysql/data -DWITH_BOOST=/home/mysql-8.0.25/boost/boost_1_73_0
+cmake .. -DBUILD_CONFIG=mysql_release -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/data/mysql/data -DWITH_BOOST=/home/mysql-8.0.25/boost/boost_1_73_0 -DCMAKE_C_FLAGS="-march=armv8-a+crc" -DCMAKE_CXX_FLAGS="-march=armv8-a+crc"
 make -j 96
 make -j 96 install
 ```
@@ -183,10 +183,10 @@ objdump -d /usr/local/mysql/bin/mysqld | grep crc32cb
 
 1. 修改编译选项。
 
-    在MySQL源码的CMakeLists.txt文件中，将编译选项修改为：
+    在编译MySQL过程中的命令里加入“lse”选项：
 
-    ```txt
-    -march=armv8-a+lse
+    ```bash
+    cmake .. -DBUILD_CONFIG=mysql_release -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/data/mysql/data -DWITH_BOOST=/home/mysql-8.0.25/boost/boost_1_73_0 -DCMAKE_C_FLAGS="-march=armv8-a+crc+lse" -DCMAKE_CXX_FLAGS="-march=armv8-a+crc+lse"
     ```
 
 2. 安装。
@@ -201,7 +201,7 @@ objdump -d /usr/local/mysql/bin/mysqld | grep crc32cb
 
 以下高频问题根据特性指南的操作约束整理，详细解决方案请参见对应文档。
 
-**问题：执行 ****`git apply --check 0001-CRC32-AARCH64.patch`**** 报错，补丁无法合入**
+**问题：执行 ****`git apply --ignore-whitespace --check 0001-CRC32-AARCH64.patch`**** 报错，补丁无法合入**
 
 答复：该补丁针对 MySQL 8.0.25 版本开发。请确认两点：一是使用的源码包为 MySQL 8.0.25 且解压后未做任何修改（建议在 `git init` 建立基线后再合入补丁）；二是补丁文件在源码根目录（`/home/mysql-8.0.25`）下执行合入命令。若源码已被修改，请重新解压干净的源码包后重试。
 
