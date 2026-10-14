@@ -1,4 +1,4 @@
-# 快速入门：MySQL LSE 优化特性
+# 快速入门：MySQL LSE优化特性
 
 MySQL LSE（Large System Extensions）优化特性是鲲鹏BoostKit MySQL加速套件针对鲲鹏服务器OLTP场景提供的基础计算优化功能。该特性通过引入ARMv8.1规范的原子操作硬件加速方案，将计算操作移至L3 Cache执行，有效缓解了高并发读写环境下因锁竞争激烈导致的性能线性劣化问题。在Sysbench 8U16G规格、256并发测试条件下，使能该特性可使MySQL数据库的综合性能（含只读、读写、只写）提升约5%。
 
