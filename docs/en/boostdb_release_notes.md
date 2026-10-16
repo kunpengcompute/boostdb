@@ -1,12 +1,109 @@
 # Release Notes
 
+<!-- md-trans-meta sourceCommit=0452e01f56edb20545774f216f0837dca944de8b translatedAt=2026-10-14T01:16:52.076Z pushedAt=2026-10-14T09:28:05.010Z -->
+
+## 2026-09-30
+
+### Change History
+
+| Version | Date | Description |
+| ---- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 01   | 2026-09-30 |- Released the Percona thread pool dynamic concurrency scheduling optimization feature.<br>- Released the MySQL redo file reuse feature.<br>- Released the MySQL container-aware optimization feature. |
+
+### Version Mapping
+
+#### Product Version Information
+
+| Product Name      | Version     |
+| --------- | -------- |
+| Kunpeng BoostKit | 26.2.RC1 |
+
+#### Software Version Mapping
+
+| Feature | Software Type | Version |
+|--|--|--|
+| Percona thread pool dynamic concurrency scheduling optimization | OS | openEuler 22.03 LTS SP4 |
+| Percona thread pool dynamic concurrency scheduling optimization | Percona | Percona-Server 8.0.43-34 |
+| Percona thread pool dynamic concurrency scheduling optimization | Patch | 0001-WL-16484-InnoDB-container-aware-cgroup-memory-limit.patch<br>0002-adjust-threadpool-concurrency-using-scheduler-statis.patch |
+| MySQL redo file reuse | OS | openEuler 22.03 LTS SP4 or openEuler 24.03 LTS SP3 |
+| MySQL redo file reuse | Percona | Percona-Server 8.0.43-34 |
+| MySQL container-aware optimization | OS | openEuler 22.03 LTS SP4 or openEuler 24.03 LTS SP3 |
+| MySQL container-aware optimization | Percona | Percona-Server 8.0.43-34 |
+
+#### Hardware Version Mapping
+
+| Feature | Item | Requirement |
+| ------------- | ------------- | ---------- |
+| Percona thread pool dynamic concurrency scheduling optimization, MySQL redo file reuse, and MySQL container-aware optimization | Processor | Kunpeng 920 processor, new Kunpeng 920 processor model, or Kunpeng 950 processor |
+
+#### Virus Scan Results
+
+Virus scanning is not involved because no software package is released.
+
+### Important Notes
+
+None
+
+### Release Notes
+
+#### Change Description
+
+##### Percona Thread Pool Dynamic Concurrency Scheduling Optimization
+
+The original thread pool of Percona Server does not adjust the number of worker threads based on the process CPU usage and context switching frequency. When a follower thread in ordered commit waits for the leader thread to complete flush or sync, it is still counted in the active thread count of the thread group. After the thread group reaches the concurrency limit, requests in the queue of the same group must wait for the existing worker threads to continue processing.
+
+This version adds Percona thread pool dynamic concurrency scheduling optimization. The thread pool timer periodically collects the CPU usage and context switching frequency of the mysqld process and updates the global active worker thread quota. When a follower thread in ordered commit enters the waiting state, the thread pool determines whether to wake up or create a worker thread based on the global quota, the task queue of the thread group to which it belongs, and the concurrency limit.
+
+This version adds the following global parameters, all of which support modification at runtime without restarting the instance:
+
+|Parameter|Default Value|Description|
+|--|--|--|
+|thread_pool_commit_burst_threads|ON|Controls whether worker threads are allowed to be woken up or created according to the quota during ordered commit waiting.|
+|thread_pool_cpu_usage_threshold|90|Sets the process CPU usage threshold.|
+|thread_pool_nvcsw_freq_threshold|10000|Sets the voluntary context switching frequency threshold.|
+|thread_pool_nivcsw_freq_threshold|4294967295|Sets the involuntary context switching frequency threshold.|
+
+This version does not change the transaction commit semantics, disk format, binlog event format, or client protocol. After `thread_pool_commit_burst_threads` is set to `OFF`, ordered commit waiting no longer triggers the operation of adding threads, and the thread pool retains the original processing behavior.
+
+##### MySQL Redo File Reuse
+
+This feature optimizes the processing logic for unused redo files during the InnoDB startup phase. When the `#innodb_redo` directory already contains unused redo files that meet the conditions, the system can directly reuse these files instead of deleting and then recreating them.
+
+This change introduces the read-only startup parameter `innodb_redo_log_reuse_unused_files`, which is enabled (set to `ON`) by default. When this parameter is disabled (set to `OFF`), the system falls back to the original startup-phase cleanup logic.
+
+##### MySQL Container-Aware Optimization
+
+This feature optimizes the waiting strategy of InnoDB redo log background threads in high-CPU-usage scenarios. It adds the `srv_cpu_usage.utime_pct >= srv_log_spin_cpu_pct_hwm` check in `log_should_wait_for_events_without_spinning()`: When the user-space CPU usage of an instance reaches or exceeds the high water mark, the log background threads directly bypass spin waiting and switch to event waiting, thereby reducing the additional CPU consumption under high CPU load.
+
+To make this check equally effective in containers or in cgroup-based resource-constrained scenarios (excluding containers), this change adds the capability to obtain the CPU resources and memory available to instances, and preferentially reads the resource limits of cgroup v2 or cgroup v1. If no limit is detected, the original system interfaces continue to be used. The resulting CPU count is used for the calculation of `srv_cpu_usage.utime_pct` and for other resource-related logic.
+
+#### Resolved Issues
+
+None
+
+#### Known Issues
+
+None
+
+### Related Documentation
+
+| Document | Description | Delivery Method |
+|--|--|--|
+| *Percona Thread Pool Dynamic Concurrency Scheduling Optimization Feature Guide* | Provides the environment requirements and guidance on enabling the current feature. | Open-source repository |
+| *MySQL Redo File Reuse Feature Guide* | Provides the environment requirements and guidance on enabling the current feature. | Open-source repository |
+| *MySQL Container-Aware Optimization Feature Guide* | Provides the environment requirements and guidance on enabling the current feature. | Open-source repository |
+
+### Obtaining Documentation<a name="EN-US_TOPIC_0000002544372643"></a>
+
+Visit the [open-source repository](https://gitcode.com/boostkit/boostdb/tree/master/docs) to view or download required documents.
+
 ## 2026-06-30
 
 ### Change History
 
 | Version| Date      | Description                                                                                                                                |
 | ---- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| 01   | 2026-03-30 |- Released the MySQL plan cache feature.<br>- Released the MySQL transaction lock optimization feature.<br>- Updated the SIMD-based MySQL character set processing optimization feature.|
+| 01   | 2026-06-30 |- Released the MySQL plan cache feature.<br>- Released the MySQL transaction lock optimization feature.<br>- Updated the SIMD-based MySQL character set processing optimization feature. |
 
 ### Version Mapping
 
@@ -14,7 +111,7 @@
 
 | Product Name     | Version    |
 | --------- | -------- |
-| BoostDB | 26.1.RC1 |
+| Kunpeng BoostKit | 26.1.RC1 |
 
 #### Software Version Mapping
 
@@ -96,7 +193,7 @@ Visit the [open-source repository](https://gitcode.com/boostkit/boostdb/tree/mas
 
 | Product Name     | Version    |
 | --------- | -------- |
-| BoostDB | 26.0.RC1 |
+| Kunpeng BoostKit | 26.0.RC1 |
 
 #### Software Version Mapping
 
@@ -164,7 +261,7 @@ Visit the [open-source repository](https://gitcode.com/boostkit/boostdb/tree/mas
 
 | Product Name     | Version    |
 | --------- | -------- |
-| BoostDB | 25.3.0 |
+| Kunpeng BoostKit | 25.3.0 |
 
 #### Software Version Mapping
 
