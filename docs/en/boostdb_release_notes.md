@@ -24,7 +24,7 @@
 |--|--|--|
 | Percona thread pool dynamic concurrency scheduling optimization | OS | openEuler 22.03 LTS SP4 |
 | Percona thread pool dynamic concurrency scheduling optimization | Percona | Percona-Server 8.0.43-34 |
-| Percona thread pool dynamic concurrency scheduling optimization | Patch | 0001-WL-16484-InnoDB-container-aware-cgroup-memory-limit.patch<br>0002-adjust-threadpool-concurrency-using-scheduler-statis.patch |
+| Percona thread pool dynamic concurrency scheduling optimization | Patch | `0001-WL-16484-InnoDB-container-aware-cgroup-memory-limit.patch`<br>`0002-adjust-threadpool-concurrency-using-scheduler-statis.patch` |
 | MySQL redo file reuse | OS | openEuler 22.03 LTS SP4 or openEuler 24.03 LTS SP3 |
 | MySQL redo file reuse | Percona | Percona-Server 8.0.43-34 |
 | MySQL container-aware optimization | OS | openEuler 22.03 LTS SP4 or openEuler 24.03 LTS SP3 |
