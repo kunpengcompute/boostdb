@@ -10,7 +10,7 @@ The MySQL pluggable thread pool feature is one of the performance optimization f
 
 When the thread pool connector module is used, it takes over connection establishment and scheduling: the entire thread pool is divided into several thread groups (the number of thread groups is the number of logical CPU cores on the server by default) and one timer thread. The listener thread in each group uses epoll (an event notification mechanism in the Linux kernel for efficiently listening on readable events of a large number of network connections) to listen for network tasks. Tasks are placed into a high-priority or normal queue, and idle worker threads take them out and process them by priority. The number of worker threads can be dynamically scaled so that the server maintains optimal performance even under a large number of client connections. This feature also supports transaction-priority-based scheduling and thread pool lockup prevention, and adds four status information tables to `information_schema` to monitor the thread pool status in real time.
 
->![NOTE](public_sys-resources/icon-note.gif) **NOTE:**
+>![NOTE](public_sys-resources/icon_note.gif) **NOTE:**
 >
 > * This feature is provided in the form of a patch file. The patch `code-threadpool-for-MySQL-8.0.patch` applies to MySQL 8.0.25, 8.0.30, and 8.0.35.
 > * This feature does not conflict with the MySQL NUMA scheduling tuning patch. However, if the thread pool plugin is used, the scheduling tuning for user connection threads in MySQL NUMA scheduling tuning becomes invalid.
@@ -82,7 +82,7 @@ wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/
     git commit -m "Initial commit"
     ```
 
-    >![NOTE](public_sys-resources/icon-note.gif) **NOTE:**
+    >![NOTE](public_sys-resources/icon_note.gif) **NOTE:**
     >
     > If the Git commit user information is not configured, configure it before running `git commit`.
     >
@@ -119,7 +119,7 @@ make -j 96
 make -j 96 install
 ```
 
-> ![NOTE icon](public_sys-resources/icon-note.gif) **NOTE:**
+> ![NOTE icon](public_sys-resources/icon_note.gif) **NOTE:**
 >
 > The `-j 96` parameter fully utilizes multiple CPU cores to speed up compilation. The number following `-j` indicates the number of CPU cores, which can be checked using `cat /proc/cpuinfo | grep processor | wc -l`. This value should be less than or equal to the total number of CPU cores.
 
@@ -189,7 +189,7 @@ MySQL uses one thread per connection by default. This section uses the example o
    Query OK, 0 rows affected (0.01 sec)
    ```
 
-   >![NOTE icon](public_sys-resources/icon-note.gif) **NOTE:**
+   >![NOTE icon](public_sys-resources/icon_note.gif) **NOTE:**
    > The users and passwords in this document are for reference only. Configure them according to the actual customer environment.  
    > **Security note**: `123456` is a weak password used only for demonstration. In production environments, you must use a strong password (12 or more characters recommended, including uppercase and lowercase letters, digits, and special characters). In addition, avoid passing plaintext passwords directly in command-line parameters (such as `mysql -uroot -p123456`) to prevent passwords from being leaked in shell command history.
 
@@ -249,7 +249,7 @@ MySQL uses one thread per connection by default. This section uses the example o
 
 The thread pool plugin status is `ACTIVE` and the status tables can be queried normally, indicating that the thread pool connector has taken effect. New connections will be scheduled by the thread pool.
 
-> ![NOTE icon](public_sys-resources/icon-note.gif) **NOTE:**
+> ![NOTE icon](public_sys-resources/icon_note.gif) **NOTE:**
 >
 > * You can also add `plugin-load-add=thread_pool.so` to the MySQL configuration file `my.cnf` to install the plugin. This method requires restarting the database to take effect.
 > * If you copy `thread_pool.so` to another MySQL service for use after compilation, place the file in the directory specified by the `plugin_dir` variable of the target service, and then run the preceding `INSTALL PLUGIN` statements.
@@ -299,7 +299,7 @@ This section describes how to adjust the number of thread groups in OLTP scenari
 
 `thread_pool_size` can be set via the command line or a configuration file, and can also be modified dynamically (global scope; valid values: 1–1024). After the change, the thread pool schedules connections according to the new number of thread groups. Under high-concurrency TPC-C workloads, enabling the thread pool maintains performance at approximately 85% of the original level; without it, performance drops to only about 10%. For detailed test steps of performance verification, see [BenchmarkSQL Test Guide](https://www.hikunpeng.com/document/detail/en/kunpengdbs/testguide/tstg/kunpengbenchmarksql_06_0001.html).
 
-> ![NOTE icon](public_sys-resources/icon-note.gif) **NOTE:**
+> ![NOTE icon](public_sys-resources/icon_note.gif) **NOTE:**
 >
 > MySQL configuration parameters (system variables) can be used to adjust the functions and performance of the database service. For details, see the official MySQL document *Server System Variables*.
 

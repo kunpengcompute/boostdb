@@ -12,7 +12,7 @@ LSE is an atomic operation hardware acceleration solution designed specifically 
 
 This document uses Percona-Server 5.7.44-53 as an example to describe how to obtain the RPM package, perform the installation, start the database, and conduct performance comparison and verification, helping users quickly get started with the MySQL LSE optimization feature. In sysbench tests with the 8U16G specification and 256 concurrent threads, enabling this feature improves overall MySQL performance (read-only, read-write, and write-only) by about 5%.
 
-> ![NOTE icon](public_sys-resources/icon-note.gif)**NOTE:**
+> ![NOTE icon](public_sys-resources/icon_note.gif)**NOTE:**
 >
 > * Percona Server is a standalone database product fully compatible with MySQL. This feature is provided in the form of a BoostDB RPM package, and LSE optimization is enabled by default after installation.
 > * In multi-core scenarios with severe atomic lock contention, you can also add `-march=armv8-a+lse` to GCC compilation options to enable the LSE feature at the source code level.
@@ -59,7 +59,7 @@ Check the environment item by item according to the following table:
 
     After the installation is complete, the default installation directory is `/usr/local/mysql`.
 
-    > ![NOTE](public_sys-resources/icon-note.gif) **NOTE:**
+    > ![NOTE](public_sys-resources/icon_note.gif) **NOTE:**
     >
     > If dependencies have been installed but the RPM-related check fails, use `--nodeps` to skip the dependency check.
     >

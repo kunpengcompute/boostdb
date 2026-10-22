@@ -12,7 +12,7 @@ The Linux kernel contains the C language-based implementation of the CRC32 algor
 
 This document uses MySQL 8.0.25 as an example to describe how to obtain and apply the patch, and perform compilation, installation, testing, verification, and performance comparison, to help users quickly get started with the CRC32 instruction optimization feature. The methods in this document can also be used as a reference for adaptation and optimization in other scenarios.
 
->![NOTE](public_sys-resources/icon-note.gif)  **NOTE:**
+>![NOTE](public_sys-resources/icon_note.gif)  **NOTE:**
 >
 > * This feature is compatible with other MySQL acceleration features. For compatibility information between features, see [Compatibility Between Features](https://www.hikunpeng.com/document/detail/en/boostdb/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html).
 > * During GCC compilation, specify the Arm architecture version and instruction set extensions through the `-march=armv8-a+crc` compilation option to enable the CRC32 hardware instructions.
@@ -67,7 +67,7 @@ The CRC32 instruction optimization feature for MySQL is provided as a patch file
     git commit -m "Initial commit"
     ```
 
-    > ![NOTE](public_sys-resources/icon-note.gif) **NOTE:**
+    > ![NOTE](public_sys-resources/icon_note.gif) **NOTE:**
     >
     > If the Git commit user information is not configured, configure the user email and user name before running `git commit`:
     >
@@ -107,7 +107,7 @@ make -j 96
 make -j 96 install
 ```
 
->![NOTE](public_sys-resources/icon-note.gif) **NOTE:**
+>![NOTE](public_sys-resources/icon_note.gif) **NOTE:**
 >
 > The `-j 96` parameter fully utilizes multiple CPU cores to speed up compilation. The number following `-j` indicates the number of CPU cores, which can be checked using `cat /proc/cpuinfo | grep processor | wc -l`. This value should be less than or equal to the total number of CPU cores.
 

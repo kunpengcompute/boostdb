@@ -10,7 +10,7 @@ MySQL is an open-source relational database management system (RDBMS) and one of
 
 This document uses MySQL 8.0.25 as an example to guide users in quickly completing the installation, initialization, and first use of MySQL on Kunpeng servers (AArch64 architecture) through source code compilation. This document also applies to MySQL 5.7.27, MySQL 8.0.17, and other MySQL 8.0.*x* versions.
 
->![NOTE icon](public_sys-resources/icon-note.gif) **NOTE:**
+>![NOTE icon](public_sys-resources/icon_note.gif) **NOTE:**
 >
 > * When using open-source software, comply with the applicable licenses.
 > * You need to upgrade MySQL 8.0.16 by applying the patch on the official website. You are advised to directly use MySQL 5.7.27, MySQL 8.0.17, MySQL 8.0.25, or later versions.
@@ -69,7 +69,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     chown -R mysql:mysql /data
     ```
 
-    >![NOTE icon](public_sys-resources/icon-note.gif) **NOTE:**
+    >![NOTE icon](public_sys-resources/icon_note.gif) **NOTE:**
     > When performing performance testing, you need to format a separate drive and mount it to the data directory. For details, see [Creating a Data Drive](https://www.hikunpeng.com/document/detail/en/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_03_0007.html).
 
 3. Install dependencies.
@@ -122,7 +122,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     make -j 96 install
     ```
 
-    >![NOTE icon](public_sys-resources/icon-note.gif) **NOTE:**
+    >![NOTE icon](public_sys-resources/icon_note.gif) **NOTE:**
     > The `-j 96` parameter fully utilizes multiple CPU cores to speed up compilation. The number following `-j` indicates the number of CPU cores, which can be checked using `cat /proc/cpuinfo | grep processor | wc -l`. This value should be less than or equal to the total number of CPU cores.
     > If the compilation and installation fail, run `rm -rf /home/mysql-8.0.25` to clean up the environment, decompress the MySQL source package again, and then compile and install it.
 
@@ -174,7 +174,7 @@ This section describes how to modify the configuration file, set the environment
     chown mysql:mysql /etc/my.cnf
     ```
 
-    >![NOTE icon](public_sys-resources/icon-note.gif) **NOTE:**
+    >![NOTE icon](public_sys-resources/icon_note.gif) **NOTE:**
     > Replace the file paths (including the software installation path `basedir`, the data path `datadir`, etc.) as required. `user=mysql` refers to the user at the OS level, that is, the user created in section 2.2.2. If performance tuning is required, see *Modifying Database Parameters* to modify the configuration parameters in `my.cnf`.
 
 2. Configure the MySQL environment variable.
@@ -205,7 +205,7 @@ This section describes how to modify the configuration file, set the environment
     [System] [MY-013170] [Server] /usr/local/mysql/bin/mysqld (mysqld 8.0.25) initializing of server has completed
     ```
 
-    >![NOTE icon](public_sys-resources/icon-note.gif) **NOTE:**
+    >![NOTE icon](public_sys-resources/icon_note.gif) **NOTE:**
     >
     > * After initialization, a temporary initial password is generated following `root@localhost:` in the output. Save it, as it will be used in step 5.
     > * If initialization fails and the message "--initialize specified but the data directory has files in it." is displayed, run `ls /data/mysql/data` to check the directory contents, run `rm -rf /data/mysql/data/*` to delete the data, and then re-initialize the database.
@@ -223,7 +223,7 @@ This section describes how to modify the configuration file, set the environment
     netstat -anpt | grep 3306
     ```
 
-    >![NOTE icon](public_sys-resources/icon-note.gif) **NOTE:**
+    >![NOTE icon](public_sys-resources/icon_note.gif) **NOTE:**
     >
     > * If the first execution of `service mysql start` as the `root` user fails (prompting that the `mysql.log` file is missing), switch to the `mysql` user (`su - mysql`) to start the database service and generate `mysql.log`, stop the service, and then start it again as the `root` user.
     > * If the `netstat` command fails, run `yum -y install net-tools` first to install the dependency package.
@@ -249,7 +249,7 @@ This section describes how to modify the configuration file, set the environment
     Query OK, 0 rows affected (0.01 sec)
     ```
 
-    >![NOTE icon](public_sys-resources/icon-note.gif) **NOTE:**
+    >![NOTE icon](public_sys-resources/icon_note.gif) **NOTE:**
     > The users and passwords in this document are for reference only. Configure them according to the actual customer environment.  
     > **Security note**: `123456` is a weak password used only for demonstration. In production environments, you must use a strong password (12 or more characters recommended, including uppercase and lowercase letters, digits, and special characters). In addition, avoid passing plaintext passwords directly in command-line parameters (such as `mysql -uroot -p123456`) to prevent passwords from being leaked in shell command history.
 
