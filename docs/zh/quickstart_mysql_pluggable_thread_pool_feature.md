@@ -1,4 +1,4 @@
-# MySQL可插拔线程池特性快速入门
+# 快速入门：MySQL可插拔线程池特性
 
 本文以MySQL 8.0.25为例，指导用户通过"获取补丁、合入补丁、编译安装、安装插件、验证使用"的流程，快速上手可插拔线程池特性。根据特性指南中基于BenchMarkSQL的TPC\-C（数据库事务处理性能基准测试模型）测试结果：MySQL运行10000个并发任务时，启用线程池前性能只有原来的10%左右。启用线程池后性能可维持在85%对于大量连接的OLTP（Online Transaction Processing，联机事务处理）短查询场景收益最大，大量连接的只读短查询也有明显收益。
 
@@ -42,8 +42,8 @@ MySQL可插拔线程池特性是鲲鹏BoostKit MySQL加速套件的性能优化�
 
 |软件类型|必选/可选|软件包说明|软件包名称|获取链接|
 |---|---|---|---|---|
-|主要安装包|必选|MySQL 源码包（includes Boost Headers）|mysql-boost-8.0.25.tar.gz|[MySQL 官网下载页](https://downloads.mysql.com/archives/community/)|
-|特性补丁|必选|线程池特性补丁包（含 code\-threadpool\-for\-MySQL\-8.0.patch，适用于 8.0.25/8.0.30/8.0.35）|boostdb-patch-release-20260330.zip|[BoostDB 补丁发布页](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|
+|主要安装包|必选|MySQL 源码包（includes Boost Headers）|mysql-boost-8.0.25.tar.gz|[MySQL官网下载页](https://downloads.mysql.com/archives/community/)|
+|特性补丁|必选|线程池特性补丁包（含 code\-threadpool\-for\-MySQL\-8.0.patch，适用于 8.0.25/8.0.30/8.0.35）|boostdb-patch-release-20260330.zip|[BoostDB补丁发布页](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|
 
 若服务器可访问外网，可直接执行以下命令下载。
 
@@ -295,7 +295,7 @@ ls $CMAKE_INSTALL_PREFIX/lib/plugin/thread_pool.so
 
 #### 结果说明
 
-thread\_pool\_size支持命令行、配置文件和动态修改（Global范围，允许值1至1024）。调整后线程池按新的线程组数量调度连接，在TPC\-C大量并发场景下，启用线程池后性能可维持在原来的85%（未启用时仅剩约10%）。性能验证的详细测试步骤请参见《[BenchMarkSQL测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengbenchmarksql_06_0001.html)》。
+thread\_pool\_size支持命令行、配置文件和动态修改（Global范围，允许值1至1024）。调整后线程池按新的线程组数量调度连接，在TPC\-C大量并发场景下，启用线程池后性能可维持在原来的85%（未启用时仅剩约10%）。性能验证的详细测试步骤请参见《[BenchmarkSQL 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengbenchmarksql_06_0001.html)》。
 
 > ![引出说明信息的图标](public_sys-resources/icon-note.gif)**说明**
 >
@@ -333,9 +333,9 @@ thread\_pool\_size支持命令行、配置文件和动态修改（Global范围�
 
 - [MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)
 
-- [Sysbench 0.5&amp;1.0 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)
+- [Sysbench 0.5&1.0 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)
 
-- [BenchMarkSQL 测试指导（TPC\-C）](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengbenchmarksql_06_0001.html)
+- [BenchmarkSQL 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengbenchmarksql_06_0001.html)
 
 ## 修订记录
 

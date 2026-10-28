@@ -1,4 +1,4 @@
-# 快速入门：在鲲鹏服务器上部署MySQL
+# 快速入门：MySQL移植
 
 本文档旨在帮助开发者快速在鲲鹏ARM架构服务器上完成MySQL的部署与基础配置。内容涵盖获取软件包，配置编译环境，执行安装，安装验证等关键步骤。同时提供初始化并运行MySQL数据库和创建数据库并执行基本SQL操作的快速开始场景，适合需要快速搭建测试环境或生产基座的开发人员参考。
 
@@ -173,7 +173,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     ```
 
     >![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
-    > 其中文件路径（包括软件安装路径basedir、数据路径datadir等）请根据实际情况修改。`user=mysql`指操作系统层的用户，即2.2.2章节创建的用户。如需进行性能调测，请参考《数据库参数调优》修改my.cnf中的配置参数。
+    > 其中文件路径（包括软件安装路径basedir、数据路径datadir等）请根据实际情况修改。`user=mysql`指操作系统层的用户，即2.2.2章节创建的用户。如需进行性能调测，请参见《[数据库参数调优](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengdbstune_05_0017.html)》修改my.cnf中的配置参数。
 
 2. 配置MySQL环境变量。
 
@@ -336,7 +336,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
 
 **问题1：初始化数据库时提示"\-\-initialize specified but the data directory has files in it."怎么办？**
 
-答复：数据目录中已存在文件导致初始化失败。执行`ls /data/mys问题l/data`确认目录内容后，执行`rm -rf /data/mysql/data/*`清空数据目录，再重新执行初始化命令。
+答复：数据目录中已存在文件导致初始化失败。执行`ls /data/mysql/data`确认目录内容后，执行`rm -rf /data/mysql/data/*`清空数据目录，再重新执行初始化命令。
 
 **问题2：以root用户执行`service mysql start`首次启动失败，提示缺少mysql.log文件怎么办？**
 
@@ -354,7 +354,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
 
 答复：参见故障排除文档[编译安装MySQL过程中执行CMake命令失败的解决方法](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0011.html)。
 
-## 5. 更多功能
+## 更多功能
 
 关于MySQL在鲲鹏服务器上的更多场景使用方式请参见以下文档：
 

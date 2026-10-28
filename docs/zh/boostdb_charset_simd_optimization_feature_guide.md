@@ -1,5 +1,7 @@
 # MySQL字符集处理SIMD优化 特性指南
 
+本文档介绍MySQL字符集处理SIMD优化特性，说明其原理、环境要求、安装使能步骤及性能提升效果，适用于在鲲鹏服务器上使用Percona-Server并需要提升只读场景性能的用户。
+
 ## 特性描述<a name="ZH-CN_TOPIC_0000002518697734"></a>
 
 ### 简介<a name="ZH-CN_TOPIC_0000002518537818"></a>
@@ -42,7 +44,7 @@
 
 |项目|版本|获取地址|
 |--|--|--|
-|操作系统|openEuler 22.03 LTS SP4|[获取链接](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
+|操作系统|openEuler 22.03 LTS SP4|[下载openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
 |Percona|Percona-Server 5.7.44-53|请参见《[BoostDB-Percona 安装指南](./boostdb-percona-install.md)》|
 |Percona|Percona-Server 8.0.43-34|请参见《[BoostDB-Percona 安装指南](./boostdb-percona-install.md)》|
 
@@ -120,26 +122,31 @@
     >![](public_sys-resources/icon_note.gif) **说明：**
     >进入客户端的操作请参见《MySQL移植指南》的[运行MySQL](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_03_0013.html)章节。
 
-    **图 1** 查询数据库字符集、字符序<a name="fig1447410214484"></a><a id="查询数据库字符集、字符序"></a><br>
-    ![](figures/查询数据库字符集_字符序.png "查询数据库字符集-字符序")
+    **图 1** 查询数据库字符集、字符序<a name="fig1447410214484"></a><a id="查询数据库字符集、字符序"></a>
 
-    **图 2** 查询表的字符集、字符序<a name="fig13338178174811"></a><a id="查询表的字符集、字符序"></a><br>
-    ![](figures/查询表的字符集_字符序.png "查询表的字符集-字符序")
+    ![执行查询数据库字符集语句后的结果截图，显示sbtest库的默认字符集与字符序取值](figures/查询数据库字符集_字符序.png "查询数据库字符集-字符序")
 
-    **图 3** 获取数据库的表信息，collation列即为字符序<a name="fig762681216487"></a><a id="获取数据库的表信息，collation列即为字符序"></a><br>
-    ![](figures/获取数据库的表信息_collation列即为字符序.png "获取数据库的表信息-collation列即为字符序")
+    **图 2** 查询表的字符集、字符序<a name="fig13338178174811"></a><a id="查询表的字符集、字符序"></a>
+
+    ![执行show create table sbtest1后的返回结果，显示sbtest1表的默认字符集与字符序配置项](figures/查询表的字符集_字符序.png "查询表的字符集-字符序")
+
+    **图 3** 获取数据库的表信息，collation列即为字符序<a name="fig762681216487"></a><a id="获取数据库的表信息，collation列即为字符序"></a>
+
+    ![执行show table status返回的表信息列表截图，其中Collation列即为该表的字符序](figures/获取数据库的表信息_collation列即为字符序.png "获取数据库的表信息-collation列即为字符序")
 
 5. （可选）通过Sysbench测试可以得到使能字符集处理SIMD优化特性前后的性能提升效果，详细测试步骤请参见《[Sysbench 0.5&1.0 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)》。<br>通过记录匹配优化、字符集处理的SIMD和非对齐内存访问优化三特性叠加，可以使Sysbench只读场景性能提升10%，优化前后对比效果如[图 三特性叠加优化前后性能对比](#计算路径优化特性优化前后性能对比)所示。
 
-    **图 4** 三特性叠加优化前后性能对比<a name="fig937192253919"></a><a id="计算路径优化特性优化前后性能对比"></a><br>
-    ![](figures/计算路径优化特性优化前后性能对比.png "字符集处理SIMD优化特性优化前后性能对比")
+    **图 4** 三特性叠加优化前后性能对比<a name="fig937192253919"></a><a id="计算路径优化特性优化前后性能对比"></a>
+
+    ![三特性叠加使能前后的Sysbench只读性能柱状对比，使能后性能柱明显高于未使能](figures/计算路径优化特性优化前后性能对比.png "字符集处理SIMD优化特性优化前后性能对比")
 
 ## 安全检查与加固<a name="ZH-CN_TOPIC_0000002518537816"></a>
 
 ASLR（Address Space Layout Randomization，地址空间布局随机化）是一种针对缓冲区溢出的安全保护技术，通过对堆、栈、共享库映射等线性区布局的随机化，增加攻击者预测目的地址的难度，防止攻击者直接定位攻击代码位置，达到阻止溢出攻击的目的。
 
 ```bash
+# 将ASLR随机化级别设为2（完全随机化），需root权限；执行后可用cat /proc/sys/kernel/randomize_va_space验证回显为2”。
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 
-![](figures/zh_cn_image_0000002518697736.png)
+![配置ASLR后查看/proc/sys/kernel/randomize_va_space取值的命令回显，取值为2表示完全随机化](figures/zh_cn_image_0000002518697736.png)
