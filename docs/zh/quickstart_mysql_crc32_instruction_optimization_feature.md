@@ -94,7 +94,7 @@ Linux内核中虽然包含了CRC32算法的C语言实现，但是由于性能较
 
 #### 编译安装 MySQL
 
-补丁应用合入后，编译安装MySQL，详细步骤请参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中的"编译和安装 MySQL"章节，核心命令如下。
+补丁应用合入后，编译安装MySQL，详细步骤请参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中的"编译和安装MySQL"章节，核心命令如下。
 
 ```bash
 cd /home/mysql-8.0.25
@@ -107,7 +107,13 @@ make -j 96 install
 
 >![说明](public_sys-resources/icon-note.gif) **说明**
 >
-> `-j 96` 参数充分利用多核 CPU 优势加快编译速度，参数 `-j` 后数字为 CPU 核数，可用 `cat /proc/cpuinfo | grep processor | wc -l` 查看，此数值应小于等于 CPU 核数。
+> - cmake .. -DBUILD_CONFIG=mysql_release # 使用MySQL官方发布编译配置。
+> - DCMAKE_INSTALL_PREFIX=/usr/local/mysql # MySQL安装目录。
+> - DMYSQL_DATADIR=/data/mysql/data # 数据文件目录
+> - DWITH_BOOST=… # Boost库路径 
+> - DCMAKE_C_FLAGS与-DCMAKE_CXX_FLAGS="-march=armv8-a+crc" # 使能CRC32硬件指令；
+> - make -j 96 # 并行编译，96为CPU核数。
+> - `-j 96`参数充分利用多核CPU优势加快编译速度，参数`-j`后数字为CPU核数，可用`cat /proc/cpuinfo | grep processor | wc -l`查看，此数值应小于等于CPU核数。
 
 ### 安装验证
 
