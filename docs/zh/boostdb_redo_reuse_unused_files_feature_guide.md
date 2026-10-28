@@ -91,7 +91,8 @@ BoostDB-Percona优化版本已默认集成该优化特性，无需单独获取�
 ASLR（Address Space Layout Randomization，地址空间布局随机化）是一种针对缓冲区溢出的安全保护技术，通过对堆、栈、共享库映射等线性区布局的随机化，增加攻击者预测目的地址的难度，防止攻击者直接定位攻击代码位置，达到阻止溢出攻击的目的。
 
 ```bash
-echo 2 >/proc/sys/kernel/randomize_va_space
+# 将ASLR随机化级别设为2（完全随机化），需root权限；执行后可用cat /proc/sys/kernel/randomize_va_space验证回显为2”。
+echo 2 >/proc/sys/kernel/randomize_va_space 
 ```
 
 ![ASLR安全加固操作截图：在命令行执行echo命令向randomize_va_space写入2以启用地址空间布局随机化](figures/zh_cn_image_0000002518697736.png)
