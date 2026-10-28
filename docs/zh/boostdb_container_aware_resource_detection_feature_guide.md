@@ -61,4 +61,4 @@ ASLR（Address Space Layout Randomization，地址空间布局随机化）是一
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 
-![执行ASLR加固命令后查看/proc/sys/kernel/randomize_va_space取值的验证截图](figures/zh_cn_image_0000002518697736.png)
+![ASLR安全加固操作截图：在命令行执行echo命令向randomize_va_space写入2以启用地址空间布局随机化](figures/zh_cn_image_0000002518697736.png)

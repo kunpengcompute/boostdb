@@ -1,4 +1,6 @@
-# MySQL Plan Cache特性指南
+# MySQL Plan Cache 特性指南
+
+本文档介绍MySQL Plan Cache特性，通过缓存Prepared Statement的执行计划提升MySQL的OLTP性能，适用于在openEuler操作系统服务器上安装和使用该特性的用户。
 
 ## 特性描述<a id="ZH-CN_TOPIC_0000002261217842"></a>
 
@@ -19,7 +21,7 @@ Prepared Statement通过用占位符替代SQL语句中的值，将SQL语句模�
 基于Prepared Statement的MySQL Plan Cache基本原理和流程如[图1 Plan Cache工作流程](#fig32415431294)所示。
 
 **图 1** Plan Cache工作流程<a id="fig32415431294"></a><br>
-![](figures/mysql_plan_cache_workflow.png "Plan Cache工作流程")
+![Plan Cache工作流程图：EXECUTE后判断有无可复用缓存计划，适用性检查通过则复用，失败则回退原生优化流程](figures/mysql_plan_cache_workflow.png "Plan Cache工作流程")
 
 1. 响应`EXECUTE`请求，恢复当前Prepared Statement的执行上下文。
 2. 判断当前查询是否存在可直接复用的缓存计划。
@@ -56,8 +58,8 @@ MySQL Plan Cache的适用性检查重点关注以下内容：
 
 | 项目     | 名称                     | 版本                            | 获取地址 |
 | ---------- | -------------------------- | --------------------------------- | --- |
-| 操作系统 | openEuler 24.03 LTS SP3  | openEuler 24.03 LTS SP3 for ARM | [获取链接](https://repo.openeuler.org/openEuler-24.03-LTS-SP3/ISO/aarch64/openEuler-24.03-LTS-SP3-everything-aarch64-dvd.iso) |
-| Percona    | percona-server-8.0.43-34 | 8.0.43-34                       | 请参见《[BoostDB-Percona 安装指南](./boostdb-percona-install.md)》 |
+| 操作系统 | openEuler 24.03 LTS SP3  | openEuler 24.03 LTS SP3 for ARM | [下载openEuler-24.03-LTS-SP3-everything-aarch64-dvd.iso](https://repo.openeuler.org/openEuler-24.03-LTS-SP3/ISO/aarch64/openEuler-24.03-LTS-SP3-everything-aarch64-dvd.iso) |
+| Percona    | percona-server-8.0.43-34 | 8.0.43-34                       | 请参见《[BoostDB-Percona 安装指南](./boostdb-percona-install.md)》获取Percona-Server 8.0.43-34优化版 |
 
 ## 安装特性<a id="ZH-CN_TOPIC_0000002295742629"></a>
 
@@ -78,7 +80,7 @@ BoostDB-Percona优化版本已默认集成MySQL Plan Cache特性，无需单独�
 
    **图 2** MySQL Plan Cache特性优化前后性能对比<a name="fig937192253920"></a><a id="mysql-plan-cache-perf-compare"></a>
 
-    <img src="figures/mysql_plan_cache_perf_compare.png"/>
+    ![Sysbench只读场景下使能MySQL Plan Cache前后的性能对比柱状图，使能后吞吐明显高于未使能](figures/mysql_plan_cache_perf_compare.png)
 
 ## 使用特性<a id="ZH-CN_TOPIC_0000002295815685"></a>
 
@@ -195,4 +197,4 @@ ASLR（Address Space Layout Randomization，地址空间布局随机化）是一
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 
-![](figures/zh_cn_image_0000002504021297.png)
+![ASLR安全加固操作截图：在命令行执行echo命令向randomize_va_space写入2以启用地址空间布局随机化](figures/zh_cn_image_0000002504021297.png)
