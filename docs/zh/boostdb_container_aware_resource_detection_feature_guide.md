@@ -1,5 +1,7 @@
 # MySQL container aware优化 特性指南
 
+本文档介绍MySQL container aware优化特性，通过为MySQL实例补充可用的CPU和内存感知能力并优化redo log后台线程的等待判断来减少busy spin开销，适用于在容器等资源受限场景下部署Percona-Server的用户。
+
 ## 特性描述<a name="ZH-CN_TOPIC_0000002604100002"></a>
 
 ### 简介<a name="ZH-CN_TOPIC_0000002604100003"></a>
@@ -34,8 +36,8 @@
 
 |项目|名称|版本|获取地址|
 |--|--|:-:|--|
-|操作系统|openEuler|22.03 LTS SP4|[获取链接](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
-|Percona|Percona-Server|8.0.43-34|请参见《[BoostDB-Percona 安装指南](./boostdb-percona-install.md)》|
+|操作系统|openEuler|22.03 LTS SP4|[下载openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
+|Percona|Percona-Server|8.0.43-34|请参见《[BoostDB-Percona 安装指南](./boostdb-percona-install.md)获取Percona-Server 8.0.43-34优化版|
 
 ## 安装和使能特性<a name="ZH-CN_TOPIC_0000002604100006"></a>
 
@@ -49,14 +51,15 @@ BoostDB-Percona优化版本已默认集成该优化特性，无需单独获取�
 
 **图1** MySQL container aware优化特性Sysbench写场景优化前后性能对比<a name="fig937192253919"></a><a id="MySQL_container_aware优化特性Sysbench写场景优化前后性能对比"></a><br>
 
-![](figures/MySQL_container_aware优化特性Sysbench写场景优化前后性能对比.png "MySQL_container_aware优化特性Sysbench写场景优化前后性能对比")
+![使能container aware优化特性前后Sysbench只写场景性能柱状对比，使能后性能明显提升](figures/MySQL_container_aware优化特性Sysbench写场景优化前后性能对比.png "MySQL_container_aware优化特性Sysbench写场景优化前后性能对比")
 
 ## 安全检查与加固<a name="ZH-CN_TOPIC_0000002602100008"></a>
 
 ASLR（Address Space Layout Randomization，地址空间布局随机化）是一种针对缓冲区溢出的安全保护技术，通过对堆、栈、共享库映射等线性区布局的随机化，增加攻击者预测目的地址的难度，防止攻击者直接定位攻击代码位置，达到阻止溢出攻击的目的。
 
 ```bash
+# 将ASLR随机化级别设为2（完全随机化），需root权限；执行后可用cat /proc/sys/kernel/randomize_va_space验证回显为2”。
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 
-![](figures/zh_cn_image_0000002518697736.png)
+![ASLR安全加固操作截图：在命令行执行echo命令向randomize_va_space写入2以启用地址空间布局随机化](figures/zh_cn_image_0000002518697736.png)

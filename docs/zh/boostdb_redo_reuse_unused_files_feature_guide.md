@@ -1,5 +1,7 @@
 # MySQL redo文件复用优化 特性指南
 
+本文档介绍MySQL redo文件复用优化特性，InnoDB启动时直接复用unused redo文件而不再先删除再创建，减少重启过程的额外I/O开销，适用于在鲲鹏服务器上使用BoostDB-Percona优化版本的用户。
+
 ## 特性描述<a name="ZH-CN_TOPIC_0000002605100002"></a>
 
 ### 简介<a name="ZH-CN_TOPIC_0000002605100003"></a>
@@ -43,8 +45,8 @@ unused redo文件满足复用时，需要同时满足两个条件：
 
 |项目|名称|版本|获取地址|
 |--|--|:-:|--|
-|操作系统|openEuler|22.03 LTS SP4|[获取链接](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
-|Percona|Percona-Server|8.0.43-34|请参见《[BoostDB-Percona 安装指南](./boostdb-percona-install.md)》|
+|操作系统|openEuler|22.03 LTS SP4|[下载openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
+|Percona|Percona-Server|8.0.43-34|请参见《[BoostDB-Percona 安装指南](./boostdb-percona-install.md)》获取Percona-Server 8.0.43-34优化版|
 
 ## 安装和使用特性<a name="ZH-CN_TOPIC_0000002605100006"></a>
 
@@ -58,7 +60,7 @@ BoostDB-Percona优化版本已默认集成该优化特性，无需单独获取�
 
 **图1** MySQL redo文件复用优化特性Sysbench写场景优化前后性能对比<a name="fig937192253919"></a><a id="MySQL_redo文件复用优化特性Sysbench写场景优化前后性能对比"></a><br>
 
-![](figures/MySQL_redo文件复用优化特性Sysbench写场景优化前后性能对比.png  "MySQL redo文件复用优化特性Sysbench写场景优化前后性能对比")
+![Sysbench只写场景优化前后性能对比图，使能redo文件复用优化后吞吐明显提升](figures/MySQL_redo文件复用优化特性Sysbench写场景优化前后性能对比.png  "MySQL redo文件复用优化特性Sysbench写场景优化前后性能对比")
 
 ## 配置并启动实例
 
@@ -89,7 +91,8 @@ BoostDB-Percona优化版本已默认集成该优化特性，无需单独获取�
 ASLR（Address Space Layout Randomization，地址空间布局随机化）是一种针对缓冲区溢出的安全保护技术，通过对堆、栈、共享库映射等线性区布局的随机化，增加攻击者预测目的地址的难度，防止攻击者直接定位攻击代码位置，达到阻止溢出攻击的目的。
 
 ```bash
-echo 2 >/proc/sys/kernel/randomize_va_space
+# 将ASLR随机化级别设为2（完全随机化），需root权限；执行后可用cat /proc/sys/kernel/randomize_va_space验证回显为2”。
+echo 2 >/proc/sys/kernel/randomize_va_space 
 ```
 
-![](figures/zh_cn_image_0000002518697736.png)
+![ASLR安全加固操作截图：在命令行执行echo命令向randomize_va_space写入2以启用地址空间布局随机化](figures/zh_cn_image_0000002518697736.png)
