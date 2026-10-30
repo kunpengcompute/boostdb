@@ -1,5 +1,7 @@
 # Percona Thread Pool动态并发调度优化 特性指南
 
+本文档介绍Percona Thread Pool动态并发调度优化，说明该特性如何根据进程CPU使用率和上下文切换频率调整线程池并发配额，以及在鲲鹏服务器上安装、配置参数、观察状态的方法，适用于在鲲鹏服务器上部署Percona-Server的数据库管理员。
+
 ## 特性描述<a name="ZH-CN_TOPIC_0000002602100302"></a>
 
 ### 简介<a name="ZH-CN_TOPIC_0000002602100303"></a>
@@ -66,8 +68,8 @@ Percona的组提交（ordered commit）的跟随线程（follower）等待领导
 
 |项目|名称|获取地址|
 |--|--|--|
-|操作系统|openEuler 22.03 LTS SP4|[获取链接](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
-|Percona|Percona-Server|[8.0.43-34](./boostdb-percona-install.md)|
+|操作系统|openEuler 22.03 LTS SP4|[下载openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
+|Percona|Percona-Server|请参见《[BoostDB-Percona 安装指南](./boostdb-percona-install.md)》获取Percona-Server 8.0.43-34优化版本|
 
 ## 安装和使用特性<a name="ZH-CN_TOPIC_0000002602100306"></a>
 
@@ -81,7 +83,7 @@ BoostDB-Percona优化版本已默认集成该优化特性，无需单独获取�
 
 **图1** Percona Thread Pool动态并发调度优化特性Sysbench写场景优化前后性能对比<a name="Percona_Thread_Pool动态并发调度优化特性Sysbench写场景优化前后性能对比"></a><a id="fig937192253919"></a><br>
 
-![](figures/Percona_Thread_Pool动态并发调度优化特性Sysbench写场景优化前后性能对比.png  "Percona Thread Pool动态并发调度优化特性Sysbench写场景优化前后性能对比")
+![Sysbench只写场景下使能优化特性前后的性能对比柱状图，使能后吞吐量高于未使能，性能明显提升](figures/Percona_Thread_Pool动态并发调度优化特性Sysbench写场景优化前后性能对比.png  "Percona Thread Pool动态并发调度优化特性Sysbench写场景优化前后性能对比")
 
 ## 配置并启动实例<a name="ZH-CN_TOPIC_0000002602100308"></a>
 
@@ -166,10 +168,11 @@ SET GLOBAL thread_pool_commit_burst_threads = OFF;
 ASLR（Address Space Layout Randomization，地址空间布局随机化）是一种针对缓冲区溢出的安全保护技术，通过对堆、栈、共享库映射等线性区布局的随机化，增加攻击者预测目的地址的难度，防止攻击者直接定位攻击代码位置，达到阻止溢出攻击的目的。
 
 ```bash
+# 将ASLR随机化级别设为2（完全随机化），需root权限；执行后可用cat /proc/sys/kernel/randomize_va_space验证回显为2”。
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 
-![](figures/zh_cn_image_0000002518697736.png)
+![通过echo写入/proc/sys/kernel/randomize_va_space开启ASLR地址空间布局随机化的加固配置示意](figures/zh_cn_image_0000002518697736.png)
 
 ## 修订记录
 

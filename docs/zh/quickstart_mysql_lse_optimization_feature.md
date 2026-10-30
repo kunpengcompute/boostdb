@@ -1,4 +1,4 @@
-# 快速入门：MySQL LSE 优化特性
+# 快速入门：MySQL LSE优化特性
 
 MySQL LSE（Large System Extensions）优化特性是鲲鹏BoostKit MySQL加速套件针对鲲鹏服务器OLTP场景提供的基础计算优化功能。该特性通过引入ARMv8.1规范的原子操作硬件加速方案，将计算操作移至L3 Cache执行，有效缓解了高并发读写环境下因锁竞争激烈导致的性能线性劣化问题。在Sysbench 8U16G规格、256并发测试条件下，使能该特性可使MySQL数据库的综合性能（含只读、读写、只写）提升约5%。
 
@@ -131,7 +131,7 @@ LSE（Large System Extensions，大系统扩展）是专为现代多核、高并
 
 #### 操作步骤
 
-1. 基础配置。准备两套MySQL环境（使能前版本与使能后版本），Sysbench工具的安装、数据加载与环境调优请参见[《Sysbench 0.5&amp;1.0 测试指导》](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)。
+1. 基础配置。准备两套MySQL环境（使能前版本与使能后版本），Sysbench工具的安装、数据加载与环境调优请参见《[Sysbench 0.5&1.0 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)》。
 
 2. 运行验证（使能前版本）。以Sysbench 1.0读写模型为例，先加载测试数据，再执行256并发测试。
 
@@ -151,7 +151,7 @@ LSE（Large System Extensions，大系统扩展）是专为现代多核、高并
 > **说明**
 >
 > * rec\_get\_offsets是InnoDB存储引擎中用于计算记录字段偏移量的热点函数，对该函数的优化与LSE优化通常一并合入BoostDB版本，共同贡献综合性能提升。
-> * 文档中的IP地址、用户和密码仅为参考示例，请根据实际情况修改；详细的Sysbench测试步骤（数据加载、测试模型说明、环境调优、测试结果解读）请参见[《Sysbench 0.5&amp;1.0 测试指导》](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)。
+> * 文档中的IP地址、用户和密码仅为参考示例，请根据实际情况修改；详细的Sysbench测试步骤（数据加载、测试模型说明、环境调优、测试结果解读）请参见《[Sysbench 0.5&1.0 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)》。
 > **安全提示**：运行MySQL的参考用户密码`123456`仅为演示用弱密码，生产环境请务必使用强密码，根据客户实际情况进行配置；执行测试Sysbench命令中的`--mysql-password`参数会在shell命令历史中留存明文密码，例如 ~/.bash\_history 等文件中，建议在测试完成后清理命令历史或改用专用测试账号。
 
 ### B场景：ASLR安全检查与加固
