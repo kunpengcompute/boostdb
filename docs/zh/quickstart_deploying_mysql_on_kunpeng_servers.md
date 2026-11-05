@@ -64,7 +64,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     mkdir -p /data/mysql
     cd /data/mysql
     mkdir data tmp run log relaylog
-    chown -R mysql:mysql /data
+    chown -R mysql:mysql /data/mysql
     ```
 
     >![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
