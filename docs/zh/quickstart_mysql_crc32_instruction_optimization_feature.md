@@ -6,7 +6,7 @@
 
 CRC32指令优化特性是鲲鹏BoostKit MySQL加速套件的基础计算优化特性之一，用于在使用openEuler操作系统的鲲鹏服务器上提升 MySQL的CRC（Cyclic Redundancy Check，循环冗余校验）计算性能。该特性通过使用鲲鹏CRC32硬件指令替换CRC32算法的软件实现，减小了CRC32的计算开销。
 
-Linux内核中虽然包含了CRC32算法的C语言实现，但是由于性能较低，当内核态中CRC3 函数调用占比较高时，可能成为系统性能瓶颈。采用鲲鹏CRC32硬件指令替换软件实现后，MySQL Sysbench 写场景性能可提升约5%。
+Linux内核中虽然包含了CRC32算法的C语言实现，但是由于性能较低，当内核态中CRC32 函数调用占比较高时，可能成为系统性能瓶颈。采用鲲鹏CRC32硬件指令替换软件实现后，MySQL Sysbench 写场景性能可提升约5%。
 
 本文以MySQL 8.0.25为例，指导用户通过“获取补丁 → 应用补丁 → 编译安装 → 测试验证 → 性能对比”的完整流程，快速上手使用CRC32指令优化特性。其他场景也可参考本文的方法进行适配优化。
 
@@ -30,9 +30,9 @@ Linux内核中虽然包含了CRC32算法的C语言实现，但是由于性能较
 |检查项|执行命令|预期输出|失败处理|
 |---|---|---|---|
 |CPU CRC32 指令支持检查|cat /proc/cpuinfo|回显Features行包含crc32，表示CPU支持CRC32硬件指令优化|更换为鲲鹏920处理器的服务器|
-|OS 版本检查|cat /etc/*-release|openEuler 20.03 LTS SP1 或 22.03 LTS SP1|升级OS至符合要求的版本|
-|Git 可用性检查|git --version|输出git版本号|执行yum install git安装|
-|MySQL 编译环境检查|gcc -v && /usr/local/bin/cmake --version|GCC ≥ 5.3.0，CMake ≥ 3.4.3|请参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》配置编译环境|
+|OS版本检查|`cat /etc/*-release`|openEuler 20.03 LTS SP1 或 22.03 LTS SP1|升级OS至符合要求的版本|
+|Git可用性检查|`git --version`|输出git版本号|执行yum install git安装|
+|MySQL编译环境检查|`gcc -v && /usr/local/bin/cmake --version`|GCC为5.3.0及以上版本，CMake为3.4.3及以上版本|请参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》配置编译环境|
 
 ### 安装步骤
 
@@ -92,7 +92,7 @@ Linux内核中虽然包含了CRC32算法的C语言实现，但是由于性能较
     1 file changed, 35 insertions(+), 3 deletions(-)
     ```
 
-#### 编译安装 MySQL
+#### 编译安装MySQL
 
 补丁应用合入后，编译安装MySQL，详细步骤请参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》中的"编译和安装MySQL"章节，核心命令如下。
 
@@ -117,7 +117,7 @@ make -j 96 install
 
 ### 安装验证
 
-执行如下命令，使用objdump（目标文件反汇编工具）检查mysqld二进制文件中是否已使能CRC32硬件指令（crc32cb 为ARM CRC32校验硬件指令的汇编助记符）。
+执行如下命令，使用objdump（目标文件反汇编工具）检查mysqld二进制文件中是否已使能CRC32硬件指令（crc32cb为ARM CRC32校验硬件指令的汇编助记符）。
 
 ```bash
 objdump -d /usr/local/mysql/bin/mysqld | grep crc32cb
@@ -139,7 +139,7 @@ objdump -d /usr/local/mysql/bin/mysqld | grep crc32cb
 
 #### 场景描述
 
-以Sysbench写场景压测为例（Sysbench是业内广泛使用的开源、跨平台多线程性能测试工具，可用于 MySQL 数据库性能测试），通过对"未合入 CRC32 补丁的 MySQL"与"已合入CRC32补丁的MySQL"分别执行相同模型的性能测试，展示使用CRC32指令优化特性前后的性能提升效果。
+以Sysbench写场景压测为例（Sysbench是业内广泛使用的开源、跨平台多线程性能测试工具，可用于 MySQL 数据库性能测试），通过对“未合入CRC32补丁的MySQL”与“已合入CRC32补丁的MySQL”分别执行相同模型的性能测试，展示使用CRC32指令优化特性前后的性能提升效果。
 
 #### 操作步骤
 
@@ -149,7 +149,7 @@ objdump -d /usr/local/mysql/bin/mysqld | grep crc32cb
 
 2. 运行验证（优化前，基线版本）。
 
-   以Sysbench 1.0 为例，先加载测试数据，再执行写场景测试：
+   以Sysbench 1.0为例，先加载测试数据，再执行写场景测试：
 
     ```bash
     /home/sysbench-1.0/src/sysbench --db-driver=mysql --mysql-host=192.168.222.120 --mysql-port=3306 --mysql-user=root --mysql-password=123456 --mysql-db=sysbench --table_size=1000000 --tables=100 --time=180 --threads=96 --report-interval=10 oltp_write_only prepare
@@ -207,15 +207,15 @@ objdump -d /usr/local/mysql/bin/mysqld | grep crc32cb
 
 以下高频问题根据特性指南的操作约束整理，详细解决方案请参见对应文档。
 
-**问题：执行 ****`git apply --ignore-whitespace --check 0001-CRC32-AARCH64.patch`**** 报错，补丁无法合入**
+**问题：执行`git apply --ignore-whitespace --check 0001-CRC32-AARCH64.patch`报错，补丁无法合入**
 
 答复：该补丁针对 MySQL 8.0.25 版本开发。请确认两点：一是使用的源码包为 MySQL 8.0.25 且解压后未做任何修改（建议在 `git init` 建立基线后再合入补丁）；二是补丁文件在源码根目录（`/home/mysql-8.0.25`）下执行合入命令。若源码已被修改，请重新解压干净的源码包后重试。
 
-**问题：`cat /proc/cpuinfo`** 的Features行中没有crc32 
+**问题：`cat /proc/cpuinfo`的Features行中没有crc32**
 
 答复：表示当前CPU不支持CRC32硬件指令优化，本特性无法使能。请更换为搭载鲲鹏920处理器的服务器。
 
-**问题：编译安装后执行 ****`objdump -d /usr/local/mysql/bin/mysqld | grep crc32cb`**** 无任何输出**
+**问题：编译安装后执行`objdump -d /usr/local/mysql/bin/mysqld | grep crc32cb`无任何输出**
 
 答复：表示CRC32指令优化特性未使能成功。请检查：补丁是否已成功合入（可查看 `storage/innobase/ut/crc32.cc` 是否被修改）；编译是否在合入补丁后的源码上重新执行。确认后重新编译安装。
 

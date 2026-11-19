@@ -38,8 +38,8 @@ MySQL是一个开源的关系型数据库管理系统（RDBMS），是业界最�
 |软件类型|必选/可选|软件包说明|软件包名称|获取链接|
 |---|---|---|---|---|
 |主要安装包|必选|MySQL源码包（includes Boost Headers，编译必须包含Boost头文件）|mysql-boost-8.0.25.tar.gz|[MySQL官网下载页](https://downloads.mysql.com/archives/community/)|
-|编译工具|可选|CMake ≥ 3.4.3（OS自带版本不满足要求时需要）|cmake-3.5.2.tar.gz|[CMake官网](https://cmake.org/files/v3.5/cmake-3.5.2.tar.gz)|
-|编译工具|可选|GCC ≥ 5.3.0（CentOS 7.6需要升级，openEuler不需要）|gcc-7.3.0.tar.gz|[GNU镜像站](https://mirrors.tuna.tsinghua.edu.cn/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.gz)|
+|编译工具|可选|CMake为3.4.3及以上版本（OS自带版本不满足要求时需要）|cmake-3.5.2.tar.gz|[CMake官网](https://cmake.org/files/v3.5/cmake-3.5.2.tar.gz)|
+|编译工具|可选|GCC为5.3.0及以上版本（CentOS 7.6需要升级，openEuler不需要）|gcc-7.3.0.tar.gz|[GNU镜像站](https://mirrors.tuna.tsinghua.edu.cn/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.gz)|
 
 若服务器可访问外网，可直接下载MySQL源码包：
 
@@ -50,7 +50,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
 
 #### 配置编译环境
 
-1. 创建mysql用户组和用户（操作系统层面，用于权限隔离）：
+1. 创建mysql用户组和用户（操作系统层面，用于权限隔离）。
 
    ```bash
     groupadd mysql
@@ -58,7 +58,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     passwd mysql
     ```
 
-2. 创建数据目录（非性能测试场景）：
+2. 创建数据目录（非性能测试场景）。
 
     ```bash
     mkdir -p /data/mysql
@@ -70,7 +70,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     >![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
     > 进行性能测试时，需将单独磁盘格式化并挂载到数据目录，详细操作参见[搭建数据盘](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_03_0007.html)。
 
-3. 安装依赖包：
+3. 安装依赖包。
 
     ```bash
     yum -y install bison bison-devel ncurses ncurses-devel libaio-devel openssl openssl-devel gmp gmp-devel mpfr mpfr-devel libmpc libmpc-devel libcurl-devel
@@ -80,7 +80,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     yum -y install zstd-devel
     ```
 
-4. 若CMake或GCC版本不满足要求，请先升级（openEuler系统自带GCC满足要求，可跳过GCC升级）：
+4. 若CMake或GCC版本不满足要求，请先升级（openEuler系统自带GCC满足要求，可跳过GCC升级）。
 
     * 升级CMake至3.4.3或以上（本文以3.5.2为例）：[升级CMake](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0006.html)
 
@@ -88,7 +88,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
 
 #### 执行安装
 
-1. 解压源码包并进入源码目录，创建编译目录：
+1. 解压源码包并进入源码目录，创建编译目录。
 
     ```bash
     cd /home
@@ -97,7 +97,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     mkdir build
     ```
 
-2. 进入编译目录，配置MySQL：
+2. 进入编译目录，配置MySQL。
 
     ```bash
     cd build
@@ -113,7 +113,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     |DMYSQL_DATADIR|创建数据库时数据文件存放的路径，本文路径为"/data/mysql/data"。|
     |DWITH_BOOST|解压MySQL源码包后，解压文件中boost\_1\_73\_0文件夹所在路径。本文解压到"/home"目录下，则路径为"/home/mysql\-8.0.25/boost/boost\_1\_73\_0"。|
 
-3. 编译安装MySQL：
+3. 编译安装MySQL。
 
     ```bash
     make -j 96
@@ -126,25 +126,25 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
 
 ### 安装验证
 
-1. 查看MySQL安装目录：
+1. 查看MySQL安装目录。
 
     ```bash
     ls /usr/local/mysql/
     ```
 
-    预期输出：
+    预期输出如下所示。
 
     ```output
     bin  docs  include  lib  LICENSE  LICENSE.router  LICENSE-test  man  mysqlrouter-log-rotate  mysql-test  README  README.router  README-test  run  share  support-files  var
     ```
 
-2. 查看数据库版本：
+2. 查看数据库版本。
 
     ```bash
     /usr/local/mysql/bin/mysql --version
     ```
 
-    预期输出：
+    预期输出如下所示。
 
     ```output
     /usr/local/mysql/bin/mysql  Ver 8.0.25 for Linux on aarch64 (Source distribution)
@@ -173,7 +173,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     ```
 
     >![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
-    > 其中文件路径（包括软件安装路径basedir、数据路径datadir等）请根据实际情况修改。`user=mysql`指操作系统层的用户，即2.2.2章节创建的用户。如需进行性能调测，请参见《[数据库参数调优](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengdbstune_05_0017.html)》修改my.cnf中的配置参数。
+    > 其中文件路径（包括软件安装路径basedir、数据路径datadir等）请根据实际情况修改。`user=mysql`指操作系统层的用户，即“配置编译环境”章节创建的用户。如需进行性能调测，请参见《[数据库参数调优](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengdbstune_05_0017.html)》修改my.cnf中的配置参数。
 
 2. 配置MySQL环境变量。
 
@@ -182,7 +182,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     source /etc/profile
     ```
 
-    通过以下命令确认环境变量已生效：
+    通过以下命令确认环境变量已生效。
 
     ```bash
     mysql --version
@@ -196,7 +196,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     mysqld --defaults-file=/etc/my.cnf --initialize
     ```
 
-    预期输出（部分）：
+    预期输出中包含如下信息表示初始化成功。
 
     ```output
     [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: t<7Xtw3adX>B
@@ -214,7 +214,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     /usr/local/mysql/bin/mysqld --defaults-file=/etc/my.cnf &
     ```
 
-    查看数据库进程和监听端口：
+    查看数据库进程和监听端口。
 
     ```bash
     ps -ef | grep mysql
@@ -232,7 +232,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     mysql -uroot -p -S /data/mysql/run/mysql.sock
     ```
 
-    提示输入密码时，输入步骤3生成的临时初始密码。登录成功后修改root用户密码并创建全域root用户（允许root从其他服务器访问）：
+    提示输入密码时，输入步骤3生成的临时初始密码。登录成功后修改root用户密码并创建全域root用户（允许root从其他服务器访问）。
 
     ```sql
     alter user 'root'@'localhost' identified by '123456';
@@ -241,7 +241,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     flush privileges;
     ```
 
-    预期输出：
+    预期输出如下所示。
 
     ```output
     Query OK, 0 rows affected (0.01 sec)
@@ -253,7 +253,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
 
 6. 用新密码重新登录验证。
 
-    执行`exit`退出数据库，然后重新登录：
+    执行`exit`退出数据库，然后重新登录。
 
     ```bash
     mysql -uroot -p -S /data/mysql/run/mysql.sock
@@ -271,7 +271,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
 
 使用新密码成功登录数据库，出现`mysql>`命令行提示符，说明MySQL已完成初始化并正常运行，数据库监听在3306端口。
 
-> **须知**
+ >![引出说明信息的图标](public_sys-resources/icon-notice.gif) **须知**
 > 关闭数据库请使用与启动方式一一对应的命令。以`service mysql start`启动的数据库，使用`service mysql stop`关闭（重启可执行`service mysql restart`）；以mysqld或mysqld\_safe方式启动的数据库，可执行`mysqladmin -uroot -p123456 shutdown -S /data/mysql/run/mysql.sock`关闭。
 
 ### B场景：创建数据库并执行基本SQL操作
@@ -296,7 +296,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     create table users (id int primary key auto_increment, name varchar(32) not null, created_at timestamp default current_timestamp);
     ```
 
-    预期输出：
+    预期输出如下所示。
 
     ```output
     Query OK, 1 row affected (0.01 sec)
@@ -313,7 +313,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     select * from users;
     ```
 
-    预期输出：
+    预期输出如下所示。
 
     ```output
     Query OK, 1 row affected (0.00 sec)
@@ -340,11 +340,11 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
 
 **问题2：以root用户执行`service mysql start`首次启动失败，提示缺少mysql.log文件怎么办？**
 
-答复：先切换到mysql用户（`su- mysql`）启动数据库服务，系统会在"/data/mysql/log"目录下生成mysql.log文件；然后停止数据库服务（`/usr/local/mysql/bin/mysqladmin -u root -p shutdown`），再次以root用户启动即可。
+答复：先切换到mysql用户（`su - mysql`）启动数据库服务，系统会在"/data/mysql/log"目录下生成mysql.log文件；然后停止数据库服务（`/usr/local/mysql/bin/mysqladmin -u root -p shutdown`），再次以root用户启动即可。
 
 **问题3：执行netstat命令提示命令不存在怎么办？**
 
-答复：缺少net\-tools依赖包，执行`yum-y install net-tools`安装后重试。
+答复：缺少net\-tools依赖包，执行`yum -y install net-tools`安装后重试。
 
 **问题4：升级CMake后，查询版本发现CMake版本未生效怎么办？**
 

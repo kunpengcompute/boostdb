@@ -1,12 +1,12 @@
 # 快速入门：MySQL可插拔线程池特性
 
-本文以MySQL 8.0.25为例，指导用户通过"获取补丁、合入补丁、编译安装、安装插件、验证使用"的流程，快速上手可插拔线程池特性。根据特性指南中基于BenchMarkSQL的TPC\-C（数据库事务处理性能基准测试模型）测试结果：MySQL运行10000个并发任务时，启用线程池前性能只有原来的10%左右。启用线程池后性能可维持在85%对于大量连接的OLTP（Online Transaction Processing，联机事务处理）短查询场景收益最大，大量连接的只读短查询也有明显收益。
+本文以MySQL 8.0.25为例，指导用户通过"获取补丁、合入补丁、编译安装、安装插件、验证使用"的流程，快速上手可插拔线程池特性。根据特性指南中基于BenchMarkSQL的TPC\-C（数据库事务处理性能基准测试模型）测试结果：MySQL运行10000个并发任务时，启用线程池前性能只有原来的10%左右。启用线程池后性能可维持在85%。对于大量连接的OLTP（Online Transaction Processing，联机事务处理）短查询场景收益最大，大量连接的只读短查询也有明显收益。
 
 ## 特性介绍
 
 MySQL可插拔线程池特性是鲲鹏BoostKit MySQL加速套件的性能优化特性之一，用于解决默认MySQL连接器在高连接数下的性能劣化问题。在默认的MySQL连接器下，每个接入的连接都会分配一个线程，当连接数非常大时，线程的上下文切换及线程之间热锁的竞争将占用大量CPU资源，导致服务性能下降。
 
-使用线程池连接器模块后，连接的建立与调度由线程池接管：整个线程池分为若干个线程组（默认为CPU逻辑核数）和一个timer线程，通过每个分组上的listener线程借助epoll（Linux内核的事件通知机制，用于高效侦听大量网络连接的可读事件）进行网络任务侦听。将任务放入高优先级队列或普通队列，由空闲的worker线程按优先级取出处理，并动态伸缩worker线程数量，使服务器在大量客户端连接下仍保持最佳性能。该特性还支持事务优先调度、防线程池停滞，并在information\_schema中新增四张状态信息表，可实时监管线程池状态。
+使用线程池连接器模块后，连接的建立与调度由线程池接管：整个线程池分为若干个线程组（默认为CPU逻辑核数）和一个timer线程，通过每个线程组上的listener线程借助epoll（Linux内核的事件通知机制，用于高效侦听大量网络连接的可读事件）进行网络任务侦听。将任务放入高优先级队列或普通队列，由空闲的worker线程按优先级取出处理，并动态伸缩worker线程数量，使服务器在大量客户端连接下仍保持最佳性能。该特性还支持事务优先调度、防线程池停滞，并在information\_schema中新增四张状态信息表，可实时监管线程池状态。
 
 >![说明](public_sys-resources/icon-note.gif) **说明**
 >
@@ -32,7 +32,7 @@ MySQL可插拔线程池特性是鲲鹏BoostKit MySQL加速套件的性能优化�
 |OS版本检查|cat /etc/*-release|openEuler 20.03 LTS SP1 或 22.03 LTS SP1|升级OS至符合要求的版本|
 |处理器检查|lscpu|架构为aarch64（鲲鹏920系列）|更换为鲲鹏服务器|
 |CMake版本检查|cmake --version|版本高于3.7（openEuler 20.03 为 3.7.2，22.03自带3.11.4）|升级CMake|
-|GCC版本检查|gcc -v|openEuler 20.03 为 7.3.0，22.03自带10.3.1|升级GCC，参见《MySQL 移植指南》|
+|GCC版本检查|gcc -v|openEuler 20.03 为 7.3.0，22.03自带10.3.1|升级GCC，参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0007.html)》|
 |numactl依赖检查|rpm -qa \| grep numactl|已安装numactl及numactl\-devel|执行yum install -y numactl numactl-devel*安装|
 |Git可用性检查|git --version|输出git版本号|配置Yum源后执行yum install git安装|
 
@@ -319,7 +319,7 @@ thread\_pool\_size支持命令行、配置文件和动态修改（Global范围�
 
 **问题**：卸载线程池插件时提示"plugin is busy"警告怎么办？
 
-**答复**：表示线程池连接器上仍有用户连接，插件状态会由ACTIVE变为DELETE（卸载过程状态）。先断开业务连接，或者通过` show processlist `确认无连接依赖线程池，然后先卸载线程池连接器插件（`UNINSTALL PLUGIN thread_pool`），此时由于没有连接，会立即完成。之后再卸载那4张状态表插件。
+**答复**：表示线程池连接器上仍有用户连接，插件状态会由ACTIVE变为DELETE（卸载过程状态）。先断开业务连接，或者通过`show processlist`确认无连接依赖线程池，然后先卸载线程池连接器插件（`UNINSTALL PLUGIN thread_pool`），此时由于没有连接，会立即完成。之后再卸载那4张状态表插件。
 
 ## 更多功能
 

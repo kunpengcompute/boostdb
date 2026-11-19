@@ -37,7 +37,7 @@
 |项目|名称|版本|获取地址|
 |--|--|:-:|--|
 |操作系统|openEuler|22.03 LTS SP4|[下载openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
-|Percona|Percona-Server|8.0.43-34|请参见《[BoostDB-Percona 安装指南](./boostdb-percona-install.md)获取Percona-Server 8.0.43-34优化版|
+|Percona|Percona-Server|8.0.43-34|请参见《[BoostDB-Percona 安装指南](./boostdb-percona-install.md)》获取BoostDB-Percona-8.0.43-34优化版|
 
 ## 安装和使能特性<a name="ZH-CN_TOPIC_0000002604100006"></a>
 
@@ -63,3 +63,9 @@ echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 
 ![ASLR安全加固操作截图：在命令行执行echo命令向randomize_va_space写入2以启用地址空间布局随机化](figures/zh_cn_image_0000002518697736.png)
+
+## 修订记录
+
+|文档版本 | 发布日期 | 修改说明 |
+| --------| -------- | -------- |
+|01| 2026-09-30 | 第一次正式发布。 |
