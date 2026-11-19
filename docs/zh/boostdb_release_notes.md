@@ -24,8 +24,7 @@
 |Percona Thread Pool动态并发调度优化、MySQL redo文件复用优化、MySQL container aware优化|Percona|Percona-Server 8.0.43-34|
 |Percona Thread Pool动态并发调度优化|Patch|0001-WL-16484-InnoDB-container-aware-cgroup-memory-limit.patch<br>0002-adjust-threadpool-concurrency-using-scheduler-statis.patch|
 |MySQL redo文件复用优化|Patch|0001-add-support-for-reusing-unused-redo-log-files-during.patch|
-|MySQL container aware优化|Patch|0001-WL-16484-InnoDB-container-aware-cgroup-memory-limit.patch<br>
-0002-improve-container-aware-resource-detection-extra.patch|
+|MySQL container aware优化|Patch|0001-WL-16484-InnoDB-container-aware-cgroup-memory-limit.patch<br>0002-improve-container-aware-resource-detection-extra.patch|
 
 #### 硬件版本配套说明
 
