@@ -271,7 +271,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
 
 使用新密码成功登录数据库，出现`mysql>`命令行提示符，说明MySQL已完成初始化并正常运行，数据库监听在3306端口。
 
-  >![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
+>![引出说明信息的图标](public_sys-resources/icon_notice.gif) **须知**
 > 关闭数据库请使用与启动方式一一对应的命令。以`service mysql start`启动的数据库，使用`service mysql stop`关闭（重启可执行`service mysql restart`）；以mysqld或mysqld\_safe方式启动的数据库，可执行`mysqladmin -uroot -p123456 shutdown -S /data/mysql/run/mysql.sock`关闭。
 
 ### B场景：创建数据库并执行基本SQL操作
