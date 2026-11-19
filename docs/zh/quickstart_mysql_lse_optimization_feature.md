@@ -83,7 +83,6 @@ LSE（Large System Extensions，大系统扩展）是专为现代多核、高并
 
     如果校验值一致说明rpm包文件完整，如果校验值不一致则可以确认文件完整性已被破坏，需要重新获取。
 
-   
 #### 执行安装
 
 1. 安装依赖：请参见《Percona 移植指南》中的"[配置编译环境](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/Percona/kunpengpercona_02_0014.html)"章节安装依赖。
