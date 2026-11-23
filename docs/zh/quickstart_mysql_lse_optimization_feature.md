@@ -37,45 +37,29 @@ LSE（Large System Extensions，大系统扩展）是专为现代多核、高并
 
 #### 获取软件包
 
-|软件类型|必选/可选|软件包说明|软件包名称|获取链接|
-|---|---|---|---|---|
-|主要安装包|必选|已内置LSE优化特性的BoostDB Percona RPM包（aarch64）|BoostDB-Percona-5.7.44-53.aarch64.rpm|[Percona\-Server 5.7.44\-53](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/BoostDB-Percona-5.7.44-53.aarch64.rpm)|
-|基线安装包|必选（基线测试用）|未内置LSE优化特性的Percona Server5.7.44-53基线RPM包（aarch64），用于与BoostDB-Percona-5.7.44-53做基线对比|BoostDB-Percona-5.7.44-53.aarch64.rpm|[Percona\-Server 5.7.44\-53基线RPM](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v3/BoostDB-Percona-5.7.44-53.aarch64.rpm)|
-|主要安装包|可选（二选一）|8.0 版本RPM包|BoostDB-Percona-8.0.43-34.aarch64.rpm|[Percona\-Server 8.0.43\-34](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/BoostDB-Percona-8.0.43-34.aarch64.rpm)|
-|基线安装包|可选（二选一）|未内置LSE优化特性的Percona Server8.0.43-34基线RPM包（aarch64），用于与BoostDB-Percona-8.0.43-34做基线对比|BoostDB-Percona-8.0.43-34.aarch64.rpm|[Percona\-Server 8.0.43\-34基线RPM](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v2/BoostDB-Percona-8.0.43-34.aarch64.rpm)|
-
-#### 发布包完整性校验
-
-**简介**
-
-为了检查软件包在传输或存储过程中是否因网络或设备问题而不完整，在获取到软件包后，需要对软件包的完整性进行校验，通过了校验的软件包才能部署。
-
-这里通过对比本文提供的SHA256校验值与手动计算的RPM包SHA256值，判断软件包是否完整。若两个值相同，说明rpm包文件完整，否则，rpm包完整性被破坏，请重新获取rpm发布包。
-
-**SHA256校验值**
-
-| 软件版本 | 软件包类型 | SHA256校验值 |
-| --- | --- | --- |
-| Percona Server 5.7.44-53 | LSE优化包 | `9aedd985b449a0edae749b353c2a71f10bd1ddfda431a92a78c580ac5b94fc79` |
-| Percona Server 5.7.44-53 | 基线包 | `f5f17e35520b0bc56358067e30eed8c53b94d780d227b0d2a368618e695fdb1c` |
-| Percona Server 8.0.43-34 | LSE优化包 | `a4ca947b6b8923316f17226e3de3c3212374fc510ec1bf7bcd4d532223248727` |
-| Percona Server 8.0.43-34 | 基线包 | `df1c4306ea7b8980889b103a43ac6c5b99efb904234b8b03c7fdf46f694b3d43` |
+|软件类型|必选/可选|软件包说明|软件包名称|获取链接|SHA256校验值 |
+|---|---|---|---|---|---|
+|主要安装包|必选|已内置LSE优化特性的BoostDB Percona RPM包（aarch64）|BoostDB-Percona-5.7.44-53.aarch64.rpm|[Percona\-Server 5.7.44\-53](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/BoostDB-Percona-5.7.44-53.aarch64.rpm)| `9aedd985b449a0edae749b353c2a71f10bd1ddfda431a92a78c580ac5b94fc79` |
+|基线安装包|必选（基线测试用）|未内置LSE优化特性的Percona Server5.7.44-53基线RPM包（aarch64），用于与BoostDB-Percona-5.7.44-53做基线对比|BoostDB-Percona-5.7.44-53.aarch64.rpm|[Percona\-Server 5.7.44\-53基线RPM](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v3/BoostDB-Percona-5.7.44-53.aarch64.rpm)| `f5f17e35520b0bc56358067e30eed8c53b94d780d227b0d2a368618e695fdb1c` |
+|主要安装包|可选（二选一）|8.0 版本RPM包|BoostDB-Percona-8.0.43-34.aarch64.rpm|[Percona\-Server 8.0.43\-34](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/BoostDB-Percona-8.0.43-34.aarch64.rpm)|`a4ca947b6b8923316f17226e3de3c3212374fc510ec1bf7bcd4d532223248727` |
+|基线安装包|可选（二选一）|未内置LSE优化特性的Percona Server8.0.43-34基线RPM包（aarch64），用于与BoostDB-Percona-8.0.43-34做基线对比|BoostDB-Percona-8.0.43-34.aarch64.rpm|[Percona\-Server 8.0.43\-34基线RPM](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v2/BoostDB-Percona-8.0.43-34.aarch64.rpm)|`df1c4306ea7b8980889b103a43ac6c5b99efb904234b8b03c7fdf46f694b3d43` |
 
 >![](./public_sys-resources/icon_note.gif) **说明：**
 以上SHA256值根据对应Release下载的RPM文件计算得出。优化包与基线包虽然文件名相同，但来自不同的Release标签，下载时应分别保存，避免文件覆盖或校验值混用。
->本章节以AArch64架构的5.7.44发布包完整性校验为例，其他版本发布包完整性校验的操作方法相同。
 
-**前提条件**
+#### 发布包完整性校验
 
-在校验发布包完整性之前，需要准备如下文件：
+为了检查软件包在传输或存储过程中是否因网络或设备问题而不完整，在获取到软件包后，需要对软件包的完整性进行校验，通过了校验的软件包才能部署。
 
-- rpm包：BoostDB-Percona-5.7.44-53.aarch64.rpm。
+这里通过对比本文提供的SHA256校验值与手动计算的RPM包SHA256值，判断软件包是否完整。若两个值相同，说明RPM包文件完整，否则，RPM包完整性被破坏，请重新获取RPM发布包。
 
 **操作指导**
 
-文件完整性校验操作步骤如下：
+此处以校验BoostDB-Percona-5.7.44-53.aarch64.rpm为例，BoostDB-Percona-8.0.43-34.aarch64.rpm的校验方式相同。
 
-1. 计算文件的sha256校验值。linux执行命令如下：
+文件完整性校验操作步骤如下所示。
+
+1. 计算文件的sha256校验值。Linux执行命令如下：
 
     ```bash
     sha256sum BoostDB-Percona-5.7.44-53.aarch64.rpm
@@ -89,9 +73,9 @@ LSE（Large System Extensions，大系统扩展）是专为现代多核、高并
 
     命令执行完成后，输出校验值。
 
-2. 对比步骤1计算的校验值与上文SHA256校验值表中对应版本的参考值是否一致。
+2. 对比步骤1计算的校验值与上文对应版本的参考值是否一致。
 
-    如果校验值一致说明rpm包文件完整，如果校验值不一致则可以确认文件完整性已被破坏，需要重新获取。
+    如果校验值一致说明RPM包文件完整，如果校验值不一致则可以确认文件完整性已被破坏，需要重新获取。
 
 #### 执行安装
 
