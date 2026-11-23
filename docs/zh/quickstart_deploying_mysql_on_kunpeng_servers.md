@@ -8,7 +8,7 @@ MySQL是一个开源的关系型数据库管理系统（RDBMS），是业界最�
 
 本文以MySQL 8.0.25为例，指导用户在鲲鹏服务器（aarch64架构）上通过源码编译方式快速完成MySQL的安装、初始化与首次使用。MySQL 5.7.27、MySQL 8.0.17及其他MySQL 8.0.x版本也可参考本文档。
 
->![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
+>![引出说明信息的图标](public_sys-resources/icon_note.gif) **说明：**
 >
 > * 使用开源软件时需遵守开源软件的许可协议。
 > * MySQL 8.0.16版本需自行通过官网补丁升级，建议直接使用MySQL 5.7.27、MySQL 8.0.17或MySQL 8.0.25及以上版本。
@@ -67,7 +67,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     chown -R mysql:mysql /data/mysql
     ```
 
-    >![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
+    >![引出说明信息的图标](public_sys-resources/icon_note.gif) **说明：**
     > 进行性能测试时，需将单独磁盘格式化并挂载到数据目录，详细操作参见[搭建数据盘](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_03_0007.html)。
 
 3. 安装依赖包。
@@ -120,7 +120,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     make -j 96 install
     ```
 
-    >![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
+    >![引出说明信息的图标](public_sys-resources/icon_note.gif) **说明：**
     > `-j 96`参数充分利用多核CPU优势加快编译速度，参数`-j`后数字为CPU核数，可用`cat /proc/cpuinfo | grep processor | wc -l`查看，此数值应小于等于CPU核数。
     > 如果编译安装过程失败，需要执行`rm -rf /home/mysql-8.0.25`清理环境后，再重新解压MySQL源码包并编译安装。
 
@@ -172,7 +172,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     chown mysql:mysql /etc/my.cnf
     ```
 
-    >![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
+    >![引出说明信息的图标](public_sys-resources/icon_note.gif) **说明：**
     > 其中文件路径（包括软件安装路径basedir、数据路径datadir等）请根据实际情况修改。`user=mysql`指操作系统层的用户，即“配置编译环境”章节创建的用户。如需进行性能调测，请参见《[数据库参数调优](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengdbstune_05_0017.html)》修改my.cnf中的配置参数。
 
 2. 配置MySQL环境变量。
@@ -203,7 +203,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     [System] [MY-013170] [Server] /usr/local/mysql/bin/mysqld (mysqld 8.0.25) initializing of server has completed
     ```
 
-    >![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
+    >![引出说明信息的图标](public_sys-resources/icon_note.gif) **说明：**
     >
     > * 初始化回显`root@localhost:`后面有生成的临时初始密码，请注意保存，步骤5中会用到。
     > * 如果初始化失败，提示"\-\-initialize specified but the data directory has files in it."，则执行`ls /data/mysql/data`确认后，执行`rm -rf /data/mysql/data/*`删除数据并重新初始化。
@@ -221,7 +221,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     netstat -anpt | grep 3306
     ```
 
-    >![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
+    >![引出说明信息的图标](public_sys-resources/icon_note.gif) **说明：**
     >
     > * 如果以root用户第一次执行`service mysql start`启动失败（提示缺少mysql.log文件），请先切换到mysql用户（`su - mysql`）启动数据库服务生成mysql.log，停止服务后再以root用户启动。
     > * 如果netstat命令执行失败，需先执行`yum -y install net-tools`安装依赖包。
@@ -247,7 +247,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     Query OK, 0 rows affected (0.01 sec)
     ```
 
-    >![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
+    >![引出说明信息的图标](public_sys-resources/icon_note.gif) **说明：**
     > 文档中的用户和密码只是参考，请根据客户实际情况进行配置。
     > **安全提示**：`123456`仅为演示用弱密码，生产环境请务必使用强密码（建议12位以上，包含大小写字母、数字和特殊字符）；同时应避免在命令行参数中直接携带明文密码（如`mysql -uroot -p123456`），以防密码留存在shell命令历史中被泄露。
 

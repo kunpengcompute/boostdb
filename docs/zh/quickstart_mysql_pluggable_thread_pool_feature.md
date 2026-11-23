@@ -8,7 +8,7 @@ MySQL可插拔线程池特性是鲲鹏BoostKit MySQL加速套件的性能优化�
 
 使用线程池连接器模块后，连接的建立与调度由线程池接管：整个线程池分为若干个线程组（默认为CPU逻辑核数）和一个timer线程，通过每个线程组上的listener线程借助epoll（Linux内核的事件通知机制，用于高效侦听大量网络连接的可读事件）进行网络任务侦听。将任务放入高优先级队列或普通队列，由空闲的worker线程按优先级取出处理，并动态伸缩worker线程数量，使服务器在大量客户端连接下仍保持最佳性能。该特性还支持事务优先调度、防线程池停滞，并在information\_schema中新增四张状态信息表，可实时监管线程池状态。
 
->![说明](public_sys-resources/icon-note.gif) **说明**
+>![说明](public_sys-resources/icon_note.gif) **说明**
 >
 > * 本特性以patch文件方式提供，补丁`code-threadpool-for-MySQL-8.0.patch`同时适用于MySQL 8.0.25、8.0.30和8.0.35。
 > * 本特性与MySQL NUMA调度优化patch不冲突，但使用线程池插件特性后会使MySQL NUMA调度优化中的用户连接线程调度优化失效。
@@ -80,7 +80,7 @@ wget https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/
     git commit -m "Initial commit"
     ```
 
-    >![说明](public_sys-resources/icon-note.gif) **说明**
+    >![说明](public_sys-resources/icon_note.gif) **说明**
     >
     > 若未配置git的提交用户信息，`git commit`前需要先配置。
     >
@@ -117,7 +117,7 @@ make -j 96
 make -j 96 install
 ```
 
-> ![引出说明信息的图标](public_sys-resources/icon-note.gif)**说明**：
+> ![引出说明信息的图标](public_sys-resources/icon_note.gif)**说明**：
 >
 > `-j 96`参数充分利用多核CPU优势加快编译速度，参数`-j`后数字为CPU核数，可用`cat /proc/cpuinfo | grep processor | wc -l`查看，此数值应小于等于CPU核数。
 
@@ -187,7 +187,7 @@ ls $CMAKE_INSTALL_PREFIX/lib/plugin/thread_pool.so
    Query OK, 0 rows affected (0.01 sec)
    ```
 
-   >![引出说明信息的图标](public_sys-resources/icon-note.gif) **说明：**
+   >![引出说明信息的图标](public_sys-resources/icon_note.gif) **说明：**
    > 文档中的用户和密码只是参考，请根据客户实际情况进行配置。
    > **安全提示**：`123456`仅为演示用弱密码，生产环境请务必使用强密码（建议12位以上，包含大小写字母、数字和特殊字符）；同时应避免在命令行参数中直接携带明文密码（如`mysql -uroot -p123456`），以防密码留存在shell命令历史中被泄露。
 
@@ -247,7 +247,7 @@ ls $CMAKE_INSTALL_PREFIX/lib/plugin/thread_pool.so
 
 线程池插件状态为ACTIVE且状态表可正常查询，表示线程池连接器已生效，后续新建连接将由线程池接管调度。
 
-> ![引出说明信息的图标](public_sys-resources/icon-note.gif)**说明**
+> ![引出说明信息的图标](public_sys-resources/icon_note.gif)**说明**
 >
 > * 也可以在MySQL的配置文件my.cnf中添加`plugin-load-add=thread_pool.so`安装插件，该方式需要重启数据库才能生效。
 > * 若编译后将thread\_pool.so拷贝到其他MySQL服务使用，需将文件放入目标服务plugin\_dir变量指定的目录下，再执行上述INSTALL PLUGIN语句。
@@ -297,7 +297,7 @@ ls $CMAKE_INSTALL_PREFIX/lib/plugin/thread_pool.so
 
 thread\_pool\_size支持命令行、配置文件和动态修改（Global范围，允许值1至1024）。调整后线程池按新的线程组数量调度连接，在TPC\-C大量并发场景下，启用线程池后性能可维持在原来的85%（未启用时仅剩约10%）。性能验证的详细测试步骤请参见《[BenchmarkSQL 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengbenchmarksql_06_0001.html)》。
 
-> ![引出说明信息的图标](public_sys-resources/icon-note.gif)**说明**
+> ![引出说明信息的图标](public_sys-resources/icon_note.gif)**说明**
 >
 > MySQL的配置参数（系统变量）可用于调整数据库服务的功能和性能，详细信息请参见MySQL官方文档《Server System Variables》。
 

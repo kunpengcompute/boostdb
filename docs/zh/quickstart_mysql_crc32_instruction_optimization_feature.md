@@ -10,7 +10,7 @@ Linux内核中虽然包含了CRC32算法的C语言实现，但是由于性能较
 
 本文以MySQL 8.0.25为例，指导用户通过“获取补丁 → 应用补丁 → 编译安装 → 测试验证 → 性能对比”的完整流程，快速上手使用CRC32指令优化特性。其他场景也可参考本文的方法进行适配优化。
 
->![说明](public_sys-resources/icon-note.gif)  **说明**
+>![说明](public_sys-resources/icon_note.gif)  **说明**
 >
 > * 本特性与其他MySQL加速特性兼容，特性之间的兼容性信息请参见《[特性之间的兼容性](https://www.hikunpeng.com/document/detail/zh/boostdb/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html)》。
 > * GCC编译时通过`-march=armv8-a+crc`编译选项指定ARM架构版本及扩展指令集，使能CRC32硬件指令。
@@ -65,7 +65,7 @@ Linux内核中虽然包含了CRC32算法的C语言实现，但是由于性能较
     git commit -m "Initial commit"
     ```
 
-    > ![说明](public_sys-resources/icon-note.gif) **说明**
+    > ![说明](public_sys-resources/icon_note.gif) **说明**
     >
     > 若未配置git的提交用户信息，`git commit`前需要先配置用户邮件及用户名称：
     >
@@ -105,7 +105,7 @@ make -j 96
 make -j 96 install
 ```
 
->![说明](public_sys-resources/icon-note.gif) **说明**
+>![说明](public_sys-resources/icon_note.gif) **说明**
 >
 > - cmake .. -DBUILD_CONFIG=mysql_release # 使用MySQL官方发布编译配置。
 > - DCMAKE_INSTALL_PREFIX=/usr/local/mysql # MySQL安装目录。
