@@ -46,14 +46,24 @@ LSE（Large System Extensions，大系统扩展）是专为现代多核、高并
 
 #### 发布包完整性校验
 
->![](./public_sys-resources/icon_note.gif) **说明：**
->本章节以AArch64架构的5.7.44发布包完整性校验为例，其他版本发布包完整性校验的操作方法相同。
-
 **简介**
 
 为了检查软件包在传输或存储过程中是否因网络或设备问题而不完整，在获取到软件包后，需要对软件包的完整性进行校验，通过了校验的软件包才能部署。
 
-这里通过对比[发布说明](https://gitcode.com/boostkit/boostdb/releases)中记录的校验值和手动方式计算的rpm包文件校验值，判断软件包是否完整。若两个值相同，说明rpm包文件完整，否则，rpm包完整性被破坏，请重新获取rpm发布包。
+这里通过对比本文提供的SHA256校验值与手动计算的RPM包SHA256值，判断软件包是否完整。若两个值相同，说明rpm包文件完整，否则，rpm包完整性被破坏，请重新获取rpm发布包。
+
+**SHA256校验值**
+
+| 软件版本 | 软件包类型 | SHA256校验值 |
+| --- | --- | --- |
+| Percona Server 5.7.44-53 | LSE优化包 | `9aedd985b449a0edae749b353c2a71f10bd1ddfda431a92a78c580ac5b94fc79` |
+| Percona Server 5.7.44-53 | 基线包 | `f5f17e35520b0bc56358067e30eed8c53b94d780d227b0d2a368618e695fdb1c` |
+| Percona Server 8.0.43-34 | LSE优化包 | `a4ca947b6b8923316f17226e3de3c3212374fc510ec1bf7bcd4d532223248727` |
+| Percona Server 8.0.43-34 | 基线包 | `df1c4306ea7b8980889b103a43ac6c5b99efb904234b8b03c7fdf46f694b3d43` |
+
+>![](./public_sys-resources/icon_note.gif) **说明：**
+以上SHA256值根据对应Release下载的RPM文件计算得出。优化包与基线包虽然文件名相同，但来自不同的Release标签，下载时应分别保存，避免文件覆盖或校验值混用。
+>本章节以AArch64架构的5.7.44发布包完整性校验为例，其他版本发布包完整性校验的操作方法相同。
 
 **前提条件**
 
@@ -79,7 +89,7 @@ LSE（Large System Extensions，大系统扩展）是专为现代多核、高并
 
     命令执行完成后，输出校验值。
 
-2. 对比步骤1计算的校验值与[发布说明](https://gitcode.com/boostkit/boostdb/releases)的SHA256值是否一致。
+2. 对比步骤1计算的校验值与上文SHA256校验值表中对应版本的参考值是否一致。
 
     如果校验值一致说明rpm包文件完整，如果校验值不一致则可以确认文件完整性已被破坏，需要重新获取。
 

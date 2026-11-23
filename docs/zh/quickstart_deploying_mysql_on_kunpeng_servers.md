@@ -232,7 +232,7 @@ wget https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.g
     mysql -uroot -p -S /data/mysql/run/mysql.sock
     ```
 
-    提示输入密码时，输入步骤3生成的临时初始密码。登录成功后修改root用户密码并创建全域root用户（允许root从其他服务器访问）。
+    提示输入密码时，输入步骤3生成的临时初始密码。登录成功后，直接修改为root用户自己的密码。
 
     ```sql
     alter user 'root'@'localhost' identified by '123456';
