@@ -1,5 +1,7 @@
 # MySQL 8.0.20 细粒度锁优化 特性指南
 
+本文档介绍MySQL 8.0.20细粒度锁优化特性，说明以细粒度hash桶锁替换全局锁的原理、代码实现与编译安装方法，适用于在MySQL OLTP高并发场景下需要减少锁冲突、提高并发度的用户。
+
 ## 原理介绍<a name="ZH-CN_TOPIC_0000002550144937"></a>
 
 在MySQL OLTP场景下，大量并发的DML语句（Insert, Update, Delete）会访问lock\_sys-\>mutex全局锁保护的关键数据结构，导致锁竞争激烈，性能下降。为了解决这个问题，鲲鹏BoostKit提供了采用细粒度hash桶锁来替换全局锁的优化特性，能够减少锁冲突，提高并发度。
@@ -17,11 +19,11 @@ Lock-sys会维持多个队列用于存储事务对资源的占用情况，每当
 
 新的latch锁定方法是在原来全局大锁的基础上，将队列分组为固定数量的shard，每个shard由自己的mutex保护。为了能够高效地锁住所有的shard，新特性中的全局大锁（global latch）被设计为读写锁。对各个队列进行访问，需要先获取global latch的共享锁，再获取相应shard的mutex。这种实现方式类似于MySQL访问一条记录时，先对表加意向锁，再对相应记录加锁。在一些特殊场景下需要锁住所有队列，这时获取global latch的排他锁即可。这种实现方式的大体思路基于：大多数操作涉及一个或两个Lock-sys队列，并且独立于对其他队列进行的操作。global latch与其管理对象的关系如下图所示。
 
-![](figures/zh_cn_image_0000002550144941.png)
+![global latch与各shard及其mutex的层级关系示意图，访问队列需先取共享锁再加shard mutex](figures/zh_cn_image_0000002550144941.png)
 
 新的锁定方式的效率提升如下图所示。在过去，如果事务A和事务B分别要访问队列1和队列2，由于都需要对全局大锁上锁，这时事务B就会被阻塞；而在新特性中，事务A和事务B可以同时申请global latch的共享锁，再分别申请mutex1和mutex2，也就是说事务A和事务B可以同时进行，并发度提升。
 
-![](figures/zh_cn_image_0000002550184933.png)
+![新旧latch锁定方式的并发效率对比示意图，事务A与事务B可同时获取共享global latch访问不同队列](figures/zh_cn_image_0000002550184933.png)
 
 访问两个队列以获取两条记录涉及以下步骤：
 
@@ -98,7 +100,7 @@ locksys::Exclusive_global_latch_guard guard{};
 
     - 所有新函数都将在locksys命名空间中。
 
-    - lock\_mutex\_enter\(\)/lock\_mutex\_exit\(\)的所有用法将被适当的latch guard替换，最好是locksys:Shard\_latch\_guard。
+    - lock\_mutex\_enter\(\)/lock\_mutex\_exit\(\)的所有用法将被适当的latch guard替换，最好是locksys::Shard\_latch\_guard。
 
     - table-\>n\_rec\_locks必须成为atomic类型，因为它现在为给定表创建/销毁记录锁期间，可以并行递增/递减。
 
@@ -149,14 +151,8 @@ MySQL细粒度锁优化特性以Patch补丁文件形式提供，该补丁基于M
     ```
 
 2. 下载[MySQL细粒度锁优化特性Patch](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)，解压后将0001-SHARDED-LOCK-SYS.patch上传至MySQL源码的根目录。
-3. 解压源码包并进入MySQL源码目录。
 
-    ```bash
-    tar -zxvf mysql-boost-8.0.20.tar.gz
-    cd mysql-8.0.20
-    ```
-
-4. 在源码根目录，使用git初始化命令来建立git管理信息。
+3. 在源码根目录，使用git初始化命令来建立git管理信息。
 
     ```bash
     git init
@@ -178,14 +174,14 @@ MySQL细粒度锁优化特性以Patch补丁文件形式提供，该补丁基于M
     > git config user.name "123"
     >    ```
 
-5. （可选）如果没有配置Yum源，请配置Yum源，详细信息请参见[配置Yum源](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0013.html)。
-6. （可选）如果没有安装dos2unix，请执行如下命令安装dos2unix。
+4. （可选）如果没有配置Yum源，请配置Yum源，详细信息请参见[配置Yum源](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0013.html)。
+5. （可选）如果没有安装dos2unix，请执行如下命令安装dos2unix。
 
     ```bash
     yum install dos2unix
     ```
 
-7. 合入MySQL细粒度锁优化特性补丁。
+6. 合入MySQL细粒度锁优化特性补丁。
 
     ```bash
     dos2unix 0001-SHARDED-LOCK-SYS.patch
@@ -195,17 +191,17 @@ MySQL细粒度锁优化特性以Patch补丁文件形式提供，该补丁基于M
 
     如果没有回显报错信息，则补丁应用成功。
 
-8. 根据正常的编译安装MySQL源码的操作步骤进行MySQL的编译安装。详细信息请参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》。
-9. （可选）通过TPC-C测试可以得到使用MySQL细粒度锁优化特性前后的性能提升效果，详细测试步骤请参见《[BenchMarkSQL 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengbenchmarksql_06_0001.html)》。
+7. 根据正常的编译安装MySQL源码的操作步骤进行MySQL的编译安装。详细信息请参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》。
+8. （可选）通过TPC-C测试可以得到使用MySQL细粒度锁优化特性前后的性能提升效果，详细测试步骤请参见《[BenchMarkSQL 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengbenchmarksql_06_0001.html)》。
 
     MySQL细粒度锁优化特性可以使TPC-C综合性能提升10%。
 
     **图 1** MySQL细粒度锁优化特性优化前后性能对比<a name="fig20903163123514"></a><a id="MySQL细粒度锁优化特性优化前后性能对比"></a><br>
-    ![](figures/MySQL细粒度锁优化特性优化前后性能对比.png "MySQL细粒度锁优化特性优化前后性能对比")
+    ![MySQL细粒度锁优化特性使能前后的TPC-C综合性能柱状对比，使能后性能明显提升](figures/MySQL细粒度锁优化特性优化前后性能对比.png "MySQL细粒度锁优化特性优化前后性能对比")
 
 ## 修订记录<a name="ZH-CN_TOPIC_0000002550184931"></a>
 
-|发布日期|修订记录|
-|--|--|
-|2023-07-25|第二次正式发布。更新MySQL细粒度锁优化特性的[使用说明](#ZH-CN_TOPIC_0000002518545196)章节中合入补丁操作步骤的命令。|
-|2020-07-13|第一次正式发布。|
+| 文档版本 | 发布日期 | 修改说明 |
+|--|--|--|
+|02|2023-07-25|第二次正式发布。更新MySQL细粒度锁优化特性的[使用说明](#ZH-CN_TOPIC_0000002518545196)章节中合入补丁操作步骤的命令。|
+|01|2020-07-13|第一次正式发布。|
