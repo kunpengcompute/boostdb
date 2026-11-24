@@ -83,7 +83,7 @@ BoostDB-Percona优化版本已默认集成该优化特性，无需单独获取�
    innodb_redo_log_reuse_unused_files=OFF
    ```
 
-   >![](public_sys-resources/icon-note.gif) **说明：** 
+   >![](public_sys-resources/icon_note.gif) **说明：** 
    > `innodb_redo_log_reuse_unused_files`为只读启动参数，需要重启实例后生效。
 
 ## 安全检查与加固<a name="ZH-CN_TOPIC_0000002605100008"></a>
