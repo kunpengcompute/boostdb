@@ -18,7 +18,7 @@ Prepared Statement通过用占位符替代SQL语句中的值，将SQL语句模�
 
 ### 原理描述<a id="ZH-CN_TOPIC_0000002261222518"></a>
 
-基于Prepared Statement的MySQL Plan Cache基本原理和流程如[图1 Plan Cache工作流程](#fig32415431294)所示。
+基于Prepared Statement的MySQL Plan Cache基本原理和流程如[**图 1** Plan Cache工作流程](#fig32415431294)所示。
 
 **图 1** Plan Cache工作流程<a id="fig32415431294"></a><br>
 ![Plan Cache工作流程图：EXECUTE后判断有无可复用缓存计划，适用性检查通过则复用，失败则回退原生优化流程](figures/mysql_plan_cache_workflow.png "Plan Cache工作流程")
@@ -199,3 +199,9 @@ echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 
 ![ASLR安全加固操作截图：在命令行执行echo命令向randomize_va_space写入2以启用地址空间布局随机化](figures/zh_cn_image_0000002504021297.png)
+
+## 修订记录
+
+|文档版本 | 发布日期 | 修改说明 |
+| --------| -------- | -------- |
+|01| 2026-06-30 | 第一次正式发布。 |

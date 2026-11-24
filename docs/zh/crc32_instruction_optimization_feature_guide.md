@@ -1,5 +1,7 @@
 # CRC32指令优化 特性指南
 
+本文档介绍CRC32指令优化特性，使用鲲鹏CRC32硬件指令替换CRC32算法的软件实现以减小计算开销，适用于在使用openEuler操作系统的鲲鹏处理器上为MySQL等软件做指令优化的用户。
+
 ## 特性描述<a name="ZH-CN_TOPIC_0000002550140085"></a>
 
 ### 简介<a name="ZH-CN_TOPIC_0000002550140083"></a>
@@ -10,9 +12,7 @@ Linux内核中虽然包含了CRC32算法的C语言实现，但是由于性能较
 
 **兼容性<a name="section65704516331"></a>**
 
-与其他特性兼容。关于MySQL特性之间的兼容性信息，请参见[特性之间的兼容性](https://www.hikunpeng.com/document/detail/zh/boostdb/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html)。
-
-在鲲鹏处理器内，CRC32指令优化特性使用鲲鹏CRC32硬件指令替换CRC32算法的软件实现，减小了CRC32的计算开销。本文以MySQL为例介绍如何在使用openEuler操作系统的鲲鹏服务器上使用CRC32指令优化特性，其他场景也可参考本文的方法进行适配优化。
+与其他特性兼容。关于MySQL特性之间的兼容性信息，请参见[特性之间的兼容性](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/twp/kunpengdatabase_21_066.html)。
 
 ### 原理描述<a name="ZH-CN_TOPIC_0000002550180079"></a>
 
@@ -28,7 +28,7 @@ cat /proc/cpuinfo
 
 回显结果中Features行包含crc32表示CPU支持CRC32硬件指令优化。
 
-![](figures/zh_cn_image_0000002550140087.png)
+![cat /proc/cpuinfo命令回显的Features字段截图，字段中包含crc32标志，表明CPU支持CRC32硬件指令](figures/zh_cn_image_0000002550140087.png)
 
 **编译选项<a name="section9456123913580"></a>**
 
@@ -42,11 +42,11 @@ LL/SC（Load-link/Store-condition）原子指令需要把共享变量先load到�
 
 LL/SC指令（ldaxr&stlxr）：
 
-![](figures/zh_cn_image_0000002518540338.png)
+![ldaxr与stlxr两条LL/SC原子指令的汇编代码，先将共享变量load到本核L1 Cache再条件存储](figures/zh_cn_image_0000002518540338.png)
 
 LSE指令（ldaddal）：
 
-![](figures/zh_cn_image_0000002550180083.png)
+![ldaddal指令的汇编代码，体现LSE原子操作在L3 Cache完成计算以减少锁竞争](figures/zh_cn_image_0000002550180083.png)
 
 MySQL源码文件中，CMakeLists.txt文件中使用“-march=armv8-a+lse”编译选项，使用原子操作指令扩展LSE特性，以达到性能优化的目的。
 
@@ -72,9 +72,9 @@ MySQL源码文件中，CMakeLists.txt文件中使用“-march=armv8-a+lse”编�
 
 |项目|版本|获取地址|
 |--|--|--|
-|操作系统|openEuler 20.03 LTS SP1<br>openEuler 22.03 LTS SP1|openEuler 20.03 LTS SP1：[获取链接](https://www.openeuler.org/zh/download/archive/detail/?version=openEuler%2020.03%20LTS%20SP1)<br>openEuler 22.03 LTS SP1：[获取链接](https://www.openeuler.org/zh/download/archive/detail/?version=openEuler%2022.03%20LTS%20SP1)|
-|mysql-boost-8.0.25.tar.gz|MySQL 8.0.25|[获取链接](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.gz)|
-|0001-CRC32-AARCH64.patch|-|[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|
+|操作系统|openEuler 20.03 LTS SP1<br>openEuler 22.03 LTS SP1|openEuler 20.03 LTS SP1：[openEuler 20.03 LTS SP1 下载页面](https://www.openeuler.org/zh/download/archive/detail/?version=openEuler%2020.03%20LTS%20SP1)<br>openEuler 22.03 LTS SP1：[openEuler 22.03 LTS SP1 下载页面](https://www.openeuler.org/zh/download/archive/detail/?version=openEuler%2022.03%20LTS%20SP1)|
+|mysql-boost-8.0.25.tar.gz|MySQL 8.0.25|[MySQL 8.0.25源码包下载页面](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.gz)|
+|0001-CRC32-AARCH64.patch|-|[boostdb补丁发布包下载地址](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|
 
 ## 安装和使用特性<a name="ZH-CN_TOPIC_0000002550180081"></a>
 
@@ -121,7 +121,7 @@ MySQL源码文件中，CMakeLists.txt文件中使用“-march=armv8-a+lse”编�
     git apply 0001-CRC32-AARCH64.patch
     ```
 
-    ![](figures/zh_cn_image_0000002550180085.png)
+    ![执行git apply合入CRC32补丁后的终端回显，显示变更文件与增删行统计](figures/zh_cn_image_0000002550180085.png)
 
 5. 编译安装MySQL。请参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》。
 6. 执行如下命令，返回如下crc32cb反汇编信息，表示CRC32指令优化特性已使能成功。
@@ -130,14 +130,14 @@ MySQL源码文件中，CMakeLists.txt文件中使用“-march=armv8-a+lse”编�
     objdump -d ./bin/mysqld | grep crc32cb
     ```
 
-    ![](figures/zh_cn_image_0000002518700246.png)
+    ![objdump反汇编过滤crc32cb的终端回显，输出crc32cb指令，表明优化特性已使能](figures/zh_cn_image_0000002518700246.png)
 
 7. 通过Sysbench测试可以得到使用CRC32指令优化特性前后的性能提升效果，详细测试步骤请参见《[Sysbench 0.5&1.0 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)》。
 
     CRC32指令优化特性可以使Sysbench写场景性能提升5%，优化前后对比效果如[**图 1** CRC32指令优化特性优化前后性能对比](#CRC32指令优化特性优化前后性能对比)所示。
 
     **图 1** CRC32指令优化特性优化前后性能对比<a name="fig20274152011365"></a><a id="CRC32指令优化特性优化前后性能对比"></a><br>
-    ![](figures/CRC32指令优化特性优化前后性能对比.png "CRC32指令优化特性优化前后性能对比")
+    ![Sysbench写场景使能CRC32指令优化前后的性能柱状对比，使能后性能明显提升](figures/CRC32指令优化特性优化前后性能对比.png "CRC32指令优化特性优化前后性能对比")
 
 ## 安全管理<a name="ZH-CN_TOPIC_0000002518540336"></a>
 
@@ -161,6 +161,6 @@ MySQL源码文件中，CMakeLists.txt文件中使用“-march=armv8-a+lse”编�
 
 ## 修订记录<a name="ZH-CN_TOPIC_0000002518700240"></a>
 
-|发布日期|修订记录|
-|--|--|
-|2024-03-30|第一次正式发布。|
+|文档版本 | 发布日期 | 修改说明 |
+| --------| -------- | -------- |
+|01| 2024-03-30 | 第一次正式发布。 |
