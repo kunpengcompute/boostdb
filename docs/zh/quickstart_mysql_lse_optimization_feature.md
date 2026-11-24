@@ -8,9 +8,9 @@ MySQL LSE优化特性是鲲鹏BoostKit MySQL加速套件的基础计算优化特
 
 LSE（Large System Extensions，大系统扩展）是专为现代多核、高并发环境设计的原子操作硬件加速方案，通过单指令原子操作，解决了传统LL/SC（Load\-Link/Store\-Conditional）指令在扩展性上的瓶颈。LL/SC原子指令需要把共享变量先加载到本核所在的L1 Cache中进行修改，在锁竞争少的情况下性能较好，但在锁竞争激烈时会导致系统性能下降严重。ARMv8.1规范引入的LSE将计算操作放到L3 Cache执行，增大数据共享范围，减少Cache一致性耗时，在锁竞争激烈时可以提升操作效率。
 
-本文以Percona\-Server 5.7.44\-53为例，指导用户通过"获取RPM 包 → 安装 → 启动数据库 → 性能对比验证"的流程，快速上手使用MySQL LSE优化特性。使能本特性后，Sysbench 8U16G规格下256并发综合性能（只读、读写、只写）可提升约 5%。
+本文以Percona\-Server 5.7.44\-53为例，指导用户通过"获取RPM包 → 安装 → 启动数据库 → 性能对比验证"的流程，快速上手使用MySQL LSE优化特性。使能本特性后，Sysbench 8U16G规格下256并发综合性能（只读、读写、只写）可提升约5%。
 
-> ![引出说明信息的图标](public_sys-resources/icon-note.gif)**说明**
+> ![引出说明信息的图标](public_sys-resources/icon_note.gif)**说明**
 >
 > * Percona Server是一款与MySQL完全兼容的独立数据库产品，本特性以BoostDB RPM包形式提供，安装后默认已使能LSE优化。
 > * 多核、原子锁争抢严重的场景下，也可在GCC编译选项中添加`-march=armv8-a+lse`选项，从源码层面使能LSE特性。
@@ -31,22 +31,55 @@ LSE（Large System Extensions，大系统扩展）是专为现代多核、高并
 |---|---|---|---|
 |CPU型号检查|lscpu|鲲鹏920新型号或鲲鹏950处理器|更换为符合要求的服务器|
 |OS版本检查|cat /etc/*-release|openEuler 22.03 LTS SP4 或 24.03 LTS SP3|升级OS至符合要求的版本|
-|编译依赖检查|参见《Percona 移植指南》"配置编译环境"章节|依赖包安装完成|按移植指南安装依赖|
+|编译依赖检查|参见《Percona 移植指南》"[配置编译环境](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/Percona/kunpengpercona_02_0014.html)"章节|依赖包安装完成|按移植指南安装依赖|
 
 ### 安装步骤
 
 #### 获取软件包
 
-|软件类型|必选/可选|软件包说明|软件包名称|获取链接|
-|---|---|---|---|---|
-|主要安装包|必选|已内置LSE优化特性的BoostDB Percona RPM包（aarch64）|BoostDB-Percona-5.7.44-53.aarch64.rpm|[Percona\-Server 5.7.44\-53](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/BoostDB-Percona-5.7.44-53.aarch64.rpm)|
-|基线安装包|必选（基线测试用）|未内置LSE优化特性的Percona Server5.7.44-53基线RPM包（aarch64），用于与BoostDB-Percona-5.7.44-53做基线对比|BoostDB-Percona-5.7.44-53.aarch64.rpm|[Percona\-Server 5.7.44\-53基线RPM](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v3/BoostDB-Percona-5.7.44-53.aarch64.rpm)|
-|主要安装包|可选（二选一）|8.0 版本RPM包|BoostDB-Percona-8.0.43-34.aarch64.rpm|[Percona\-Server 8.0.43\-34](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/BoostDB-Percona-8.0.43-34.aarch64.rpm)|
-|基线安装包|可选（二选一）|未内置LSE优化特性的Percona Server8.0.43-34基线RPM包（aarch64），用于与BoostDB-Percona-8.0.43-34做基线对比|BoostDB-Percona-8.0.43-34.aarch64.rpm|[Percona\-Server 8.0.43\-34基线RPM](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v2/BoostDB-Percona-8.0.43-34.aarch64.rpm)|
+|软件类型|必选/可选|软件包说明|软件包名称|获取链接|SHA256校验值 |
+|---|---|---|---|---|---|
+|主要安装包|必选|已内置LSE优化特性的BoostDB Percona RPM包（aarch64）|BoostDB-Percona-5.7.44-53.aarch64.rpm|[Percona\-Server 5.7.44\-53](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/BoostDB-Percona-5.7.44-53.aarch64.rpm)| `9aedd985b449a0edae749b353c2a71f10bd1ddfda431a92a78c580ac5b94fc79` |
+|基线安装包|必选（基线测试用）|未内置LSE优化特性的Percona Server5.7.44-53基线RPM包（aarch64），用于与BoostDB-Percona-5.7.44-53做基线对比|BoostDB-Percona-5.7.44-53.aarch64.rpm|[Percona\-Server 5.7.44\-53基线RPM](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v3/BoostDB-Percona-5.7.44-53.aarch64.rpm)| `f5f17e35520b0bc56358067e30eed8c53b94d780d227b0d2a368618e695fdb1c` |
+|主要安装包|可选（二选一）|8.0 版本RPM包|BoostDB-Percona-8.0.43-34.aarch64.rpm|[Percona\-Server 8.0.43\-34](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/BoostDB-Percona-8.0.43-34.aarch64.rpm)|`a4ca947b6b8923316f17226e3de3c3212374fc510ec1bf7bcd4d532223248727` |
+|基线安装包|可选（二选一）|未内置LSE优化特性的Percona Server8.0.43-34基线RPM包（aarch64），用于与BoostDB-Percona-8.0.43-34做基线对比|BoostDB-Percona-8.0.43-34.aarch64.rpm|[Percona\-Server 8.0.43\-34基线RPM](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v2/BoostDB-Percona-8.0.43-34.aarch64.rpm)|`df1c4306ea7b8980889b103a43ac6c5b99efb904234b8b03c7fdf46f694b3d43` |
+
+>![](./public_sys-resources/icon_note.gif) **说明：**
+以上SHA256值根据对应Release下载的RPM文件计算得出。优化包与基线包虽然文件名相同，但来自不同的Release标签，下载时应分别保存，避免文件覆盖或校验值混用。
+
+#### 发布包完整性校验
+
+为了检查软件包在传输或存储过程中是否因网络或设备问题而不完整，在获取到软件包后，需要对软件包的完整性进行校验，通过了校验的软件包才能部署。
+
+这里通过对比本文提供的SHA256校验值与手动计算的RPM包SHA256值，判断软件包是否完整。若两个值相同，说明RPM包文件完整，否则，RPM包完整性被破坏，请重新获取RPM发布包。
+
+**操作指导**
+
+此处以校验BoostDB-Percona-5.7.44-53.aarch64.rpm为例，BoostDB-Percona-8.0.43-34.aarch64.rpm的校验方式相同。
+
+文件完整性校验操作步骤如下所示。
+
+1. 计算文件的sha256校验值。Linux执行命令如下：
+
+    ```bash
+    sha256sum BoostDB-Percona-5.7.44-53.aarch64.rpm
+    ```
+
+    windows执行命令如下：
+
+    ```bash
+    certutil -hashfile BoostDB-Percona-5.7.44-53.aarch64.rpm SHA256
+    ```
+
+    命令执行完成后，输出校验值。
+
+2. 对比步骤1计算的校验值与上文对应版本的参考值是否一致。
+
+    如果校验值一致说明RPM包文件完整，如果校验值不一致则可以确认文件完整性已被破坏，需要重新获取。
 
 #### 执行安装
 
-1. 安装依赖：请参见《Percona 移植指南》中的"配置编译环境"章节安装依赖。
+1. 安装依赖：请参见《Percona 移植指南》中的"[配置编译环境](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/Percona/kunpengpercona_02_0014.html)"章节安装依赖。
 
 2. 将下载的RPM包存放至目标路径（例如"/home"），执行如下命令安装。
 
@@ -57,7 +90,7 @@ LSE（Large System Extensions，大系统扩展）是专为现代多核、高并
 
     安装完成后，默认安装目录位于"/usr/local/mysql"。
 
-    > ![说明](public_sys-resources/icon-note.gif) **说明**
+    > ![说明](public_sys-resources/icon_note.gif) **说明**
     >
     > 安装过程中，如果存在已安装依赖包但rpm相关检验不通过的情况，使用`--nodeps`跳过依赖检查。
     >
@@ -67,9 +100,9 @@ LSE（Large System Extensions，大系统扩展）是专为现代多核、高并
 
 #### 启动数据库
 
-启动数据库的核心步骤概览如下，详细操作说明（含每步的预期回显与注意事项）请参见《MySQL 移植指南》的"运行 MySQL"章节。
+启动数据库的核心步骤概览如下，详细操作说明（含每步的预期回显与注意事项）请参见《MySQL 移植指南》的"[运行MySQL](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_03_0013.html)"章节。
 
-1. 修改配置文件my.cnf（配置 basedir、datadir、socket、port、user 等参数，路径根据实际情况修改）。
+1. 修改配置文件my.cnf（配置basedir、datadir、socket、port、user等参数，路径根据实际情况修改）。
 
 2. 配置环境变量，将MySQL二进制文件路径（默认"/usr/local/mysql/bin"）加入PATH并使其生效。
 
@@ -93,7 +126,7 @@ LSE（Large System Extensions，大系统扩展）是专为现代多核、高并
     mysql -uroot -p -S /data/mysql/run/mysql.sock
     ```
 
-    > **说明**
+    > ![说明](public_sys-resources/icon_note.gif) **说明**
     > 上述命令中的安装路径、socket路径以my.cnf中的实际配置为准；如遇初始化或启动失败，请参见第 4 章"常见问题（FAQ）"。
 
 ### 安装验证
