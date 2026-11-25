@@ -1,5 +1,7 @@
 # MySQL可插拔在线向量化分析引擎 特性指南
 
+本文档介绍MySQL可插拔在线向量化分析引擎（KOVAE）的软件架构和SQL语句支持规格，并给出部署、使能、验证、调优及故障排除的操作步骤，适用于在openEuler操作系统的鲲鹏处理器上通过KOVAE提升OLAP查询性能的用户。
+
 ## 特性描述<a name="ZH-CN_TOPIC_0000002550183953"></a>
 
 ### 简介<a name="ZH-CN_TOPIC_0000001805304434"></a>
@@ -23,7 +25,7 @@ KAE（Kunpeng Accelerator Engine）是基于鲲鹏920处理器提供的硬件加
 
 **兼容性<a name="section65704516331"></a>**
 
-与其他特性兼容。关于MySQL特性之间的兼容性信息，请参见[特性之间的兼容性](https://www.hikunpeng.com/document/detail/zh/boostdb/compbf/kunpengdbsmysqlfeaturecompatibility_20_0001.html)。
+与其他特性兼容。关于MySQL特性之间的兼容性信息，请参见[特性之间的兼容性](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/twp/kunpengdatabase_21_066.html)。
 
 ### 软件架构<a name="ZH-CN_TOPIC_0000002550183951"></a>
 
@@ -32,7 +34,7 @@ KOVAE是MySQL执行层的一个引擎，位于优化器层下方。KOVAE引擎�
 KOVAE在MySQL中的位置如[**图 1** KOVAE在MySQL中的位置](#KOVAE在MySQL中的位置)所示。当优化器层制定执行计划后，KOVAE会判断是否需要交由MySQL执行器执行，或者由KOVAE自身执行。在某些情况下，KOVAE还可以将执行计划转回到MySQL执行器执行。
 
 **图 1** KOVAE在MySQL中的位置<a name="fig20233125111417"></a><a id="KOVAE在MySQL中的位置"></a><br>
-![](figures/KOVAE在MySQL中的位置.png "KOVAE在MySQL中的位置")
+![MySQL分层架构示意，KOVAE作为插件式第二引擎位于优化器层下方，可接收SQL并退回执行计划](figures/KOVAE在MySQL中的位置.png)
 
 KOVAE的框架结构如[**图 2** KOVAE框架结构](#KOVAE框架结构)所示。
 
@@ -43,13 +45,13 @@ KOVAE的框架结构如[**图 2** KOVAE框架结构](#KOVAE框架结构)所示�
 - add、minus等各种表达式：实现了列存数据的批量处理，便于利用Arm服务器向量化的特性来提升SQL语句的执行性能。
 
 **图 2** KOVAE框架结构<a name="fig666215371344"></a><a id="KOVAE框架结构"></a><br>
-![](figures/KOVAE框架结构.png "KOVAE框架结构")
+![KOVAE框架组成示意，含MySQL插件接口、白名单控制、执行计划适配器与并行算子及表达式](figures/KOVAE框架结构.png)
 
 ### KOVAE支持的SQL语句规格<a name="ZH-CN_TOPIC_0000002550143937" id="KOVAE支持的SQL语句规格"></a>
 
 #### select语句元素的支持<a name="ZH-CN_TOPIC_0000002550183943"></a>
 
-一个完整的select语句的元素的集合如下所示。select语句语法的详细信息请参见[MySQL官网](https://dev.mysql.com/doc/refman/8.0/en/select.html)。
+一个完整的select语句的元素的集合如下所示。select语句语法的详细信息请参见[MySQL select语句结构标准](https://dev.mysql.com/doc/refman/8.0/en/select.html)。
 
 ```sql
 SELECT
@@ -97,14 +99,14 @@ select语句每个元素项的支持情况如[**表 1** select语句的支持情
 |[STRAIGHT_JOIN]|优化器使用，不影响执行结果集。|该关键字作用于MySQL优化器，不影响KOVAE执行或判断。|
 |[SQL_SMALL_RESULT] [SQL_BIG_RESULT] [SQL_BUFFER_RESULT]|优化器使用，不影响执行结果集。|该关键字作用于MySQL优化器，不影响KOVAE执行或判断。|
 |[SQL_NO_CACHE] [SQL_CALC_FOUND_ROWS]|优化器使用，不影响执行结果集。|该关键字作用于MySQL优化器，不影响KOVAE执行或判断。|
-|select_expr [, select_expr] …|表示select列表的表达式。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[item类型的支持](#item支持列表)。|
+|select_expr [, select_expr] …|表示select列表的表达式。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[**表 1** item支持列表](#item支持列表)。|
 |[into_option]|表示将结果集写入到服务端文件中。|不支持，不是常用场景。|
 |[FROM table_references[PARTITION partition_list]]|表示SQL相关的表和JOIN的关系。|支持部分表访问类型，详细信息请参见[**表 3** 表访问类型的支持情况](#表访问类型的支持情况)。仅支持非临时表。仅支持InnoDB表。不支持全文索引。不支持分区表。|
-|[WHERE where_condition]|表示where条件的表达式。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[item类型的支持](#item支持列表)。|
-|[GROUP BY {col_name \| expr \| position}, ... [WITH ROLLUP]]|表示group by子句。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[item类型的支持](#item支持列表)。|
-|[HAVING where_condition]|表示having条件的表达式。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[item类型的支持](#item支持列表)。|
+|[WHERE where_condition]|表示where条件的表达式。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[**表 1** item支持列表](#item支持列表)。|
+|[GROUP BY {col_name \| expr \| position}, ... [WITH ROLLUP]]|表示group by子句。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[**表 1** item支持列表](#item支持列表)。|
+|[HAVING where_condition]|表示having条件的表达式。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[**表 1** item支持列表](#item支持列表)。|
 |[WINDOW window_name AS (window_spec) [, window_name AS (window_spec)] ...]|表示窗口函数。|不支持。|
-|[ORDER BY {col_name \| expr \| position}[ASC \| DESC], ... [WITH ROLLUP]]|表示order by子句。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[item类型的支持](#item支持列表)。|
+|[ORDER BY {col_name \| expr \| position}[ASC \| DESC], ... [WITH ROLLUP]]|表示order by子句。KOVAE会对其判断每个item的类型，及其参数的类型，并对其每个参数进行递归判断。|部分支持，详细信息请参见[**表 1** item支持列表](#item支持列表)。|
 |[LIMIT {[offset,] row_count \| row_count OFFSET offset}]|表示limit子句。|支持。|
 |[into_option]|表示将结果集写入到服务端文件中。|不支持，不是常用场景。|
 |[FOR {UPDATE \| SHARE}[OF tbl_name [, tbl_name] ...]<br>[NOWAIT \| SKIP LOCKED]<br>\| LOCK IN SHARE MODE]|表示对查询的数据进行锁定读取。|不支持。|
@@ -256,7 +258,7 @@ KOVAE仅支持如[**表 1** 支持的数据类型](#支持的数据类型)所示
 ### 参考标准和协议<a name="ZH-CN_TOPIC_0000002518704104"></a>
 
 - [MySQL select语句结构标准](https://dev.mysql.com/doc/refman/8.0/en/select.html)
-- [MySQL插件标准](https://dev.mysql.com/doc/refman/8.0/en/plugin-loading.html)
+- [安装和卸载插件](https://dev.mysql.com/doc/refman/8.0/en/plugin-loading.html)
 - [MySQL配置参数标准](https://dev.mysql.com/doc/refman/8.0/en/server-option-variable-reference.html)
 
 ### 约束与限制<a name="ZH-CN_TOPIC_0000002518544208"></a>
@@ -298,19 +300,19 @@ KOVAE适用于OLAP查询、大数据量和多核CPU支持的场景。
 MySQL连接器接收到Client发送的SQL语句，经过解析器和优化器，生成查询的执行计划，根据规则，执行计划会被默认执行器执行或者被卸载到KOVAE上执行，执行完成后再将结果集返回到Client。SQL和执行的结果集的数据流向如[**图 1** KOVAE运行原理图](#KOVAE运行原理图)所示。
 
 **图 1** KOVAE运行原理图<a name="fig122196231119"></a><a id="KOVAE运行原理图"></a>
-![](figures/KOVAE运行原理图.png "KOVAE运行原理图")
+![KOVAE运行原理数据流向，SQL经解析器与优化器生成计划，由默认执行器或KOVAE执行后返回结果集](figures/KOVAE运行原理图.png)
 
 KOVAE内部执行过程概览如[**图 2** 并行执行结构](#并行执行结构)所示。
 
 **图 2** 并行执行结构<a name="fig1778034211311"></a><a id="并行执行结构"></a><br>
-![](figures/并行执行结构.png "并行执行结构")
+![KOVAE并行执行结构，TableScan多worker线程并行读表，上层Agg与Sort等算子从缓存队列取数](figures/并行执行结构.png)
 
 TableScan算子通过多个worker线程并行调用InnoDB读表的接口，将数据保存在TableScan算子的缓存队列中。
 
 TableScan上层算子（Agg/Sort/HashJoin/NestedLoopJoin等）从下层算子的数据缓存队列中拿取数据进行处理，每个算子都可以含有多个worker线程，多个worker线程并行处理可以充分利用ARM服务器的多核优势。
 
 **图 3** 行存结构和列存结构<a name="fig1049515441142"></a><a id="行存结构和列存结构"></a><br>
-![](figures/行存结构和列存结构.png "行存结构和列存结构")
+![行存与列存结构对比，InnoDB按行连续存储，KOVAE按列连续存储，同列数据相邻便于向量化处理](figures/行存结构和列存结构.png)
 
 MySQL InnoDB为行存结构，KOVAE数据为列存结构，对于指定某列进行运算处理时，由于列存结构上同列的数据在内存上是相邻的，所以数据处理更加高效。
 
@@ -352,16 +354,16 @@ MySQL 8.0.25编译安装方法，请参见《[MySQL 移植指南](https://www.hi
 
 |项目|版本|下载地址|
 |--|--|--|
-|操作系统|20.03 LTS-SP1 for ARM|[获取链接](https://repo.huaweicloud.com/openeuler/openEuler-20.03-LTS-SP1/ISO/aarch64/openEuler-20.03-LTS-SP1-everything-aarch64-dvd.iso)|
-|操作系统|22.03 LTS-SP1 for ARM|[获取链接](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP1/ISO/aarch64/openEuler-22.03-LTS-SP1-everything-aarch64-dvd.iso)|
-|CMake|3.5.2（openEuler 20.03）|[获取链接](https://cmake.org/files/v3.5/cmake-3.5.2.tar.gz)|
+|操作系统|20.03 LTS-SP1 for ARM|[openEuler 20.03 LTS SP1 ARM ISO镜像](https://repo.huaweicloud.com/openeuler/openEuler-20.03-LTS-SP1/ISO/aarch64/openEuler-20.03-LTS-SP1-everything-aarch64-dvd.iso)|
+|操作系统|22.03 LTS-SP1 for ARM|[openEuler 22.03 LTS SP1 ARM ISO镜像](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP1/ISO/aarch64/openEuler-22.03-LTS-SP1-everything-aarch64-dvd.iso)|
+|CMake|3.5.2（openEuler 20.03）|[CMake 3.5.2源码包](https://cmake.org/files/v3.5/cmake-3.5.2.tar.gz)|
 |CMake|3.11.4（openEuler 22.03）|openEuler 22.03默认自带CMake 3.11.4|
-|GCC|7.3.0（openEuler 20.03）|[获取链接](https://mirrors.tuna.tsinghua.edu.cn/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.gz)|
+|GCC|7.3.0（openEuler 20.03）|[GCC 7.3.0源码包](https://mirrors.tuna.tsinghua.edu.cn/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.gz)|
 |GCC|10.3.1（openEuler 22.03）|openEuler 22.03默认自带GCC 10.3.1|
-|KAE|KAE1.0：使用kae1版本，仅支持内核版本为4.19的操作系统|[获取链接](https://gitcode.com/boostkit/KAE/tree/kae1)|
-|KAE|KAE2.0：使用kae2版本，仅支持内核版本为5.10的操作系统|KAE2.0源码包中包含了KAEzip模块，可以选择一键安装KAE的所有模块，或者单独安装KAEzip。<br>[获取链接](https://gitcode.com/boostkit/KAE/tree/kae2)|
+|KAE|KAE1.0：使用kae1版本，仅支持内核版本为4.19的操作系统|[KAE 1.0源码（kae1分支）](https://gitcode.com/boostkit/KAE/tree/kae1)|
+|KAE|KAE2.0：使用kae2版本，仅支持内核版本为5.10的操作系统|KAE2.0源码包中包含了KAEzip模块，可以选择一键安装KAE的所有模块，或者单独安装KAEzip。<br>[KAE 2.0源码（kae2分支）](https://gitcode.com/boostkit/KAE/tree/kae2)|
 |BoostKit_Kovae_1.0.0.zip|1.0.0|下载[BoostKit_Kovae_1.0.0.zip](https://kunpeng-repo.obs.cn-north-4.myhuaweicloud.com/Kunpeng%20BoostKit/Kunpeng%20BoostKit%2024.0.0/BoostKit_Kovae_1.0.0.zip)文件并解压，得到ha_kovae.so文件。<br>使用软件包前请先阅读《[鲲鹏应用使能套件BoostKit用户许可协议 2.0](https://www.hikunpeng.com/zh/developer/boostkit/software/protocol)》，如确认继续使用，则默认同意协议的条款和条件。|
-|MySQL|8.0.25|[获取链接](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.gz)
+|MySQL|8.0.25|[MySQL 8.0.25源码包（含boost）](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.gz)|
 
 KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装MySQL 8.0.25版本的服务器上使用。
 
@@ -434,7 +436,7 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
 
         返回ha\_kovae.so文件信息如下。
 
-        ```bash
+        ```output
         /usr/local/mysql-8.0.25/lib/plugin/ha_kovae.so
         ```
 
@@ -470,7 +472,7 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
 
     - 方法一：自动加载安装插件。在my.cnf文件中的\[mysqld\]配置段下增加配置行，此方式需要重启数据库后才能生效。例如：
 
-        ```bash
+        ```text
         plugin-load-add=ha_kovae.so
         ```
 
@@ -504,7 +506,7 @@ KOVAE是以MySQL插件库形式使用，无法独立运行，需要在已安装M
 
 2. 在MySQL客户端执行如下语句，将目标表的第二引擎设置为KOVAE。每个表只需操作一次，重启MySQL服务后不需要重新设置。t1为目标表的名称，请根据实际情况填写。
 
-    ```bash
+    ```sql
     ALTER TABLE t1 SECONDARY_ENGINE = kovae;
     ```
 
@@ -854,7 +856,7 @@ KOVAE相关参数及其说明如[**表 1** KOVAE相关参数及其说明](#KOVAE
 |innodb_parallel_read_threads|是|是|是|Session|unsigned long|4|1～256|并行读表的线程数。|
 |kovae_aggregator_hash_type|是|是|是|Session|unsigned int|0|0和1|Agg算子hash分组时的工作模式。0表示所有worker线程共用一个hash表。1表示每个worker线程使用各自的hash表。当被分组记录数非常多，分组结果记录数很少时，模式1有明显提升效果。当被分组记录数非常多，分组结果记录也非常多（分组结果记录数比本查询的并行线程数大几个数量级）时，应使用模式0。|
 |kovae_hashjoin_batch_num|是|是|是|Session|unsigned long|1024|128～4096|hash表分区数量最大值。|
-|kovae_log_level|是|是|是|Global|unsigned int|2|1～5|日志输出级别。各个日志级别与对应数值：ERR：1WARNING：2NOTICE：3INFO：4DEBUG：5设置了日志输出级别后，会在MySQL的error log日志文件中输出小于或等于该配置值的日志级别的日志记录。|
+|kovae_log_level|是|是|是|Global|unsigned int|2|1～5|日志输出级别。各个日志级别与对应数值：<br>- ERR：1<br>-WARNING：2<br>-NOTICE：3<br>-INFO：4<br>-DEBUG：5<br>设置了日志输出级别后，会在MySQL的error log日志文件中输出小于或等于该配置值的日志级别的日志记录。|
 |kovae_memory_buffer_size|是|是|是|Session|unsigned longlong|1073741824|268435456~264-1（maximum unsigned long long value）|如果排序、聚合、hashjoin和物化算子使用的内存量超过了该配置值的字节数，将触发落盘流程，以降低内存的使用量，但可能会影响性能。|
 |kovae_memory_control|是|是|是|Global|bool|0|0和1|内存控制功能的总开关。当设置为关闭时，并行查询的内存申请尽量从操作系统申请；当设置为开启时，所有并行查询可申请使用的内存量将受kovae_memory_max_size配置值的控制，所有并行查询从OS申请使用内存的操作将被统计和监控。|
 |kovae_memory_max_size|是|是|是|Global|longlong|10*2^30|230~263-1(maximum long long value)|并行查询可以申请的内存总量。开启kovae_memory_control后，kovae_memory_max_size的配置值才能生效。当所有查询语句总共申请的内存字节数超过了设置的kovae_memory_max_size值时，系统将无法继续进行并行查询流程，并且可能会导致内存申请失败。在这种情况下，查询流程将自动退出。内存控制非严格字节数的控制，存在一定误差。内存控制的精度受到并行查询的并行数和算子的影响，kovae_memory_max_size的配置值应该小于可用内存，以保留一定的预留余量。|
@@ -1203,7 +1205,7 @@ performance_schema_events_waits_history_long_size=1048576
 
 若查询锁等待事件发现返回结果包含某些预期不产生的等待事件，则可能是由于events\_waits\_history\_long表中包含了历史SQL的等待事件记录。可执行如下命令，以清除历史SQL产生的等待事件记录，然后重新执行SQL、查询等待事件。
 
-```bash
+```sql
 TRUNCATE table performance_schema.events_waits_history_long;
 ```
 
@@ -1259,3 +1261,9 @@ PFS中其他性能事件记录与锁等待事件类似，可通过对相应表�
 |KOVAE|Kunpeng Online Vectorized Analysis Engine|可插拔在线向量化分析引擎|
 |OLAP|Online Analytical Processing|在线分析处理|
 |OOM|Out of Memory|内存不足|
+
+## 修订记录
+
+|文档版本 | 发布日期 | 修改说明 |
+| --------| -------- | -------- |
+|01| 2024-12-30 | 第一次正式发布。 |

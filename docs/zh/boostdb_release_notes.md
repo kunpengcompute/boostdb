@@ -1,12 +1,12 @@
 # 版本说明书
 
-## 2026-09-30
+## 26.2.RC1
 
 ### 修改记录
 
 | 文档版本 | 发布日期       | 修改说明                                                                                                                                 |
 | ---- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| 01   | 2026-09-30 |- 首次发布Percona Thread Pool动态并发调度优化特性。<br>- 首次发布MySQL redo文件复用优化特性。<br>- 首次发布MySQL container aware优化特性。 |
+| 01   | 2026-09-30 |第一次正式发布。<br>- 首次发布Percona Thread Pool动态并发调度优化特性。<br>- 首次发布MySQL redo文件复用优化特性。<br>- 首次发布MySQL container aware优化特性。 |
 
 ### 版本配套说明
 
@@ -20,13 +20,11 @@
 
 |特性名称|软件类型|版本|
 |--|--|--|
-|Percona Thread Pool动态并发调度优化|OS|openEuler 22.03 LTS SP4|
-|Percona Thread Pool动态并发调度优化|Percona|Percona-Server 8.0.43-34|
+|Percona Thread Pool动态并发调度优化、MySQL redo文件复用优化、MySQL container aware优化|OS|openEuler 22.03 LTS SP4、openEuler 24.03 LTS SP3|
+|Percona Thread Pool动态并发调度优化、MySQL redo文件复用优化、MySQL container aware优化|Percona|Percona-Server 8.0.43-34|
 |Percona Thread Pool动态并发调度优化|Patch|0001-WL-16484-InnoDB-container-aware-cgroup-memory-limit.patch<br>0002-adjust-threadpool-concurrency-using-scheduler-statis.patch|
-|MySQL redo文件复用优化|OS|openEuler 22.03 LTS SP4、openEuler 24.03 LTS SP3|
-|MySQL redo文件复用优化|Percona|Percona-Server 8.0.43-34|
-|MySQL container aware优化|OS|openEuler 22.03 LTS SP4、openEuler 24.03 LTS SP3|
-|MySQL container aware优化|Percona|Percona-Server 8.0.43-34|
+|MySQL redo文件复用优化|Patch|0001-add-support-for-reusing-unused-redo-log-files-during.patch|
+|MySQL container aware优化|Patch|0001-WL-16484-InnoDB-container-aware-cgroup-memory-limit.patch<br>0002-improve-container-aware-resource-detection-extra.patch|
 
 #### 硬件版本配套说明
 
@@ -89,13 +87,13 @@ Percona Server原有线程池不会根据进程CPU使用率和上下文切换频
 |--|--|--|
 |《Percona Thread Pool动态并发调度优化 特性指南》|提供当前特性的环境要求、特性使能指导。|开源仓|
 |《MySQL redo文件复用优化 特性指南》|提供当前特性的环境要求、特性使能指导。|开源仓|
-|《MySQL container aware特性指南》|提供当前特性的环境要求、特性使能指导。|开源仓|
+|《MySQL container aware优化 特性指南》|提供当前特性的环境要求、特性使能指导。|开源仓|
 
 ### 获取文档的方法<a name="ZH-CN_TOPIC_0000002544372643"></a>
 
 您可以通过访问[开源仓](https://gitcode.com/boostkit/boostdb/tree/master/docs)浏览和获取相关文档。
 
-## 2026-06-30
+## 26.1.RC1
 
 ### 修改记录
 
@@ -169,7 +167,7 @@ Percona Server原有线程池不会根据进程CPU使用率和上下文切换频
 
 |文档名称|内容简介|交付形式|
 |--|--|--|
-|《MySQL事务锁优化 特性指南》|提供MySQL事务锁优化特性的环境要求、安装步骤和使用说明。|开源仓|
+|《MySQL事务锁优化 特性指南》|本文档提供MySQL事务锁优化特性的环境要求、安装步骤和使用说明。|开源仓|
 |《MySQL Plan Cache 特性指南》|本文档提供MySQL Plan Cache特性的环境要求、特性使能指导和使用说明。|开源仓|
 |《MySQL字符集处理SIMD优化 特性指南》|本文档提供MySQL字符集处理SIMD优化特性的环境要求、特性使能指导和使用说明。|开源仓|
 
@@ -177,7 +175,7 @@ Percona Server原有线程池不会根据进程CPU使用率和上下文切换频
 
 您可以通过访问[开源仓](https://gitcode.com/boostkit/boostdb/tree/master/docs)浏览和获取相关文档。
 
-## 2026-03-30
+## 26.0.RC1
 
 ### 修改记录
 
@@ -204,7 +202,7 @@ Percona Server原有线程池不会根据进程CPU使用率和上下文切换频
 
 | 特性名称          | 硬件项目          | 要求说明                                      |
 | ------------- | ------------- | ----------------------------------------- |
-| MySQL LSE优化、MySQL rec_get_offsets优化     | 处理器           | - 鲲鹏920系列处理器<br>- 鲲鹏950处理器                    |
+| MySQL LSE优化、MySQL rec_get_offsets优化     | 处理器           | 鲲鹏920系列处理器、鲲鹏950处理器                    |
 
 #### 病毒扫描结果
 
@@ -245,7 +243,7 @@ Percona Server原有线程池不会根据进程CPU使用率和上下文切换频
 
 您可以通过访问[开源仓](https://gitcode.com/boostkit/boostdb/tree/master/docs/zh)浏览和获取相关文档。
 
-## 2025-12-30
+## 25.3.0
 
 ### 修改记录
 

@@ -83,7 +83,7 @@ BoostDB-Percona优化版本已默认集成该优化特性，无需单独获取�
    innodb_redo_log_reuse_unused_files=OFF
    ```
 
-   > **说明：**
+   >![](public_sys-resources/icon_note.gif) **说明：** 
    > `innodb_redo_log_reuse_unused_files`为只读启动参数，需要重启实例后生效。
 
 ## 安全检查与加固<a name="ZH-CN_TOPIC_0000002605100008"></a>
@@ -96,3 +96,9 @@ echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 
 ![ASLR安全加固操作截图：在命令行执行echo命令向randomize_va_space写入2以启用地址空间布局随机化](figures/zh_cn_image_0000002518697736.png)
+
+## 修订记录
+
+|文档版本 | 发布日期 | 修改说明 |
+| --------| -------- | -------- |
+|01| 2026-09-30 | 第一次正式发布。 |
