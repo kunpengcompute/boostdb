@@ -84,11 +84,11 @@ MySQL无锁优化特性在补丁应用后重新编译MySQL即生效，无需额�
 
 MySQL无锁优化特性以Patch补丁文件形式提供，该补丁基于MySQL 8.0.20版本开发，并在Gitee社区开源，使用该特性前，需要先将Patch应用到MySQL源码中，再编译和安装MySQL。
 
-1. 下载[MySQL 8.0.20源码](https://github.com/mysql/mysql-server/archive/mysql-8.0.20.tar.gz)，上传源码至服务器“/home”目录下后，解压源码包并进入MySQL源码的根目录。
+1. 下载[MySQL 8.0.20源码](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.20.tar.gz)，上传源码至服务器“/home”目录下后，解压源码包并进入MySQL源码的根目录。
 
     ```bash
     cd /home
-    tar -zxvf mysql-8.0.20.tar.gz
+    tar -zxvf mysql-boost-8.0.20.tar.gz
     cd mysql-8.0.20
     ```
 

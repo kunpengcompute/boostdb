@@ -428,7 +428,7 @@ mysql --port='extra-port-number' --protocol=tcp
 show status like "%Threadpool_idle_threads%";
 ```
 
-**表 1** 新增状态变量说明<a id="新增状态变量说明"></a>
+**表 2** 新增状态变量说明<a id="新增状态变量说明"></a>
 
 |新增状态变量|变量类型|变量范围|说明|
 |--|--|--|--|
@@ -451,7 +451,7 @@ select * from information_schema.THREAD_POOL_GROUPS;
 
 THREAD\_POOL\_GROUPS可用于查询线程组相关信息。
 
-**表 1** THREAD\_POOL\_GROUPS<a id="THREAD\_POOL\_GROUPS"></a>
+**表 3** THREAD\_POOL\_GROUPS<a id="THREAD\_POOL\_GROUPS"></a>
 
 |字段|说明|
 |--|--|
@@ -468,7 +468,7 @@ THREAD\_POOL\_GROUPS可用于查询线程组相关信息。
 
 THREAD\_POOL\_QUEUES可用于查询线程组队列中连接的信息。
 
-**表 1** THREAD\_POOL\_QUEUES<a id="THREAD\_POOL\_QUEUES"></a>
+**表 4** THREAD\_POOL\_QUEUES<a id="THREAD\_POOL\_QUEUES"></a>
 
 |字段|说明|
 |--|--|
@@ -482,7 +482,7 @@ THREAD\_POOL\_QUEUES可用于查询线程组队列中连接的信息。
 
 THREAD\_POOL\_STATS可用于查询线程组状态信息的统计值，比如线程组由于check\_stall创建的线程数、由listener线程poll到的任务数等。
 
-**表 1** THREAD\_POOL\_STATS<a id="THREAD\_POOL\_STATS"></a>
+**表 5** THREAD\_POOL\_STATS<a id="THREAD\_POOL\_STATS"></a>
 
 |字段|说明|
 |--|--|
@@ -499,7 +499,7 @@ THREAD\_POOL\_STATS可用于查询线程组状态信息的统计值，比如线�
 
 THREAD\_POOL\_WAITS提供线程组的worker线程在执行SQL语句时各类等待原因的统计数据。等待原因有：UNKNOWN、SLEEP、DISKIO、ROW\_LOCK、GLOBAL\_LOCK、META\_DATA\_LOCK、TABLE\_LOCK、USER\_LOCK、BINLOG、GROUP\_COMMIT、SYNC、NET。
 
-**表 1** THREAD\_POOL\_WAITS<a id="THREAD\_POOL\_WAITS"></a>
+**表 6** THREAD\_POOL\_WAITS<a id="THREAD\_POOL\_WAITS"></a>
 
 |字段|说明|
 |--|--|

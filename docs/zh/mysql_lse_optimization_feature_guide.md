@@ -36,7 +36,7 @@ LL/SC原子指令需要把共享变量先load到本核所在的L1 Cache中进行
 
 | 项目      | 版本                       | 获取地址                                                                                                                                   |
 | ------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
-| 操作系统    | openEuler 22.03 LTS SP4  | [penEuler 22.03 LTS SP4 ISO镜像下载](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)  |
+| 操作系统    | openEuler 22.03 LTS SP4  | [openEuler 22.03 LTS SP4 ISO镜像下载](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)  |
 | 操作系统    | openEuler 24.03 LTS SP3  | [openEuler 24.03 LTS SP3 ISO镜像下载](https://repo.huaweicloud.com/openeuler/openEuler-24.03-LTS-SP3/ISO/aarch64/openEuler-24.03-LTS-SP3-everything-aarch64-dvd.iso)  |
 | Percona | Percona-Server 5.7.44-53 | [BoostDB-Percona-5.7.44-53.aarch64.rpm下载](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v3/BoostDB-Percona-5.7.44-53.aarch64.rpm) |
 | Percona | Percona-Server 8.0.43-34 | [BoostDB-Percona-8.0.43-34.aarch64.rpm下载](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v2/BoostDB-Percona-8.0.43-34.aarch64.rpm) |
@@ -63,10 +63,10 @@ LL/SC原子指令需要把共享变量先load到本核所在的L1 Cache中进行
    >
 4. 启动数据库。启动数据库的操作请参见《MySQL 移植指南》的[运行MySQL](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_03_0013.html)章节。
 
-5. （可选）通过Sysbench测试可以得到使能本特性前后的性能提升效果，详细测试步骤请参见《[Sysbench 0.5&1.0 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)》。MySQL LSE及rec\_get\_offsets优化特性可以使Sysbench 8U16G规格下256并发综合性能（只读、读写、只写）提升5%，优化前后对比效果如[图 3 MySQL LSE及rec_get_offsets优化特性优化前后性能对比](#mysql-lse-rec-get-offsets-perf-compare)所示。
+5. （可选）通过Sysbench测试可以得到使能本特性前后的性能提升效果，详细测试步骤请参见《[Sysbench 0.5&1.0 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengsysbench_02_0001.html)》。MySQL LSE优化特性可以使Sysbench 8U16G规格下256并发综合性能（只读、读写、只写）提升5%，优化前后对比效果如[图 3 MySQL LSE优化特性优化前后性能对比](#mysql-lse-rec-get-offsets-perf-compare)所示。
 
    **图 3** MySQL LSE优化特性优化前后性能对比<a name="fig937192253919"></a><a id="mysql-lse-rec-get-offsets-perf-compare"></a>
-   ![使能MySQL LSE及rec_get_offsets优化特性前后的Sysbench综合性能柱状对比，使能后只读、读写、只写场景性能均明显提升](figures/mysql_lse_rec_get_offsets_perf_compare.png "MySQL-LSE优化特性优化前后性能对比")
+   ![使能MySQL LSE优化特性前后的Sysbench综合性能柱状对比，使能后只读、读写、只写场景性能均明显提升](figures/mysql_lse_rec_get_offsets_perf_compare.png "MySQL-LSE优化特性优化前后性能对比")
 
 ## 安全检查与加固<a name="ZH-CN_TOPIC_0000002543538365"></a>
 

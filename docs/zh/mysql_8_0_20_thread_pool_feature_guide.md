@@ -443,8 +443,8 @@ THREAD\_POOL\_STATS可用于查询线程组状态信息的统计值，比如线�
 |wakes_due_to_stall|线程组自初始化以来，由timer线程操作唤醒线程的总次数。|
 |throttles|线程组自初始化以来，由于超时检测成功创建的线程的总次数。timer线程在每次check_stall时会检查距离上次创建线程是否超过了throttling_interval值，如果是，则该值加1。|
 |stalls|线程组自初始化以来，由timer线程检查出的停滞次数。每当timer线程check_stall判断线程组处于停滞状态时，该值加1。|
-|dequeues_by_listener<br>·dequeues_by_worker|线程组自初始化以来，任务出队列的次数。<br>·dequeues_by_worker代表dequeue的发起者是工作线程。<br>·dequeues_by_listener代表发起者是listener。|
-|polls_by_listener<br>·polls_by_worker|线程组自初始化以来，连接上epoll网络事件的总次数。<br>·polls_by_worker代表poll的发起者是工作线程。<br>·polls_by_listener代表发起者是listener。|
+|dequeues_by_listener<br>dequeues_by_worker|线程组自初始化以来，任务出队列的次数。<br>dequeues_by_worker代表dequeue的发起者是工作线程。<br>dequeues_by_listener代表发起者是listener。|
+|polls_by_listener<br>polls_by_worker|线程组自初始化以来，连接上epoll网络事件的总次数。<br>polls_by_worker代表poll的发起者是工作线程。<br>polls_by_listener代表发起者是listener。|
 
 #### THREAD\_POOL\_WAITS表<a name="ZH-CN_TOPIC_0000002550142779"></a>
 

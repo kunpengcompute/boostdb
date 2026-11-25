@@ -56,10 +56,10 @@
 
 在连接数很大，高负载时，对于一些事务取得了锁等资源时，可优先处理，原先的处理逻辑是此类连接发生可读事件后，会被线程组加到优先队列中，等待空闲worker线程优先处理。对上述逻辑进一步优化，已经进入优先队列的Session所占用的worker线程不还给线程池，Session继续独占该worker线程，处理其业务逻辑。类似每线程每连接的模式，独占worker线程专用于处理该优先连接之后的所有语句，直到该连接释放了优先资源转为普通连接，例如该连接事务执行结束释放锁资源。优先Session连接的判断逻辑如[**图 1** 优先Session独占worker线程逻辑](#优先Session独占worker线程逻辑)所示。
 
-**图 1** 优先Session独占worker线程逻辑<a name="fig311083021517"></a><a id="优先Session独占worker线程逻辑"></a><br>
+**图 3** 优先Session独占worker线程逻辑<a name="fig311083021517"></a><a id="优先Session独占worker线程逻辑"></a><br>
 ![优先Session独占worker线程逻辑流程图：进入优先队列的Session不归还worker线程，独占至释放优先资源转为普通连接](figures/优先Session独占worker线程逻辑.png "优先Session独占worker线程逻辑")
 
-[**图 1** 优先Session独占worker线程逻辑](#优先Session独占worker线程逻辑)上的数字标记点对应的说明如[**表 1** 优先Session独占worker线程逻辑图上的数字标记对应的说明](#优先Session独占worker线程逻辑图上的数字标记对应的说明)所示。
+[**图 3** 优先Session独占worker线程逻辑](#优先Session独占worker线程逻辑)上的数字标记点对应的说明如[**表 1** 优先Session独占worker线程逻辑图上的数字标记对应的说明](#优先Session独占worker线程逻辑图上的数字标记对应的说明)所示。
 
 **表 1** 优先Session独占worker线程逻辑图上的数字标记对应的说明<a id="优先Session独占worker线程逻辑图上的数字标记对应的说明"></a>
 
@@ -81,9 +81,9 @@
 
 **硬件环境<a name="section4467132520160"></a>**
 
-硬件环境如[**表 1** 已验证的硬件环境](#已验证的硬件环境)所示。
+硬件环境如[**表 2** 已验证的硬件环境](#已验证的硬件环境)所示。
 
-**表 1** 已验证的硬件环境<a id="已验证的硬件环境"></a>
+**表 2** 已验证的硬件环境<a id="已验证的硬件环境"></a>
 
 |项目|说明|
 |--|--|
@@ -103,9 +103,9 @@
 
 - 如果需要全新安装操作系统，可选择“Minimal Install”安装方式并勾选Development Tools套件，否则很多软件包需要手动安装。
 
-已验证的操作系统与软件版本如[**表 2** 已验证的操作系统与软件版本](#已验证的操作系统与软件版本)所示。
+已验证的操作系统与软件版本如[**表 3** 已验证的操作系统与软件版本](#已验证的操作系统与软件版本)所示。
 
-**表 2** 已验证的操作系统与软件版本<a id="已验证的操作系统与软件版本"></a>
+**表 3** 已验证的操作系统与软件版本<a id="已验证的操作系统与软件版本"></a>
 
 |项目|版本|下载链接|
 |--|--|--|
@@ -129,7 +129,7 @@
 
 1. 下载目标版本的MySQL源码并上传至服务器“/home”目录下，解压源码包并进入MySQL源码的根目录。
 
-    MySQL源码下载路径请参见[**表 2** 已验证的操作系统与软件版本](#已验证的操作系统与软件版本)。
+    MySQL源码下载路径请参见[**表 3** 已验证的操作系统与软件版本](#已验证的操作系统与软件版本)。
 
     对于MySQL 8.0.25版本，执行以下命令：
 
@@ -320,9 +320,9 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
 
 3. 通过TPC-C测试可以得到使用MySQL线程池特性前后的性能提升效果，详细测试步骤请参见《[BenchMarkSQL 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengbenchmarksql_06_0001.html)》。
 
-    线程池连接器对于大量连接的OLTP短查询的场景将有最大帮助。在OLTP TPC-C场景下，启用线程池之前，MySQL运行10000个并发任务的性能只有原来的10%左右。启用线程池功能后，性能可维持在85%，对比效果如[**图 1** 开启MySQL线程池前后的性能对比](#开启MySQL线程池前后的性能对比)所示。
+    线程池连接器对于大量连接的OLTP短查询的场景将有最大帮助。在OLTP TPC-C场景下，启用线程池之前，MySQL运行10000个并发任务的性能只有原来的10%左右。启用线程池功能后，性能可维持在85%，对比效果如[**图 4** 开启MySQL线程池前后的性能对比](#开启MySQL线程池前后的性能对比)所示。
 
-    **图 1** 开启MySQL线程池前后的性能对比<a name="fig317431114341"></a><a id="开启MySQL线程池前后的性能对比"></a><br>
+    **图 4** 开启MySQL线程池前后的性能对比<a name="fig317431114341"></a><a id="开启MySQL线程池前后的性能对比"></a><br>
     ![开启MySQL线程池前后的TPC-C性能对比曲线，启用后大量并发连接下性能保持平稳，明显优于未启用时](figures/开启MySQL线程池前后的性能对比.png "开启MySQL线程池前后的性能对比")
 
 **卸载线程池插件<a name="section739416010357"></a>**
@@ -760,9 +760,9 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
 
 相对于默认模式的线程池参数配置，使用小线程组数模式的线程池参数配置时，每个线程组上可以创建更多的active线程数，使长查询的连接绑定到某个线程组时，该长查询的连接对该线程组的时延影响可以更小或无明显时延差异。同时使用小线程组数模式时，对于部分场景（例如OLTP writeonly）在连接数非常大（例如8192个连接）时，仍然可以保持90%左右的曲线峰值。
 
-小线程组数模式相对于默认模式（使用默认参数），就是参数配置的优化使用，在高并发连接数时，可以更好保持峰值性能的配置模式，相关配置说明如[**表 1** 小线程组数模式的参数配置参考](#小线程组数模式的参数配置参考)所示。
+小线程组数模式相对于默认模式（使用默认参数），就是参数配置的优化使用，在高并发连接数时，可以更好保持峰值性能的配置模式，相关配置说明如[**表 4** 小线程组数模式的参数配置参考](#小线程组数模式的参数配置参考)所示。
 
-**表 1** 小线程组数模式的参数配置参考<a id="小线程组数模式的参数配置参考"></a>
+**表 4** 小线程组数模式的参数配置参考<a id="小线程组数模式的参数配置参考"></a>
 
 |参数名称|默认模式配置|小线程组数模式|
 |--|--|--|
@@ -787,7 +787,7 @@ select * from information_schema.THREAD_POOL_GROUPS;
 
 THREAD\_POOL\_GROUPS可用于查询线程组相关信息。
 
-**表 1** THREAD\_POOL\_GROUPS<a id="THREAD\_POOL\_GROUPS"></a>
+**表 5** THREAD\_POOL\_GROUPS<a id="THREAD\_POOL\_GROUPS"></a>
 
 |字段|说明|
 |--|--|
@@ -804,7 +804,7 @@ THREAD\_POOL\_GROUPS可用于查询线程组相关信息。
 
 THREAD\_POOL\_QUEUES可用于查询线程组队列中连接的信息。
 
-**表 1** THREAD\_POOL\_QUEUES<a id="THREAD\_POOL\_QUEUES"></a>
+**表 6** THREAD\_POOL\_QUEUES<a id="THREAD\_POOL\_QUEUES"></a>
 
 |字段|说明|
 |--|--|
@@ -818,7 +818,7 @@ THREAD\_POOL\_QUEUES可用于查询线程组队列中连接的信息。
 
 THREAD\_POOL\_STATS可用于查询线程组状态信息的统计值，比如线程组由于check\_stall创建的线程数、由listener线程poll到的任务数等。
 
-**表 1** THREAD\_POOL\_STATS<a id="THREAD\_POOL\_STATS"></a>
+**表 7** THREAD\_POOL\_STATS<a id="THREAD\_POOL\_STATS"></a>
 
 |字段|描述|
 |--|--|
@@ -836,7 +836,7 @@ THREAD\_POOL\_STATS可用于查询线程组状态信息的统计值，比如线�
 
 THREAD\_POOL\_WAITS提供线程组的worker线程在执行SQL语句时各类等待原因的统计数据。等待原因有：UNKNOWN、SLEEP、DISKIO、ROW\_LOCK、GLOBAL\_LOCK、META\_DATA\_LOCK、TABLE\_LOCK、USER\_LOCK、BINLOG、GROUP\_COMMIT、SYNC。
 
-**表 1** THREAD\_POOL\_WAITS<a id="THREAD\_POOL\_WAITS"></a>
+**表 8** THREAD\_POOL\_WAITS<a id="THREAD\_POOL\_WAITS"></a>
 
 |字段|说明|
 |--|--|
