@@ -373,7 +373,7 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
 
 关于状态变量的更多详细信息，请参见MySQL官方参考文档《[Server Status Variables](https://dev.mysql.com/doc/refman/8.0/en/server-status-variables.html)》。
 
-新增状态变量说明如[**表 1** 新增状态变量说明](#新增状态变量说明)。状态变量查询示例如下。
+新增状态变量说明如[**表 2** 新增状态变量说明](#新增状态变量说明)。状态变量查询示例如下。
 
 ```sql
 show status like "%Threadpool_idle_threads%";
