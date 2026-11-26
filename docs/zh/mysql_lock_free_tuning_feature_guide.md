@@ -1,11 +1,13 @@
 # MySQL无锁优化 特性指南
 
+本文档介绍MySQL无锁优化特性，通过无锁哈希表替代rw_trx_set维护事务单元，减少Trx-sys->mutex临界区竞争并提升并发度，适用于在鲲鹏BoostKit上优化MySQL OLTP写场景吞吐量的用户。
+
 ## 原理介绍<a name="ZH-CN_TOPIC_0000002518545282"></a>
 
 在MySQL OLTP场景下，大量并发的DML语句（Insert, Update, Delete）会访问Trx-sys全局结构体中的关键数据结构，导致出现临界区竞争和同步瓶颈。为了解决这个问题，鲲鹏BoostKit对MySQL事务管理器进行了改造，如[**图 1** MySQL无锁优化特性实现原理](#MySQL无锁优化特性实现原理)所示，使用无锁哈希表来维护事务单元，读写场景下使用同步锁机制实现事务隔离级别和多版本控制，从而减少锁冲突，提高并发度。
 
 **图 1** MySQL无锁优化特性实现原理<a name="fig1889142703912"></a><a id="MySQL无锁优化特性实现原理"></a><br>
-![](figures/MySQL无锁优化特性实现原理.png "MySQL无锁优化特性实现原理")
+![无锁优化原理图，Trx-sys事务管理由mutex临界区改造为rw_trx_hash无锁哈希表](figures/MySQL无锁优化特性实现原理.png "MySQL无锁优化特性实现原理")
 
 由于MySQL的事务管理器使用链表、数组等数据结构维持全局的事务记录。Trx-sys是MySQL中的一个全局实例，维护事务系统的各种信息，例如几种事务对象的容器。
 
@@ -16,7 +18,7 @@
 
 这些容器本身并不是线程安全的，并且有时需要对Trx-sys里多个数据（包括这些容器和其他数据）进行同步操作。原始代码中使用Trx-sys-\>mutex实现这一目的。例如trx\_set\_rw\_mode要将一个事务设置为读写事务时：
 
-![](figures/zh_cn_image_0000002550185033.png)
+![trx_set_rw_mode将事务设为读写事务的原始代码片段，展示Trx-sys->mutex加锁过程](figures/zh_cn_image_0000002550185033.png)
 
 在高并发写的场景下，系统中存在大量读写事务相关操作，对Trx-sys-\>mutex的竞争开始形成吞吐量瓶颈。
 
@@ -47,7 +49,7 @@ MySQL无锁优化特性新增类如[**表 1** 新增类名称及其说明](#新�
 - 同时为保证 rw\_trx\_hash 仅包含PREPARED或ACTIVE状态的事务，将trx\_release\_impl\_and\_expl\_locks中的trx-\>state = TRX\_STATE\_COMMITTED\_IN\_MEMORY移出trx\_sys-\>mutex临界区。
 - 原始代码包含如下注释说明：
 
-    ![](figures/zh_cn_image_0000002550185031.png)
+    ![原始代码注释截图，说明trx_release_impl_and_expl_locks中事务状态置位调整的原因](figures/zh_cn_image_0000002550185031.png)
 
     由于已将trx-\>state = TRX\_STATE\_COMMITTED\_IN\_MEMORY移出trx\_sys-\>mutex临界区，方法（1）不再成立。因此，方法（1）的使用者lock\_rec\_convert\_impl\_to\_expl可能会看到trx已被移出rw\_trx\_hash，但状态还未设成TRX\_STATE\_COMMITTED\_IN\_MEMORY。此时lock\_rec\_convert\_impl\_to\_expl的正确性由如下保证：
 
@@ -82,7 +84,7 @@ MySQL无锁优化特性在补丁应用后重新编译MySQL即生效，无需额�
 
 MySQL无锁优化特性以Patch补丁文件形式提供，该补丁基于MySQL 8.0.20版本开发，并在Gitee社区开源，使用该特性前，需要先将Patch应用到MySQL源码中，再编译和安装MySQL。
 
-1. 下载[MySQL 8.0.20源码](https://github.com/mysql/mysql-server/archive/mysql-8.0.20.tar.gz)，上传源码至服务器“/home”目录下后，解压源码包并进入MySQL源码的根目录。
+1. 下载[MySQL 8.0.20源码](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.20.tar.gz)，上传源码至服务器“/home”目录下后，解压源码包并进入MySQL源码的根目录。
 
     ```bash
     cd /home
@@ -140,14 +142,15 @@ MySQL无锁优化特性以Patch补丁文件形式提供，该补丁基于MySQL 8
 7. 根据正常的编译安装MySQL源码的操作步骤进行MySQL的编译安装。详细信息请参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》。
 8. 通过TPC-C测试可以得到使用MySQL无锁优化特性前后的性能提升效果，详细测试步骤请参见《[BenchMarkSQL 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengbenchmarksql_06_0001.html)》。
 
-    MySQL无锁优化特性可以使Sysbench写场景性能提升20%。
+    MySQL无锁优化特性可以使TPC-C综合性能提升20%。
 
-    **图 1** MySQL无锁优化特性Sysbench写场景优化前后性能对比<a name="fig289014232378"></a><a id="MySQL无锁优化特性Sysbench写场景优化前后性能对比"></a><br>
-    ![](figures/MySQL无锁优化特性Sysbench写场景优化前后性能对比.png "MySQL无锁优化特性Sysbench写场景优化前后性能对比")
+    **图 2** MySQL无锁优化特性优化前后性能对比<a name="fig289014232378"></a><a id="MySQL无锁优化特性优化前后性能对比"></a>
+    
+    ![优化前后吞吐量对比柱状图，使能无锁优化特性后性能明显提升](figures/MySQL无锁优化特性优化前后性能对比.png "MySQL无锁优化特性优化前后性能对比")
 
 ## 修订记录<a name="ZH-CN_TOPIC_0000002550145029"></a>
 
-|发布日期|修订记录|
-|--|--|
-|2023-07-25|第二次正式发布。更新MySQL无锁优化特性的[使用说明](#ZH-CN_TOPIC_0000002550185029)章节中合入补丁操作步骤的命令。|
-|2020-07-13|第一次正式发布。|
+|文档版本|发布日期|修改说明|
+|--|--|--|
+|02|2023-07-25|第二次正式发布。更新MySQL无锁优化特性的[使用说明](#ZH-CN_TOPIC_0000002550185029)章节中合入补丁操作步骤的命令。|
+|01|2020-07-13|第一次正式发布。|

@@ -1,12 +1,14 @@
 # MySQL KAEzstd页压缩解压缩优化 特性指南
 
+本文档介绍MySQL KAEzstd页压缩解压缩优化特性，指导在openEuler操作系统的鲲鹏服务器上安装MySQL、合入特性Patch包、安装并使能KAEZstd，可使磁盘占用空间减少约一半且TPS劣化不超过15%，适用于需要进行MySQL存储优化的用户。
+
 ## 简介<a name="ZH-CN_TOPIC_0000002092944173"></a>
 
 本文主要介绍如何在使用openEuler操作系统的鲲鹏服务器上安装MySQL并合入MySQL KAEZstd页压缩解压缩优化特性Patch包、安装KAEZstd以及使能KAEZstd。
 
-MySQL是一个关系型数据库管理系统，由瑞典MySQL AB公司开发，是业界最流行的RDBMS（Relational Database Management System）之一，尤其在Web应用方面。关系型数据库是将数据保存在不同的表中，而非将所有数据放在一个大仓库内，这样就加快了速度并提高了灵活性。由于其体积小、速度快、总体拥有成本低，尤其是开放源码这一特点，一般中小型网站的开发都选择MySQL作为网站数据库。MySQL所使用的SQL语言是用于访问数据库的最常用标准化语言。MySQL软件采用了双授权模式，分为社区版和商业版。关于MySQL的更多信息请访问[<u>MySQL官网</u>](https://www.mysql.com/)。
+MySQL是一个关系型数据库管理系统，由瑞典MySQL AB公司开发，是业界最流行的RDBMS（Relational Database Management System）之一，尤其在Web应用方面。关系型数据库是将数据保存在不同的表中，而非将所有数据放在一个大仓库内，这样就加快了速度并提高了灵活性。由于其体积小、速度快、总体拥有成本低，尤其是开放源码这一特点，一般中小型网站的开发都选择MySQL作为网站数据库。MySQL所使用的SQL语言是用于访问数据库的最常用标准化语言。MySQL软件采用了双授权模式，分为社区版和商业版。关于MySQL的更多信息请访问[MySQL官网](https://www.mysql.com/)。
 
-KAEZstd是鲲鹏加速引擎KAE（Kunpeng Accelerator Engine）的压缩模块，使用鲲鹏硬加速模块实现lz77\_zstd算法，提供ZSTD库标准接口。通过加速引擎可以实现不同场景下应用性能的提升，压缩效率有显著提升。关于KAEZstd的更多详细信息，请参见《[<u>KAE鲲鹏加速引擎</u>](https://www.hikunpeng.com/document/detail/zh/kunpengaccel/kae/kae/README.md)》。
+KAEZstd是鲲鹏加速引擎KAE（Kunpeng Accelerator Engine）的压缩模块，使用鲲鹏硬加速模块实现lz77\_zstd算法，提供ZSTD库标准接口。通过加速引擎可以实现不同场景下应用性能的提升，压缩效率有显著提升。关于KAEZstd的更多详细信息，请参见《[KAE鲲鹏加速引擎](https://www.hikunpeng.com/document/detail/zh/kunpengaccel/kae/kae/README.md)》。
 
 MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术，它能够在页面级别对数据进行压缩，从而节省磁盘空间。在MySQL KAEZstd页压缩解压缩优化特性中，MySQL透明页压缩利用鲲鹏加速引擎中的KAEZstd来压缩数据页，从而有效节省磁盘空间。以Sysbench测试场景下测试64张1000万行表为例，使用MySQL KAEZstd页压缩解压缩优化特性方案后，减少大约一半的磁盘占用空间，并且在高负载并发的情况下，TPS（Transactions Per Second）劣化程度不超过15%。
 
@@ -34,10 +36,10 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
 
 |项目|版本|下载地址|
 |--|--|--|
-|OS|openEuler 22.03 LTS SP4 for ARM|[获取链接](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
-|MySQL|8.0.25|[获取链接](https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.25.tar.gz)|
-|KAE|KAE2.0|[获取链接](https://gitee.com/kunpengcompute/KAE/tree/kae2/)|
-|0001-support-transparent-page-compression-for-zstd.patch|-|[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|
+|OS|openEuler 22.03 LTS SP4 for ARM|[openEuler 22.03 LTS SP4 for ARM镜像下载](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
+|MySQL|8.0.25|[mysql-boost-8.0.25.tar.gz下载](https://cdn.mysql.com/archives/mysql-8.0/mysql-boost-8.0.25.tar.gz)|
+|KAE|KAE2.0|[KAE仓库（kae2分支）](https://gitee.com/kunpengcompute/KAE/tree/kae2/)|
+|0001-support-transparent-page-compression-for-zstd.patch|-|[boostdb补丁发布包下载](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-patch-release/boostdb-patch-release-20260330.zip)|
 
 ## 安装MySQL并合入Patch包<a name="ZH-CN_TOPIC_0000002056785492"></a>
 
@@ -145,12 +147,12 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
     MySQL透明页压缩在使能KAEZstd后，可以减少大约一半的磁盘占用空间，如[**图 1** 使能KAEZstd前后的磁盘占用空间大小对比](#使能KAEZstd前后的磁盘占用空间大小对比)所示。
 
     **图 1** 使能KAEZstd前后的磁盘占用空间大小对比<a name="fig17358537141717"></a><a id="使能KAEZstd前后的磁盘占用空间大小对比"></a>
-    ![](figures/使能KAEZstd前后的磁盘占用空间大小对比.png "使能KAEZstd前后的磁盘占用空间大小对比")
+    ![使能KAEZstd前后的磁盘占用空间对比柱状图，使能后磁盘占用量明显低于未使能](figures/使能KAEZstd前后的磁盘占用空间大小对比.png "使能KAEZstd前后的磁盘占用空间大小对比")
 
     同时，MySQL透明页压缩在使能KAEZstd后，TPS劣化程度不超过15%，如[**图 2** 使能KAEZstd前后的TPS值对比](#使能KAEZstd前后的TPS值对比)所示。
 
     **图 2** 使能KAEZstd前后的TPS值对比<a name="fig197530542544"></a><a id="使能KAEZstd前后的TPS值对比"></a>
-    ![](figures/使能KAEZstd前后的TPS值对比.png "使能KAEZstd前后的TPS值对比")
+    ![使能KAEZstd前后的TPS对比柱状图，使能后TPS略有下降且劣化程度较小](figures/使能KAEZstd前后的TPS值对比.png "使能KAEZstd前后的TPS值对比")
 
 ## 故障排除<a name="ZH-CN_TOPIC_0000002133846477"></a>
 
@@ -182,6 +184,12 @@ MySQL透明页压缩是MySQL InnoDB存储引擎提供的一种数据压缩技术
 
 |**缩略语**|**英文全称**|**中文全称**|
 |--|--|--|
-|KAE|Kunpeng Acceleration Engine|鲲鹏加速引擎|
+|KAE|Kunpeng Accelerator Engine|鲲鹏加速引擎|
 |ZSTD|Zstandard|高效无损压缩算法|
 |TPS|Transactions Per Second|每秒处理的事务数|
+
+## 修订记录
+
+| 文档版本 | 发布日期 | 修改说明 |
+|--|--|--|
+| 01 | 2024-12-30 | 第一次正式发布。 |

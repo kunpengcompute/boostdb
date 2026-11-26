@@ -1,5 +1,7 @@
 # MySQL 8.0.25&8.0.30&8.0.35 可插拔线程池 特性指南
 
+本文档介绍MySQL 8.0.25、8.0.30和8.0.35可插拔线程池特性，说明线程池总体框架与优先Session处理原理，涵盖已验证环境、patch安装、插件安装与卸载、配置参数调优及新增information_schema状态表，适用于在高连接数OLTP短查询场景下提升数据库性能的用户。
+
 ## 特性描述<a name="ZH-CN_TOPIC_0000002518543136"></a>
 
 ### 简介<a name="ZH-CN_TOPIC_0000002550142873"></a>
@@ -20,10 +22,10 @@
 使用线程池连接器模块后，如[**图 1** MySQL线程池特性实现原理](#MySQL线程池特性实现原理)所示，连接的建立与调度由线程池连接器接管，通过引入可动态伸缩的、多分组的线程池，使服务器即使在有大量客户端连接的情况下，也能保持最佳性能。线程池方案通过每个分组上的listener线程进行网络任务的侦听，将触发的任务放入高优先级队列或低优先级队列，由空闲的worker线程按优先级从队列中取出任务从而进行处理。每个CPU同时处理任务个数是有限的，一般2～5个最优，从而保持稳定的业务处理能力。
 
 **图 1** MySQL线程池特性实现原理<a name="fig11588201933612"></a><a id="MySQL线程池特性实现原理"></a><br>
-![](figures/mysql线程池特性实现原理_4.png "MySQL线程池特性实现原理-4")
+![MySQL线程池实现原理图：每个线程组的listener线程侦听网络事件并放入优先队列或普通队列，由空闲worker线程按优先级取出处理](figures/mysql线程池特性实现原理_4.png "MySQL线程池特性实现原理-4")
 
 **图 2** 总体原理框架<a name="zh-cn_topic_0000001153001580_fig179241351104514"></a><a id="总体原理框架"></a><br>
-![](figures/总体原理框架_5.png "总体原理框架-5")
+![线程池总体原理框架图：多个线程组加一个timer线程，用户连接轮询分配到线程组并由worker线程执行SQL语句](figures/总体原理框架_5.png "总体原理框架-5")
 
 如[**图 2** 总体原理框架](#总体原理框架)所示，整个线程池分为若干个线程组和一个timer线程，线程组个数默认为服务器上CPU的逻辑核数，也可通过配置文件或命令行启动参数调整，参见配置参数[thread\_pool\_size](#thread_pool_size)。用户连接被轮询分配到对应线程组上，连接上的所有查询请求都将由其绑定的线程组处理。当客户端创建了一个连接，并通过此连接发来SQL语句时，线程组将为此连接分配worker进程来执行SQL语句。执行SQL语句结束后，线程组将回收worker线程。线程池通过一定策略控制worker线程的数量，从而使得实际worker线程数保持在一个高性能的数量范围内。
 
@@ -54,10 +56,10 @@
 
 在连接数很大，高负载时，对于一些事务取得了锁等资源时，可优先处理，原先的处理逻辑是此类连接发生可读事件后，会被线程组加到优先队列中，等待空闲worker线程优先处理。对上述逻辑进一步优化，已经进入优先队列的Session所占用的worker线程不还给线程池，Session继续独占该worker线程，处理其业务逻辑。类似每线程每连接的模式，独占worker线程专用于处理该优先连接之后的所有语句，直到该连接释放了优先资源转为普通连接，例如该连接事务执行结束释放锁资源。优先Session连接的判断逻辑如[**图 1** 优先Session独占worker线程逻辑](#优先Session独占worker线程逻辑)所示。
 
-**图 1** 优先Session独占worker线程逻辑<a name="fig311083021517"></a><a id="优先Session独占worker线程逻辑"></a><br>
-![](figures/优先Session独占worker线程逻辑.png "优先Session独占worker线程逻辑")
+**图 3** 优先Session独占worker线程逻辑<a name="fig311083021517"></a><a id="优先Session独占worker线程逻辑"></a><br>
+![优先Session独占worker线程逻辑流程图：进入优先队列的Session不归还worker线程，独占至释放优先资源转为普通连接](figures/优先Session独占worker线程逻辑.png "优先Session独占worker线程逻辑")
 
-[**图 1** 优先Session独占worker线程逻辑](#优先Session独占worker线程逻辑)上的数字标记点对应的说明如[**表 1** 优先Session独占worker线程逻辑图上的数字标记对应的说明](#优先Session独占worker线程逻辑图上的数字标记对应的说明)所示。
+[**图 3** 优先Session独占worker线程逻辑](#优先Session独占worker线程逻辑)上的数字标记点对应的说明如[**表 1** 优先Session独占worker线程逻辑图上的数字标记对应的说明](#优先Session独占worker线程逻辑图上的数字标记对应的说明)所示。
 
 **表 1** 优先Session独占worker线程逻辑图上的数字标记对应的说明<a id="优先Session独占worker线程逻辑图上的数字标记对应的说明"></a>
 
@@ -79,9 +81,9 @@
 
 **硬件环境<a name="section4467132520160"></a>**
 
-硬件环境如[**表 1** 已验证的硬件环境](#已验证的硬件环境)所示。
+硬件环境如[**表 2** 已验证的硬件环境](#已验证的硬件环境)所示。
 
-**表 1** 已验证的硬件环境<a id="已验证的硬件环境"></a>
+**表 2** 已验证的硬件环境<a id="已验证的硬件环境"></a>
 
 |项目|说明|
 |--|--|
@@ -101,21 +103,21 @@
 
 - 如果需要全新安装操作系统，可选择“Minimal Install”安装方式并勾选Development Tools套件，否则很多软件包需要手动安装。
 
-已验证的操作系统与软件版本如[**表 2** 已验证的操作系统与软件版本](#已验证的操作系统与软件版本)所示。
+已验证的操作系统与软件版本如[**表 3** 已验证的操作系统与软件版本](#已验证的操作系统与软件版本)所示。
 
-**表 2** 已验证的操作系统与软件版本<a id="已验证的操作系统与软件版本"></a>
+**表 3** 已验证的操作系统与软件版本<a id="已验证的操作系统与软件版本"></a>
 
 |项目|版本|下载链接|
 |--|--|--|
-|openEuler|20.03 LTS-SP1 for ARM|[获取链接](https://repo.huaweicloud.com/openeuler/openEuler-20.03-LTS-SP1/ISO/aarch64/openEuler-20.03-LTS-SP1-everything-aarch64-dvd.iso)|
-|openEuler|22.03 LTS-SP1 for ARM|[获取链接](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP1/ISO/aarch64/openEuler-22.03-LTS-SP1-everything-aarch64-dvd.iso)|
-|CMake|3.7.2（openEuler 20.03）|[获取链接](https://cmake.org/files/v3.7/cmake-3.7.2.tar.gz)|
+|openEuler|20.03 LTS SP1 for ARM|[openEuler 20.03 LTS SP1 for ARM ISO镜像下载](https://repo.huaweicloud.com/openeuler/openEuler-20.03-LTS-SP1/ISO/aarch64/openEuler-20.03-LTS-SP1-everything-aarch64-dvd.iso)|
+|openEuler|22.03 LTS SP1 for ARM|[openEuler 22.03 LTS SP1 for ARM ISO镜像下载](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP1/ISO/aarch64/openEuler-22.03-LTS-SP1-everything-aarch64-dvd.iso)|
+|CMake|3.7.2（openEuler 20.03）|[CMake 3.7.2源码包下载](https://cmake.org/files/v3.7/cmake-3.7.2.tar.gz)|
 |CMake|3.11.4（openEuler 22.03）|openEuler 22.03默认自带CMake 3.11.4|
-|GCC|7.3.0（openEuler 20.03）|[获取链接](https://mirrors.tuna.tsinghua.edu.cn/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.gz)|
+|GCC|7.3.0（openEuler 20.03）|[GCC 7.3.0源码包下载](https://mirrors.tuna.tsinghua.edu.cn/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.gz)|
 |GCC|10.3.1（openEuler 22.03）|openEuler 22.03默认自带GCC 10.3.1|
-|MySQL|8.0.25|[获取链接](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.gz)|
-|MySQL|8.0.30|[获取链接](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.30.tar.gz)|
-|MySQL|8.0.35|[获取链接](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.35.tar.gz)|
+|MySQL|8.0.25|[MySQL 8.0.25源码包（含boost）下载](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.25.tar.gz)|
+|MySQL|8.0.30|[MySQL 8.0.30源码包（含boost）下载](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.30.tar.gz)|
+|MySQL|8.0.35|[MySQL 8.0.35源码包（含boost）下载](https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-8.0.35.tar.gz)|
 
 ## 安装说明<a name="ZH-CN_TOPIC_0000002550182889" id="安装说明"></a>
 
@@ -127,7 +129,7 @@
 
 1. 下载目标版本的MySQL源码并上传至服务器“/home”目录下，解压源码包并进入MySQL源码的根目录。
 
-    MySQL源码下载路径请参见[**表 2** 已验证的操作系统与软件版本](#已验证的操作系统与软件版本)。
+    MySQL源码下载路径请参见[**表 3** 已验证的操作系统与软件版本](#已验证的操作系统与软件版本)。
 
     对于MySQL 8.0.25版本，执行以下命令：
 
@@ -216,7 +218,7 @@
 
     如下所示新增了一个包含补丁文件的boostdb-patch-release-20260330目录。
 
-    ```txt
+    ```output
     [root@localhost mysql-8.0.25]# git status
     On branch master
     Untracked files:
@@ -241,7 +243,7 @@
 
     预期结果：
 
-    ![](figures/zh_cn_image_0000002518703054.png)
+    ![执行ll ./plugin/thread_pool/后的预期结果回显，显示新增thread_pool目录及其下的源码文件列表](figures/zh_cn_image_0000002518703054.png)
 
 7. 根据正常的编译安装MySQL源码的操作步骤进行MySQL的编译安装。详细信息请参见《[MySQL 移植指南](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/ecosystemEnable/MySQL/kunpengmysql8017_02_0001.html)》。
 
@@ -298,7 +300,7 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
 
         回显信息中状态为“ACTIVE”时，表示插件已安装成功。
 
-        ![](figures/zh_cn_image_0000002550182903.png)
+        ![执行show plugins后的回显截图，thread_pool及THREAD_POOL系列插件状态均显示为ACTIVE](figures/zh_cn_image_0000002550182903.png)
 
 2. 参考以下参数调优建议对MySQL线程池进行调整和优化。
 
@@ -318,10 +320,10 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
 
 3. 通过TPC-C测试可以得到使用MySQL线程池特性前后的性能提升效果，详细测试步骤请参见《[BenchMarkSQL 测试指导](https://www.hikunpeng.com/document/detail/zh/kunpengdbs/testguide/tstg/kunpengbenchmarksql_06_0001.html)》。
 
-    线程池连接器对于大量连接的OLTP短查询的场景将有最大帮助。在OLTP TPC-C场景下，启用线程池之前，MySQL运行10000个并发任务的性能只有原来的10%左右。启用线程池功能后，性能可维持在85%，对比效果如[**图 1** 开启MySQL线程池前后的性能对比](#开启MySQL线程池前后的性能对比)所示。
+    线程池连接器对于大量连接的OLTP短查询的场景将有最大帮助。在OLTP TPC-C场景下，启用线程池之前，MySQL运行10000个并发任务的性能只有原来的10%左右。启用线程池功能后，性能可维持在85%，对比效果如[**图 4** 开启MySQL线程池前后的性能对比](#开启MySQL线程池前后的性能对比)所示。
 
-    **图 1** 开启MySQL线程池前后的性能对比<a name="fig317431114341"></a><a id="开启MySQL线程池前后的性能对比"></a><br>
-    ![](figures/开启MySQL线程池前后的性能对比.png "开启MySQL线程池前后的性能对比")
+    **图 4** 开启MySQL线程池前后的性能对比<a name="fig317431114341"></a><a id="开启MySQL线程池前后的性能对比"></a><br>
+    ![开启MySQL线程池前后的TPC-C性能对比曲线，启用后大量并发连接下性能保持平稳，明显优于未启用时](figures/开启MySQL线程池前后的性能对比.png "开启MySQL线程池前后的性能对比")
 
 **卸载线程池插件<a name="section739416010357"></a>**
 
@@ -341,7 +343,7 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
 
         执行以上卸载指令时，若线程池连接器上存在用户连接，则会提示"plugin is busy and will be installed on shutdown"的warning信息，线程池插件的状态将由ACTIVE状态变为DELETE状态（线程池插件卸载的过程状态），待线程池上的所有连接断开后，再执行uninstall plugin thread\_pool命令可立即完成线程池卸载，否则将在MySQL服务shutdown时才会完成卸载。
 
-        ![](figures/zh_cn_image_0000002518703056.png)
+        ![执行卸载线程池插件命令后的回显截图，提示plugin is busy的warning信息，插件状态由ACTIVE变为DELETE](figures/zh_cn_image_0000002518703056.png)
 
     - 方式二：若在配置文件中有设置加载线程池插件的配置行，可在执行**UNINSTALL**命令后删除该配置行。
 
@@ -758,9 +760,9 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
 
 相对于默认模式的线程池参数配置，使用小线程组数模式的线程池参数配置时，每个线程组上可以创建更多的active线程数，使长查询的连接绑定到某个线程组时，该长查询的连接对该线程组的时延影响可以更小或无明显时延差异。同时使用小线程组数模式时，对于部分场景（例如OLTP writeonly）在连接数非常大（例如8192个连接）时，仍然可以保持90%左右的曲线峰值。
 
-小线程组数模式相对于默认模式（使用默认参数），就是参数配置的优化使用，在高并发连接数时，可以更好保持峰值性能的配置模式，相关配置说明如[**表 1** 小线程组数模式的参数配置参考](#小线程组数模式的参数配置参考)所示。
+小线程组数模式相对于默认模式（使用默认参数），就是参数配置的优化使用，在高并发连接数时，可以更好保持峰值性能的配置模式，相关配置说明如[**表 4** 小线程组数模式的参数配置参考](#小线程组数模式的参数配置参考)所示。
 
-**表 1** 小线程组数模式的参数配置参考<a id="小线程组数模式的参数配置参考"></a>
+**表 4** 小线程组数模式的参数配置参考<a id="小线程组数模式的参数配置参考"></a>
 
 |参数名称|默认模式配置|小线程组数模式|
 |--|--|--|
@@ -785,7 +787,7 @@ select * from information_schema.THREAD_POOL_GROUPS;
 
 THREAD\_POOL\_GROUPS可用于查询线程组相关信息。
 
-**表 1** THREAD\_POOL\_GROUPS<a id="THREAD\_POOL\_GROUPS"></a>
+**表 5** THREAD\_POOL\_GROUPS<a id="THREAD\_POOL\_GROUPS"></a>
 
 |字段|说明|
 |--|--|
@@ -802,7 +804,7 @@ THREAD\_POOL\_GROUPS可用于查询线程组相关信息。
 
 THREAD\_POOL\_QUEUES可用于查询线程组队列中连接的信息。
 
-**表 1** THREAD\_POOL\_QUEUES<a id="THREAD\_POOL\_QUEUES"></a>
+**表 6** THREAD\_POOL\_QUEUES<a id="THREAD\_POOL\_QUEUES"></a>
 
 |字段|说明|
 |--|--|
@@ -816,7 +818,7 @@ THREAD\_POOL\_QUEUES可用于查询线程组队列中连接的信息。
 
 THREAD\_POOL\_STATS可用于查询线程组状态信息的统计值，比如线程组由于check\_stall创建的线程数、由listener线程poll到的任务数等。
 
-**表 1** THREAD\_POOL\_STATS<a id="THREAD\_POOL\_STATS"></a>
+**表 7** THREAD\_POOL\_STATS<a id="THREAD\_POOL\_STATS"></a>
 
 |字段|描述|
 |--|--|
@@ -834,7 +836,7 @@ THREAD\_POOL\_STATS可用于查询线程组状态信息的统计值，比如线�
 
 THREAD\_POOL\_WAITS提供线程组的worker线程在执行SQL语句时各类等待原因的统计数据。等待原因有：UNKNOWN、SLEEP、DISKIO、ROW\_LOCK、GLOBAL\_LOCK、META\_DATA\_LOCK、TABLE\_LOCK、USER\_LOCK、BINLOG、GROUP\_COMMIT、SYNC。
 
-**表 1** THREAD\_POOL\_WAITS<a id="THREAD\_POOL\_WAITS"></a>
+**表 8** THREAD\_POOL\_WAITS<a id="THREAD\_POOL\_WAITS"></a>
 
 |字段|说明|
 |--|--|
@@ -848,4 +850,10 @@ THREAD\_POOL\_WAITS提供线程组的worker线程在执行SQL语句时各类等�
 |OLTP|Online Transaction Processing|在线交易处理|
 |NUMA|Non-Uniform Memory Access|非一致性内存访问|
 |SQL|Structured Query Language|结构化查询语言|
-|TPC|Transmit Power Control|传输功率控制|
+|TPC|Transaction Processing Performance Council|事务处理性能委员会|
+
+## 修订记录
+
+| 文档版本 | 发布日期 | 修改说明 |
+|--|--|--|
+| 01 | 2024-06-30 | 第一次正式发布。 |

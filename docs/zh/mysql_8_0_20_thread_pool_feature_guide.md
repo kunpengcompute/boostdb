@@ -1,5 +1,7 @@
 # MySQL 8.0.20 线程池 特性指南
 
+本文档介绍MySQL 8.0.20线程池特性的工作原理与使用方法，涵盖补丁安装、配置参数说明、小线程组数模式配置，以及新增状态变量和information_schema表的查询，适用于在大量并发连接场景下提升数据库性能的用户。
+
 ## 介绍<a name="ZH-CN_TOPIC_0000002550142771"></a>
 
 ### 简介<a name="ZH-CN_TOPIC_0000002550182787"></a>
@@ -19,10 +21,10 @@
 使用线程池连接器模块后，如[**图 1** MySQL线程池特性实现原理](#MySQL线程池特性实现原理)所示，连接的建立与调度由线程池连接器接管，通过引入可动态伸缩的、多分组的线程池，使服务器即使在有大量客户端连接的情况下，也能保持最佳性能。线程池方案通过每个分组上的listener线程进行网络任务的侦听，将触发的任务放入高优先级队列或低优先级队列，由空闲的worker线程按优先级从队列中的取出任务从而进行处理。每个CPU同时处理任务个数是有限的，一般2～5个最优，从而保持稳定的业务处理能力。
 
 **图 1** MySQL线程池特性实现原理<a name="fig11588201933612"></a><a id="MySQL线程池特性实现原理"></a><br>
-![](figures/mysql线程池特性实现原理_2.png "MySQL线程池特性实现原理-2")
+![线程池连接器将客户端连接分派到多个线程组，组内listener线程侦听网络事件，任务按优先级入队后由worker线程处理](figures/mysql线程池特性实现原理_2.png "MySQL线程池特性实现原理-2")
 
 **图 2** 总体原理框架<a name="zh-cn_topic_0000001153001580_fig179241351104514"></a><a id="总体原理框架"></a><br>
-![](figures/总体原理框架_3.png "总体原理框架-3")
+![总体原理框架：线程池由若干线程组与一个timer线程组成，用户连接轮询分配到线程组，由组内worker线程处理查询并回收线程](figures/总体原理框架_3.png "总体原理框架-3")
 
 整个线程池分为若干个线程组和一个timer线程，线程组个数默认为服务器上CPU的逻辑核数，也可通过配置文件或命令行启动参数调整，参见配置参数[thread\_pool\_size](#thread_pool_size)。用户连接被轮询分配到对应线程组上，连接上的所有查询请求都将由其绑定的线程组处理。当客户端连接发送来SQL语句时，线程组为该连接分配worker线程进行处理。SQL执行结束后，线程组回收worker线程。通过一定策略控制worker线程的数量，从而使得实际worker线程数保持在一个高性能的数量范围内。
 
@@ -104,7 +106,7 @@
 
     如下所示新增了一个包含优化补丁的boostdb-patch-release-20260330目录。
 
-    ```txt
+    ```output
     # On branch master
     # Untracked files:
     #   (use "git add <file>..." to include in what will be committed)
@@ -324,7 +326,7 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
 
 默认值：4294967295
 
-允许值：0-4294967295
+允许值：0~4294967295
 
 该变量控制高优先级队列策略。每个新连接都被预设分配thread\_pool\_high\_prio\_tickets票数以进入高优先级队列（将此变量设置为0将禁用高优先级队列），连接第一次或连续每次进入高优先级队列，该连接持有的票数将减1，若票数减为0了，将无法进入高优先级队列，而进入低优先级队列。当连接进入低优先级队列，该连接持有的票数值将重新设置为该连接Session的thread\_pool\_high\_prio\_tickets预设值。该策略的目的是避免工作线程被大量高优先级连接长时间占用而导致低优先级连接无法得到处理的问题。
 
@@ -371,13 +373,13 @@ MySQL的配置参数，也称为系统变量，可以用于调整数据库服务
 
 关于状态变量的更多详细信息，请参见MySQL官方参考文档《[Server Status Variables](https://dev.mysql.com/doc/refman/8.0/en/server-status-variables.html)》。
 
-新增状态变量说明如[**表 1** 新增状态变量说明](#新增状态变量说明)。状态变量查询示例如下。
+新增状态变量说明如[**表 2** 新增状态变量说明](#新增状态变量说明)。状态变量查询示例如下。
 
 ```sql
 show status like "%Threadpool_idle_threads%";
 ```
 
-**表 1** 新增状态变量说明<a id="新增状态变量说明"></a>
+**表 2** 新增状态变量说明<a id="新增状态变量说明"></a>
 
 |新增状态变量|变量类型|变量范围|说明|
 |--|--|--|--|
@@ -400,7 +402,7 @@ select * from information_schema.THREAD_POOL_GROUPS;
 
 THREAD\_POOL\_GROUPS可用于查询线程组相关信息。
 
-**表 1** THREAD\_POOL\_GROUPS<a id="THREAD\_POOL\_GROUPS"></a>
+**表 3** THREAD\_POOL\_GROUPS<a id="THREAD\_POOL\_GROUPS"></a>
 
 |字段|说明|
 |--|--|
@@ -417,7 +419,7 @@ THREAD\_POOL\_GROUPS可用于查询线程组相关信息。
 
 THREAD\_POOL\_QUEUES可用于查询线程组队列中连接的信息。
 
-**表 1** THREAD\_POOL\_QUEUES<a id="THREAD\_POOL\_QUEUES"></a>
+**表 4** THREAD\_POOL\_QUEUES<a id="THREAD\_POOL\_QUEUES"></a>
 
 |字段|说明|
 |--|--|
@@ -431,7 +433,7 @@ THREAD\_POOL\_QUEUES可用于查询线程组队列中连接的信息。
 
 THREAD\_POOL\_STATS可用于查询线程组状态信息的统计值，比如线程组由于check\_stall创建的线程数、由listener线程poll到的任务数等。
 
-**表 1** THREAD\_POOL\_STATS<a id="THREAD\_POOL\_STATS"></a>
+**表 5** THREAD\_POOL\_STATS<a id="THREAD\_POOL\_STATS"></a>
 
 |字段|描述|
 |--|--|
@@ -441,16 +443,22 @@ THREAD\_POOL\_STATS可用于查询线程组状态信息的统计值，比如线�
 |wakes_due_to_stall|线程组自初始化以来，由timer线程操作唤醒线程的总次数。|
 |throttles|线程组自初始化以来，由于超时检测成功创建的线程的总次数。timer线程在每次check_stall时会检查距离上次创建线程是否超过了throttling_interval值，如果是，则该值加1。|
 |stalls|线程组自初始化以来，由timer线程检查出的停滞次数。每当timer线程check_stall判断线程组处于停滞状态时，该值加1。|
-|dequeues_by_listenerdequeues_by_worker|线程组自初始化以来，任务出队列的次数。<br>·dequeues_by_worker代表dequeue的发起者是工作线程。<br>·dequeues_by_listener代表发起者是listener。|
-|polls_by_listenerpolls_by_worker|线程组自初始化以来，连接上epoll网络事件的总次数。<br>·polls_by_worker代表poll的发起者是工作线程。<br>·polls_by_listener代表发起者是listener。|
+|dequeues_by_listener<br>dequeues_by_worker|线程组自初始化以来，任务出队列的次数。<br>dequeues_by_worker代表dequeue的发起者是工作线程。<br>dequeues_by_listener代表发起者是listener。|
+|polls_by_listener<br>polls_by_worker|线程组自初始化以来，连接上epoll网络事件的总次数。<br>polls_by_worker代表poll的发起者是工作线程。<br>polls_by_listener代表发起者是listener。|
 
 #### THREAD\_POOL\_WAITS表<a name="ZH-CN_TOPIC_0000002550142779"></a>
 
 THREAD\_POOL\_WAITS提供线程组的worker线程在执行SQL语句时各类等待原因的统计数据。等待原因有：UNKNOWN、SLEEP、DISKIO、ROW\_LOCK、GLOBAL\_LOCK、META\_DATA\_LOCK、TABLE\_LOCK、USER\_LOCK、BINLOG、GROUP\_COMMIT、SYNC、NET。
 
-**表 1** THREAD\_POOL\_WAITS<a id="THREAD\_POOL\_WAITS"></a>
+**表 6** THREAD\_POOL\_WAITS<a id="THREAD\_POOL\_WAITS"></a>
 
 |字段|说明|
 |--|--|
 |REASON|线程进入等待状态（waiting）的原因。wait_reasons以数组字符串的形式存储等待原因。|
 |COUNT|线程组自初始化以来，在执行SQL的worker线程，进入某种原因（锁或IO等）的等待状态的总次数。|
+
+## 修订记录
+
+| 文档版本 | 发布日期 | 修改说明 |
+|--|--|--|
+| 01 | 2021-12-30 | 第一次正式发布。 |

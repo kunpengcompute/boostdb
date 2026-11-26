@@ -28,9 +28,9 @@ MySQL的二进制日志（Binlog）是记录所有数据库数据变更操作（
 
 |项目|版本|获取地址|
 |--|--|--|
-|操作系统|openEuler 22.03 LTS SP4|[获取链接](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
-|Percona|Percona-Server 5.7.44-53|[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v3/BoostDB-Percona-5.7.44-53.aarch64.rpm)|
-|Percona|Percona-Server 8.0.43-34|[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v2/BoostDB-Percona-8.0.43-34.aarch64.rpm)|
+|操作系统|openEuler 22.03 LTS SP4|[openEuler 22.03 LTS SP4镜像下载地址](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
+|Percona|Percona-Server 5.7.44-53|[BoostDB-Percona-5.7.44-53.aarch64.rpm下载链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v3/BoostDB-Percona-5.7.44-53.aarch64.rpm)|
+|Percona|Percona-Server 8.0.43-34|[BoostDB-Percona-8.0.43-34.aarch64.rpm下载链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v2/BoostDB-Percona-8.0.43-34.aarch64.rpm)|
 
 ## 安装和使能特性<a name="ZH-CN_TOPIC_0000002550137589"></a>
 
@@ -57,7 +57,7 @@ MySQL的二进制日志（Binlog）是记录所有数据库数据变更操作（
 
     **图 1** Binlog优化特性（三特性叠加）优化前后性能对比<a name="fig937192253919"></a><a id="Binlog优化特性优化前后性能对比"></a>
     
-    ![](figures/Binlog优化特性优化前后性能对比.png "Binlog writeset_history数据结构优化特性优化前后性能对比")
+    ![三特性叠加优化前后Sysbench写场景性能柱状对比，优化后性能明显提升](figures/Binlog优化特性优化前后性能对比.png "Binlog writeset_history数据结构优化特性优化前后性能对比")
 
 ## 故障排除<a name="ZH-CN_TOPIC_0000002550177591"></a>
 
@@ -109,4 +109,10 @@ ASLR（Address Space Layout Randomization，地址空间布局随机化）是一
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 
-![](figures/zh_cn_image_0000002518697752.png)
+![在命令行设置kernel.randomize_va_space为2以开启ASLR的操作命令截图](figures/zh_cn_image_0000002518697752.png)
+
+## 修订记录
+
+| 文档版本 | 发布日期 | 修改说明 |
+|--|--|--|
+| 01 | 2025-12-30 | 第一次正式发布。 |

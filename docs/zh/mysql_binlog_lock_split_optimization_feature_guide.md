@@ -1,16 +1,14 @@
 # MySQL Binlog拆锁优化 特性指南
 
+本文档介绍MySQL Binlog拆锁优化特性的原理、环境要求、安装使能步骤及故障排除方法，适用于在鲲鹏服务器上安装和使能该特性的用户。
+
 ## 特性描述<a name="ZH-CN_TOPIC_0000002518537838"></a>
 
 ### 简介<a name="ZH-CN_TOPIC_0000002518537840"></a>
 
-本文主要介绍如何在鲲鹏服务器上安装和使能Binlog拆锁优化特性。
-
 MySQL的二进制日志（Binlog）是记录所有数据库数据变更操作（如INSERT、UPDATE、DELETE）的日志文件，主要用于数据复制和恢复。开启Binlog后，为了保证Redo log和Binlog的数据一致性，MySQL使用了二阶段提交，由Binlog作为事务的协调者。而引入"二阶段提交"使得Binlog成为了性能瓶颈，针对此问题鲲鹏BoostKit提供了Binlog预分配、Binlog拆锁优化和Binlog writeset_history数据结构优化三个特性来提高系统性能。通过以上三个特性叠加，Percona-Server 5.7.44-53在8C16G容器规格下Sysbench只写场景测试可获得13%的性能提升。
 
 ### 原理描述<a name="ZH-CN_TOPIC_0000002518697750"></a>
-
-**Binlog拆锁优化<a name="section695124719482"></a>**
 
 在事务组提交过程中，处于FLUSH/SYNC/COMMIT阶段的所有follower会共享同一把锁和条件变量（m_lock_done, m_cond_done）。当处于COMMIT阶段的leader线程提交事务成功时，leader线程会调用pthread_cond_broadcast将处于FLUSH/SYNC/COMMIT阶段的所有follower都唤醒，对于FLUSH和SYNC阶段的follower会重新调用pthread_cond_wait陷入等待。过多的误唤醒会增加pthread_cond_wait/pthread_cond_broadcast函数的系统调用开销，加剧锁的冲突。针对该热点，通过锁拆分，让处于不同阶段的follower等待不同的锁，降低不同组之间误唤醒的可能。
 
@@ -28,8 +26,8 @@ MySQL的二进制日志（Binlog）是记录所有数据库数据变更操作（
 
 |项目|版本|获取地址|
 |--|--|--|
-|操作系统|openEuler 22.03 LTS SP4|[获取链接](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
-|Percona|<ul><li>Percona-Server 5.7.44-53</li><li>Percona-Server 8.0.43-34</li></ul>|<ul><li>[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v3/BoostDB-Percona-5.7.44-53.aarch64.rpm)</li><li>[获取链接](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v2/BoostDB-Percona-8.0.43-34.aarch64.rpm)</li></ul>|
+|操作系统|openEuler 22.03 LTS SP4|[openEuler 22.03 LTS SP4镜像下载](https://repo.huaweicloud.com/openeuler/openEuler-22.03-LTS-SP4/ISO/aarch64/openEuler-22.03-LTS-SP4-everything-aarch64-dvd.iso)|
+|Percona|<ul><li>Percona-Server 5.7.44-53</li><li>Percona-Server 8.0.43-34</li></ul>|<ul><li>[Percona-Server 5.7.44-53的rpm包下载](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-5.7.44-53-v3/BoostDB-Percona-5.7.44-53.aarch64.rpm)</li><li>[Percona-Server 8.0.43-34的rpm包下载](https://gitcode.com/boostkit/boostdb/releases/download/MySQL-Percona-Server-8.0.43-34-v2/BoostDB-Percona-8.0.43-34.aarch64.rpm)</li></ul>|
 
 ## 安装和使能特性<a name="ZH-CN_TOPIC_0000002550137589"></a>
 
@@ -56,7 +54,7 @@ MySQL的二进制日志（Binlog）是记录所有数据库数据变更操作（
 
     **图 1** Binlog优化特性（三特性叠加）优化前后性能对比<a name="fig937192253919"></a><a id="Binlog优化特性优化前后性能对比"></a>
     
-    ![](figures/Binlog优化特性优化前后性能对比.png "Binlog拆锁优化特性优化前后性能对比")
+    ![Binlog三特性叠加优化前后Sysbench写场景性能对比柱状图，优化后性能明显提升](figures/Binlog优化特性优化前后性能对比.png "Binlog拆锁优化特性优化前后性能对比")
 
 ## 故障排除<a name="ZH-CN_TOPIC_0000002550177591"></a>
 
@@ -108,4 +106,10 @@ ASLR（Address Space Layout Randomization，地址空间布局随机化）是一
 echo 2 >/proc/sys/kernel/randomize_va_space
 ```
 
-![](figures/zh_cn_image_0000002518697752.png)
+![设置randomize_va_space内核参数临时启用ASLR地址空间布局随机化的配置示意](figures/zh_cn_image_0000002518697752.png)
+
+## 修订记录
+
+| 文档版本 | 发布日期 | 修改说明 |
+|--|--|--|
+| 01 | 2025-12-30 | 第一次正式发布。 |
